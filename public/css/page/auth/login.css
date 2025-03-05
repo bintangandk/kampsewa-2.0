@@ -1,0 +1,154 @@
+._container {
+    font-family: "Poppins", sans-serif;
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(2, 1fr);
+    height: 100vh;
+}
+._form {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+._logo {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+    align-items: center;
+}
+._logo img {
+    width: 100px;
+    object-fit: contain;
+}
+._form form h1 {
+    text-align: center;
+    font-size: 14px;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+._form form p {
+    text-align: center;
+    font-size: 14px;
+    text-align: center;
+}
+._input {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 30px;
+}
+._input-username {
+    width: 100%;
+}
+._icon i {
+    font-size: 20px;
+    font-weight: bold;
+}
+._bg-transparent {
+    width: 100%;
+    font-size: 14px;
+}
+._bg-transparent:focus {
+    outline: none;
+}
+._input-username:focus {
+    border: 2px solid #5038ed;
+    border-radius: 10px;
+    background-color: #f0edff;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+._button {
+    width: 100%;
+    margin-top: 30px;
+}
+._button button {
+    padding: 15px;
+    border-radius: 10px;
+    width: 100%;
+    color: white;
+    font-size: 14px;
+}
+._form-content {
+    width: 100%;
+}
+._sub-form-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    object-fit: cover;
+    background-repeat: no-repeat;
+    height: 100vh;
+}
+._card {
+    position: relative;
+    width: 400px;
+    height: 450px;
+    border-radius: 10px;
+    border: 2px;
+}
+._text {
+    width: 100%;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    align-items: center;
+}
+._text p {
+    color: white;
+    font-weight: bold;
+    font-size: 24px;
+}
+._image-rounded {
+    position: absolute;
+    right: 0;
+    margin-right: -30px;
+    padding: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 60px;
+    height: 60px;
+    background-color: white;
+    border-radius: 100%;
+}
+._image-rounded img {
+    width: 100%;
+    object-fit: contain;
+}
+._img {
+    position: absolute;
+    right: -20;
+    width: 400px;
+    height: 400px;
+    bottom: 0;
+}
+._img img {
+    width: 100%;
+    object-fit: cover;
+}
+@media (max-width: 480px) {
+    ._container {
+        grid-template-columns: repeat(1, 1fr);
+        gap: 30px;
+    }
+    ._img {
+        padding: 25px;
+    }
+    ._form {
+        padding: 20px;
+    }
+    ._form-content {
+        padding: 20px;
+    }
+    ._image-rounded {
+        margin-right: -15px;
+    }
+}

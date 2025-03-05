@@ -1,0 +1,9 @@
+.gradient-1 {
+    background: linear-gradient(to bottom left, #B381F4, #5038ED);
+}
+.gradient-1:hover {
+    background: #5038ED;
+}
+.gradient-1-no-hover {
+    background: linear-gradient(to bottom left, #B381F4, #5038ED);
+}

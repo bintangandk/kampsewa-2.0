@@ -1,0 +1,10 @@
+.bg-corak {
+    background: linear-gradient(-45deg, rgba(31,217,173,0.5) 25%, transparent 25%, transparent 50%, rgba(31,217,173,0.5) 50%, rgba(31,217,173,0.5) 75%, transparent 75%, transparent);
+    background-size: 20px 20px;
+    background-color: #1ED0A6;
+}
+.bg-corak-2 {
+    background: linear-gradient(-45deg, rgba(107, 138, 250, 0.5) 25%, transparent 25%, transparent 50%, rgba(107, 138, 250, 0.5) 50%, rgba(107, 138, 250, 0.5) 75%, transparent 75%, transparent);
+    background-size: 20px 20px;
+    background-color: #2D53DA;
+}

@@ -1,0 +1,74 @@
+public function layananIklan($id_user, $harga_iklan, Request $request)
+    {
+
+        $id_user_decrypt  = Crypt::decryptString($id_user);
+
+        $paket = $this->getDurasiDanHargaBerdasarkanPaket($harga_iklan);
+        $durasi = $paket['durasi'];
+        $harga = $paket['harga'];
+
+        // Ambil semua iklan yang statusnya pending atau aktif
+        $iklanAktif = DB::table('detail_iklan')
+            ->whereIn('status_iklan', ['pending', 'aktif'])
+            ->orderBy('tanggal_mulai')
+            ->get();
+
+        // Tentukan tanggal mulai dan akhir
+        $tanggalMulai = Carbon::today();
+        $tanggalAkhir = Carbon::today()->addDays($durasi);
+
+        // Periksa ketersediaan tanggal dan limit
+        list($tanggalMulai, $tanggalAkhir) = $this->cekKetersediaanTanggal($tanggalMulai, $tanggalAkhir, $iklanAktif, $durasi);
+
+        return view('customers.menu-iklan.input-table-iklan')->with([
+            'title' => 'Iklan | Customer',
+            'harga_sewa_iklan' => $harga,
+            'id_user' => $id_user_decrypt,
+            'tanggal_mulai' => $tanggalMulai->toDateString(),
+            'tanggal_akhir' => $tanggalAkhir->toDateString(),
+        ]);
+    }
+
+    private function getDurasiDanHargaBerdasarkanPaket($harga_iklan)
+    {
+        $paket = [
+            'paling-murah' => ['durasi' => 1, 'harga' => 50000],
+            'murah' => ['durasi' => 2, 'harga' => 90000],
+            'sedang' => ['durasi' => 3, 'harga' => 120000],
+            'ideal' => ['durasi' => 5, 'harga' => 200000],
+            'populer' => ['durasi' => 7, 'harga' => 250000],
+            'premium' => ['durasi' => 10, 'harga' => 300000],
+            'ultimate' => ['durasi' => 14, 'harga' => 400000],
+        ];
+
+        return $paket[$harga_iklan] ?? ['durasi' => 1, 'harga' => 10000];
+    }
+
+    private function cekKetersediaanTanggal($tanggalMulai, $tanggalAkhir, $iklanAktif, $durasi)
+    {
+        $tanggalMulaiAwal = $tanggalMulai;
+
+        while (true) {
+            $iklanDalamRentang = $iklanAktif->filter(function ($iklan) use ($tanggalMulai, $tanggalAkhir) {
+                $iklanMulai = Carbon::parse($iklan->tanggal_mulai);
+                $iklanAkhir = Carbon::parse($iklan->tanggal_akhir);
+                return ($tanggalMulai->between($iklanMulai, $iklanAkhir) || $tanggalAkhir->between($iklanMulai, $iklanAkhir));
+            });
+
+            // Jika jumlah iklan dalam rentang kurang dari 10, kembalikan tanggal awal
+            if ($iklanDalamRentang->count() < 10) {
+                break;
+            }
+
+            // Jika jumlah iklan dalam rentang >= 10, geser tanggal mulai dan akhir
+            $tanggalMulai = $tanggalMulaiAwal->addDay();
+            $tanggalAkhir = $tanggalMulai->copy()->addDays($durasi);
+        }
+
+        return [$tanggalMulai, $tanggalAkhir];
+    }
+
+
+
+<p class="mt-3 text-[14px] p-2 bg-[#F2E4E1] text-[#DC4E23]">PERHATIAN!!! Karena banyaknya permintaan iklan,
+                    maka jadwal ditampilkan iklan anda akan menyesuaikan dengan jadwal yang tersedia, terimakasih.</p>

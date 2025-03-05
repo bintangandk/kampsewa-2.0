@@ -1,0 +1,39 @@
+.custom-select-wrapper {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+.custom-select {
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: #f8f7f4;
+    border-radius: 9999px;
+    width: 100%;
+    border: none;
+    color: #111827;
+    font-size: 14px;
+    line-height: 1.5;
+    background-image: url('data:image/svg+xml;utf8,<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 9l-7 7-7-7"></path></svg>'); /* Down arrow icon */
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    background-size: 16px 16px;
+}
+
+.custom-select:focus {
+    border-color: #3b82f6;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+}
+
+/* Dark mode styles */
+.dark .custom-select {
+    background-color: #374151;
+    color: #f9fafb;
+}
+
+.dark .custom-select:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+}

@@ -1,0 +1,19 @@
+php artisan db:seed --class=UserSeeder &&
+php artisan db:seed --class=AlamatSeeder &&
+php artisan db:seed --class=IklanSeeder &&
+php artisan db:seed --class=DetailIklanSeeder &&
+php artisan db:seed --class=PembayaranIklanSeeder &&
+php artisan db:seed --class=FeedbackSeeder &&
+php artisan db:seed --class=PemasukanSeeder &&
+php artisan db:seed --class=PengeluaranSeeder &&
+php artisan db:seed --class=ProdukSeeder &&
+php artisan db:seed --class=RatingSeeder &&
+php artisan db:seed --class=StatusNotifikasiUserSeeder &&
+php artisan db:seed --class=RiwayatPencarianSeeder &&
+php artisan db:seed --class=VariantProdukSeeder &&
+php artisan db:seed --class=DetailVariantProdukSeeder &&
+php artisan db:seed --class=PenyewaanSeeder &&
+php artisan db:seed --class=DetailPenyewaanSeeder &&
+php artisan db:seed --class=PembayaranPenyewaanSeeder
+
+
