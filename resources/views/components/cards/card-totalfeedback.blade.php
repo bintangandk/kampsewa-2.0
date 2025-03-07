@@ -5,7 +5,7 @@
         <h5 class="text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">{{ $total_feedback }} +</h5>
     </div>
     <div class="w-full flex justify-between items-center">
-        <p class="font-normal text-[14px]">Total Feedback</p>
+        <p class="font-normal text-[14px] text-white">Total Feedback</p>
         @if ($percentageFeedbackChange >= 0)
             <p class="font-normal text-[14px] text-[#65D2AE]">
                 {{ $percentageFeedbackChange }}% <i class="mt-2 fi fi-rr-arrow-small-up"></i>

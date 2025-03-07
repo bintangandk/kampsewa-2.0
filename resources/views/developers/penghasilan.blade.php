@@ -238,13 +238,13 @@
                     </div>
 
                     {{-- todo untuk tombol tambah data --}}
-                    <div class="_btn-tambah-data">
+                    {{-- <div class="_btn-tambah-data">
                         <button onclick="modalHandler(true)"
                             class="px-4 py-2 gradient-1 cursor-pointer text-white rounded-full">
                             <div class="_icon-plus"></div>
                             <span>Tambah Pemasukan</span>
                         </button>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
             {{-- todo wrapper btn delete all, btn export data bentuk ke excel --}}
