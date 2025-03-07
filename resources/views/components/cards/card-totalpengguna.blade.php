@@ -5,7 +5,7 @@
         <h5 class="text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">{{ $total_pengguna }} +</h5>
     </div>
     <div class="w-full flex justify-between items-center">
-        <p class="font-normal text-[14px]">Total Pengguna</p>
+        <p class="font-normal text-[14px] text-white">Total Pengguna</p>
         @if ($percentageChange >= 0)
             <p class="font-normal text-[14px] text-[#65D2AE]">
                 {{ $percentageChange }}% <i class="mt-2 fi fi-rr-arrow-small-up"></i>

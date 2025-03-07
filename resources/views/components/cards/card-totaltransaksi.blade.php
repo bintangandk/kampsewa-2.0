@@ -5,7 +5,7 @@
         <h5 class="text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">1508 +</h5>
     </div>
     <div class="w-full flex justify-between items-center">
-        <p class="font-normal text-[14px]">Total Transaksi</p>
+        <p class="font-normal text-[14px] text-white">Total Transaksi</p>
         <p class="font-normal text-[14px] text-[#65D2AE]">3.32%<i class="mt-2 fi fi-rr-arrow-small-up"></i></p>
     </div>
     <button class="w-full p-[8px] rounded-[15px] gradient-1 mt-4 text-[14px] font-normal text-white">Detail</button>
