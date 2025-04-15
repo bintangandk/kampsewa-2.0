@@ -17,24 +17,18 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: "8.2" # Sesuaikan dengan versi PHP proyekmu
+          php-version: "8.2"
           extensions: mbstring, pdo, sqlite, bcmath
           tools: composer:v2
 
       - name: Copy .env
         run: php -r "file_exists('.env') || copy('.env.example', '.env');"
 
-      - name: Debug Composer
-        run: composer diagnose
-
-      - name: Clear Composer Cache
-        run: composer clear-cache
-
-      - name: Update Composer Dependencies
-        run: composer update --no-interaction --prefer-dist --no-scripts
-
       - name: Install Dependencies
         run: composer install --prefer-dist --no-progress --no-suggest
+
+      - name: Copy .env.example to .env
+        run: cp .env.example .env
 
       - name: Generate Application Key
         run: php artisan key:generate
