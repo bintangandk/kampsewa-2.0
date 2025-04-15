@@ -7,10 +7,11 @@
     <div class="overflow-x-auto rounded-lg h-[500px] overflow-y-auto">
         @if (count($customer_online) == 0)
             <div class="w-full h-full flex justify-center items-center">
-                <img class="w-[300px] h-auto object-cover" src="{{ asset('images/illustration/222社交206气泡水肌理矢量创意插画气泡水-01 1.png') }}" alt="">
+                <img class="w-[300px] h-auto object-cover"
+                    src="{{ asset('images/illustration/222社交206气泡水肌理矢量创意插画气泡水-01 1.png') }}" alt="">
                 <div>
                     <p class="text-[40px] font-bold">OOPS!</p>
-                    <p class="text-[16px]">Tidak User Online Saat ini</p>
+                    <p class="text-[16px]">Tidak ada User Online Saat ini</p>
                 </div>
             </div>
         @else
@@ -51,11 +52,12 @@
                             </td>
                             <td class="px-6 py-4">Customer</td>
                             <td class="px-6 py-4">
-                                @if($item->time_login)
-                                {{ \Carbon\Carbon::parse($item->time_login)->diffForHumans() }}
-                            @endif
+                                @if ($item->time_login)
+                                    {{ \Carbon\Carbon::parse($item->time_login)->diffForHumans() }}
+                                @endif
                             </td>
-                            <td><a href="{{ route('detail-pengguna.index', [$item->name]) }}" class="px-4 py-2"><i class="bi bi-pen-fill"></i></a></td>
+                            <td><a href="{{ route('detail-pengguna.index', [$item->name]) }}" class="px-4 py-2"><i
+                                        class="bi bi-pen-fill"></i></a></td>
                         </tr>
                     @endforeach
                 </tbody>
