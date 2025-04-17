@@ -76,7 +76,7 @@ Route::get('developer/dashboard/profile/{nama_lengkap}', [ProfileController::cla
 
 
 // -- customer route
-Route::get('/customer/dashboard/home/{id_user?}', [DashboardCustController::class, 'index'])->name('dashboard-cust')->middleware('auth');
+Route::get('/customer/dashboard/home/{id_user}', [DashboardCustController::class, 'index'])->name('dashboard-cust')->middleware('auth');
 
 //-- produk
 Route::get('/customer/dashboard/menu-produk/{id_user}', [ProdukController::class, 'index'])->name('menu-produk.index')->middleware('auth');

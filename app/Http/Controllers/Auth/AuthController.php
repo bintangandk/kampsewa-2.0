@@ -11,7 +11,8 @@ use RealRashid\SweetAlert\Facades\Alert;
 
 class AuthController extends Controller
 {
-    public function index() {
+    public function index()
+    {
         return view('auth.login', ['title' => 'Login KampSewa']);
     }
     // ! fungsi untuk login
@@ -50,7 +51,7 @@ class AuthController extends Controller
                     return redirect()->intended('/developer/dashboard/home')->with('success', 'Login success');
                 } elseif ($user->type == 0) {
                     Alert::toast('Login success', 'success');
-                    return redirect()->intended('/customer/dashboard/home/')->with('success', 'Login success');
+                    return redirect()->intended('/customer/dashboard/home/' . $user->id)->with('success', 'Login success');
                 }
             } else {
                 Alert::toast('Password salah', 'error');
@@ -71,4 +72,3 @@ class AuthController extends Controller
         return redirect()->route('login');
     }
 }
-
