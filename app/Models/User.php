@@ -51,4 +51,9 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function rekomendasi()
+    {
+        return $this->hasMany(Rekomendasi::class, 'id_user', 'id');
+    }
 }

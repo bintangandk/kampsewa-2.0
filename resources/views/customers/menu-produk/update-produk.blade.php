@@ -9,7 +9,7 @@
             <p>Tambahkan barang penyewaan! anda bisa memasukkan data barang dengan banyak ukuran dan jenis, seperti warna,
                 stok, dan harga sewa yang berbeda.</p>
             <form id="form-update" action="{{ route('menu-produk.update-produk-put', ['id_produk' => $produk->id]) }}"
-                method="POST" class="w-full flex flex-col gap-6 h-auto mt-4" method="POST" enctype="multipart/form-data">
+                method="POST" class="w-full flex flex-col gap-6 h-auto mt-4" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
                 <input type="hidden" name="id_user" value="{{ $id_user }}">
@@ -79,7 +79,7 @@
                             <div>
                                 <div>
                                     <img id="foto-depan" class="w-full h-[250px] object-cover"
-                                        src="{{ $produk->foto_depan == 'Belum di isi' ? asset('images/Upload.png') : asset('assets/image/customers/produk/' . $produk->foto_depan)  }}"
+                                        src="{{ $produk->foto_depan == 'Belum di isi' ? asset('images/Upload.png') : asset('assets/image/customers/produk/' . $produk->foto_depan) }}"
                                         alt="">
                                 </div>
                                 <label class="block">
@@ -110,7 +110,7 @@
                             <div>
                                 <div>
                                     <img id="foto-belakang" class="w-full h-[250px] object-cover"
-                                        src="{{ $produk->foto_belakang == 'Belum di isi' ? asset('images/Upload.png') : asset('assets/image/customers/produk/' . $produk->foto_belakang)  }}"
+                                        src="{{ $produk->foto_belakang == 'Belum di isi' ? asset('images/Upload.png') : asset('assets/image/customers/produk/' . $produk->foto_belakang) }}"
                                         alt="">
                                 </div>
                                 <label class="block">
@@ -141,12 +141,12 @@
                             <div>
                                 <div>
                                     <img id="foto-kiri" class="w-full h-[250px] object-cover"
-                                        src="{{ $produk->foto_kiri == 'Belum di isi' ? asset('images/Upload.png') : asset('assets/image/customers/produk/' . $produk->foto_kiri)}}"
+                                        src="{{ $produk->foto_kiri == 'Belum di isi' ? asset('images/Upload.png') : asset('assets/image/customers/produk/' . $produk->foto_kiri) }}"
                                         alt="">
                                 </div>
                                 <label class="block">
-                                    <input id="foto_kiri" type="file" name="foto_kiri"
-                                        value="{{ old('foto_kiri') }}" onchange="previewImageFotoKiri(event)"
+                                    <input id="foto_kiri" type="file" name="foto_kiri" value="{{ old('foto_kiri') }}"
+                                        onchange="previewImageFotoKiri(event)"
                                         class="block w-full text-sm text-gray-500
                                   file:me-4 file:py-2 file:px-4
                                   file:rounded-lg file:border-0
