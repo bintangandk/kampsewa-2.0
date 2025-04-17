@@ -15,48 +15,48 @@ class DashboardCustController extends Controller
     {
         $this->middleware('cust');
     }
-    public function index()
+    public function index($id_user)
     {
-        try {
-            // $id_user_dec = Crypt::decrypt($id_user);
-
-            // $pemasukan_dua_tahun_lalu = Pemasukan::where('id_user', $id_user_dec)
-            //     ->whereYear('created_at', Carbon::now()->subYears(2)->year)->where('sumber', 'Penyewaan')
-            //     ->sum('nominal');
-
-            // $pemasukan_tahun_ini = Pemasukan::where('id_user', $id_user_dec)
-            //     ->whereYear('created_at', Carbon::now()->year)->where('sumber', 'Penyewaan')
-            //     ->sum('nominal');
-
-            // $pemasukan_tahun_lalu = Pemasukan::where('id_user', $id_user_dec)
-            //     ->whereYear('created_at', Carbon::now()->subYear()->year)->where('sumber', 'Penyewaan')
-            //     ->sum('nominal');
-
-            // if ($pemasukan_tahun_lalu != 0) {
-            //     $kenaikan_persentase = (($pemasukan_tahun_ini - $pemasukan_tahun_lalu) / abs($pemasukan_tahun_lalu)) * 100;
-            //     $kenaikan_persentase = min($kenaikan_persentase, 100);
-            // } else {
-            //     $kenaikan_persentase = 0;
-            // }
-
-            // if ($pemasukan_dua_tahun_lalu != 0) {
-            //     $kenaikan_persentase_dua_tahun_lalu = (($pemasukan_tahun_lalu - $pemasukan_dua_tahun_lalu) / abs($pemasukan_dua_tahun_lalu)) * 100;
-            //     $kenaikan_persentase_dua_tahun_lalu = min($kenaikan_persentase_dua_tahun_lalu, 100);
-            // } else {
-            //     $kenaikan_persentase_dua_tahun_lalu = 0;
-            // }
 
 
-            return view('customers.menu-dashboard-cust.dashboard')->with([
-                'title' => 'Dashboard | Customer',
-                // 'pemasukan_tahun_ini' => $pemasukan_tahun_ini,
-                // 'pemasukan_tahun_lalu' => $pemasukan_tahun_lalu,
-                // 'id' => $id_user_dec,
-                // 'persentase_perbandingan_pertahun' => $kenaikan_persentase,
-                // 'persentase_perbandingan_pertahun_dua_tahun_lalu' => $kenaikan_persentase_dua_tahun_lalu,
-            ]);
-        } catch (\Exception $e) {
-            Log::error($e->getMessage());
-        }
+
+        // $p = Crypt::decrypt($id_user);
+
+
+        // $pemasukan_dua_tahun_lalu = Pemasukan::where('id_user', $id_user_dec)
+        //     ->whereYear('created_at', Carbon::now()->subYears(2)->year)->where('sumber', 'Penyewaan')
+        //     ->sum('nominal');
+
+        // $pemasukan_tahun_ini = Pemasukan::where('id_user', $id_user_dec)
+        //     ->whereYear('created_at', Carbon::now()->year)->where('sumber', 'Penyewaan')
+        //     ->sum('nominal');
+
+        // $pemasukan_tahun_lalu = Pemasukan::where('id_user', $id_user_dec)
+        //     ->whereYear('created_at', Carbon::now()->subYear()->year)->where('sumber', 'Penyewaan')
+        //     ->sum('nominal');
+
+        // if ($pemasukan_tahun_lalu != 0) {
+        //     $kenaikan_persentase = (($pemasukan_tahun_ini - $pemasukan_tahun_lalu) / abs($pemasukan_tahun_lalu)) * 100;
+        //     $kenaikan_persentase = min($kenaikan_persentase, 100);
+        // } else {
+        //     $kenaikan_persentase = 0;
+        // }
+
+        // if ($pemasukan_dua_tahun_lalu != 0) {
+        //     $kenaikan_persentase_dua_tahun_lalu = (($pemasukan_tahun_lalu - $pemasukan_dua_tahun_lalu) / abs($pemasukan_dua_tahun_lalu)) * 100;
+        //     $kenaikan_persentase_dua_tahun_lalu = min($kenaikan_persentase_dua_tahun_lalu, 100);
+        // } else {
+        //     $kenaikan_persentase_dua_tahun_lalu = 0;
+        // }
+
+
+        return view('customers.menu-dashboard-cust.dashboard')->with([
+            'title' => 'Dashboard | Customer',
+            // 'pemasukan_tahun_ini' => $pemasukan_tahun_ini,
+            // 'pemasukan_tahun_lalu' => $pemasukan_tahun_lalu,
+            // 'id' => $id_user_dec,
+            // 'persentase_perbandingan_pertahun' => $kenaikan_persentase,
+            // 'persentase_perbandingan_pertahun_dua_tahun_lalu' => $kenaikan_persentase_dua_tahun_lalu,
+        ]);
     }
 }

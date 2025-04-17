@@ -353,14 +353,14 @@ class ProdukController extends Controller
         $ratings = RatingProduk::where('id_produk', $id_product_decrypt)->get();
 
         $userRatings = RatingProduk::join('users', 'rating_produk.id_user', '=', 'users.id')
-        ->select('rating_produk.*', 'users.name as user_name', 'users.foto')
-        ->where('rating_produk.id_produk', $id_product_decrypt)
-        ->get();
+            ->select('rating_produk.*', 'users.name as user_name', 'users.foto')
+            ->where('rating_produk.id_produk', $id_product_decrypt)
+            ->get();
 
         $total_ulasan = RatingProduk::join('users', 'rating_produk.id_user', '=', 'users.id')
-        ->select('rating_produk.*', 'users.name as user_name')
-        ->where('rating_produk.id_produk', $id_product_decrypt)
-        ->count();
+            ->select('rating_produk.*', 'users.name as user_name')
+            ->where('rating_produk.id_produk', $id_product_decrypt)
+            ->count();
 
         return view('customers.menu-produk.detail-produk')->with([
             'title' => 'Detail Produk',
@@ -404,84 +404,89 @@ class ProdukController extends Controller
 
     public function updateProdukPut($id_produk, Request $request)
     {
-        try {
-            // Validasi data input
-            $validatedData = $request->validate([
-                'nama_produk' => 'required|string|max:255',
-                'deskripsi_produk' => 'required|string',
-                'kategori_produk_update' => 'required|string|max:255',
-                'foto_depan' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048',
-                'foto_belakang' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048',
-                'foto_kiri' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048',
-                'foto_kanan' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048',
-                'variants' => 'required|array',
-                'variants.*.warna' => 'required|string|max:255',
-                'variants.*.sizes' => 'nullable|array',
-                'variants.*.sizes.*.ukuran' => 'required|string|max:255',
-                'variants.*.sizes.*.stok' => 'required|integer|min:0',
-                'variants.*.sizes.*.harga_sewa' => 'required|integer|min:0',
-            ]);
 
-            // Update data produk
-            $produk = Produk::findOrFail($id_produk);
-            $produk->nama = $validatedData['nama_produk'];
-            $produk->deskripsi = $validatedData['deskripsi_produk'];
-            $produk->kategori = $validatedData['kategori_produk_update'];
+        // dd($request->all());
+        // Validasi data input
+        $validatedData = $request->validate([
+            'nama_produk' => 'required|string|max:255',
+            'deskripsi_produk' => 'required|string',
+            'kategori_produk_update' => 'required|string|max:255',
+            'foto_depan' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048',
+            'foto_belakang' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048',
+            'foto_kiri' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048',
+            'foto_kanan' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048',
+            'variants' => 'required|array',
+            'variants.*.warna' => 'required|string|max:255',
+            'variants.*.sizes' => 'nullable|array',
+            'variants.*.sizes.*.ukuran' => 'required|string|max:255',
+            'variants.*.sizes.*.stok' => 'required|integer|min:0',
+            'variants.*.sizes.*.harga_sewa' => 'required|integer|min:0',
+        ]);
 
-            Log::info('Kategori Produk: ' . $request->input('kategori_produk_update'));
+        // Update data produk
+        $produk = Produk::findOrFail($id_produk);
+        $produk->nama = $validatedData['nama_produk'];
+        $produk->deskripsi = $validatedData['deskripsi_produk'];
+        $produk->kategori = $request['kategori_produk_update'];
 
-            // Handle foto uploads
-            $fotoFields = ['foto_depan', 'foto_belakang', 'foto_kiri', 'foto_kanan'];
-            foreach ($fotoFields as $field) {
-                if ($request->hasFile($field)) {
-                    $file = $request->file($field);
-                    $filename = time() . '_' . $file->getClientOriginalName();
-                    $file->move(public_path('assets/image/customers/produk/'), $filename);
-                    $produk->$field = $filename; // Menggunakan $filename bukan $filePath
-                }
+        // try {
+        // Log::info('Kategori Produk: ' . $request->input('kategori_produk_update'));
+
+        // Handle foto uploads
+        $fotoFields = ['foto_depan', 'foto_belakang', 'foto_kiri', 'foto_kanan'];
+        foreach ($fotoFields as $field) {
+            if ($request->hasFile($field)) {
+                $file = $request->file($field);
+                $filename = time() . '_' . $file->getClientOriginalName();
+                $file->move(public_path('assets/image/customers/produk/'), $filename);
+                $produk->$field = $filename; // Menggunakan $filename bukan $filePath
             }
-
-            $produk->save();
-
-            // Sinkronisasi varian dan detail varian
-            $existingVariantIds = [];
-            foreach ($request->input('variants') as $variantData) {
-                $variant = VariantProduk::updateOrCreate(
-                    ['id_produk' => $id_produk, 'warna' => $variantData['warna']],
-                    ['warna' => $variantData['warna']]
-                );
-                $existingVariantIds[] = $variant->id;
-
-                $existingDetailVariantIds = [];
-                if (isset($variantData['sizes'])) {
-                    foreach ($variantData['sizes'] as $detailVariantData) {
-                        $detailVariant = DetailVariantProduk::updateOrCreate(
-                            ['id_variant_produk' => $variant->id, 'ukuran' => $detailVariantData['ukuran']],
-                            [
-                                'ukuran' => $detailVariantData['ukuran'],
-                                'stok' => $detailVariantData['stok'],
-                                'harga_sewa' => $detailVariantData['harga_sewa']
-                            ]
-                        );
-                        $existingDetailVariantIds[] = $detailVariant->id;
-                    }
-                }
-
-                // Hapus detail varian yang tidak ada di input
-                DetailVariantProduk::where('id_variant_produk', $variant->id)
-                    ->whereNotIn('id', $existingDetailVariantIds)
-                    ->delete();
-            }
-
-            // Hapus varian yang tidak ada di input
-            VariantProduk::where('id_produk', $id_produk)
-                ->whereNotIn('id', $existingVariantIds)
-                ->delete();
-
-            Alert::toast('Produk berhasil di update!', 'success');
-            return back();
-        } catch (\Exception $error) {
-            Log::error('Error :' . $error->getMessage());
         }
+
+        $produk->save();
+
+        // dd($produk->kategori);
+
+
+        // Sinkronisasi varian dan detail varian
+        $existingVariantIds = [];
+        foreach ($request->input('variants') as $variantData) {
+            $variant = VariantProduk::updateOrCreate(
+                ['id_produk' => $id_produk, 'warna' => $variantData['warna']],
+                ['warna' => $variantData['warna']]
+            );
+            $existingVariantIds[] = $variant->id;
+
+            $existingDetailVariantIds = [];
+            if (isset($variantData['sizes'])) {
+                foreach ($variantData['sizes'] as $detailVariantData) {
+                    $detailVariant = DetailVariantProduk::updateOrCreate(
+                        ['id_variant_produk' => $variant->id, 'ukuran' => $detailVariantData['ukuran']],
+                        [
+                            'ukuran' => $detailVariantData['ukuran'],
+                            'stok' => $detailVariantData['stok'],
+                            'harga_sewa' => $detailVariantData['harga_sewa']
+                        ]
+                    );
+                    $existingDetailVariantIds[] = $detailVariant->id;
+                }
+            }
+
+            // Hapus detail varian yang tidak ada di input
+            DetailVariantProduk::where('id_variant_produk', $variant->id)
+                ->whereNotIn('id', $existingDetailVariantIds)
+                ->delete();
+        }
+
+        // Hapus varian yang tidak ada di input
+        VariantProduk::where('id_produk', $id_produk)
+            ->whereNotIn('id', $existingVariantIds)
+            ->delete();
+
+        Alert::toast('Produk berhasil di update!', 'success');
+        return back();
+        // } catch (\Exception $error) {
+        //     Log::error('Error :' . $error->getMessage());
+        // }
     }
 }
