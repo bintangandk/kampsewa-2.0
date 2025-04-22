@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use PhpParser\Node\Stmt\Switch_;
+use Carbon\Carbon;
 
 class TransaksiController extends Controller
 {
@@ -331,111 +332,129 @@ class TransaksiController extends Controller
     public function riwayat(Request $request)
     {
         try {
-            // parameter riwayat berdasarkan nama tab bar UI Flutter
-            // belum-bayar(Belum Bayar), pengambilan(Pengambilan),
-            // berlangsung(Berlangsung), selesai(Selesai), dibatalkan(Dibatalkan)
+            // Validasi parameter
             $tipe_riwayat = $request->query('tipe_riwayat');
             $id_user = $request->query('id_user');
-            if (!in_array($tipe_riwayat, ['belum-bayar', 'pengambilan', 'berlangsung', 'selesai', 'dibatalkan'])) {
+            
+            if (!$tipe_riwayat || !$id_user) {
                 return response()->json([
                     'message' => 'error',
-                    'error' => 'Invalid tipe_riwayat atau tipe riwayat tidak ada!'
+                    'error' => 'Parameter tipe_riwayat dan id_user wajib diisi!'
                 ], 400);
             }
-            $query = User::leftJoin('penyewaan', 'users.id', '=', 'penyewaan.id_user')
-                ->leftJoin('detail_penyewaan', 'penyewaan.id', '=', 'detail_penyewaan.id_penyewaan')
-                ->leftJoin('pembayaran_penyewaan', 'penyewaan.id', '=', 'pembayaran_penyewaan.id_penyewaan')
-                ->leftJoin('produk', 'detail_penyewaan.id_produk', '=', 'produk.id')
-                ->leftJoin('users as store_user', 'produk.id_user', '=', 'store_user.id')
-                ->leftJoin('rating_produk', 'produk.id', '=', 'rating_produk.id_produk')
-                ->select(
-                    'users.id as id_user',
-                    'penyewaan.id as id_penyewaan',
-                    'detail_penyewaan.id as id_detail_penyewaan',
-                    'store_user.name_store',
-                    'produk.nama as nama_produk',
-                    'produk.foto_depan as foto_produk',
-                    'detail_penyewaan.qty as qty',
-                    DB::raw("CONCAT('Size ', detail_penyewaan.ukuran, ' / Warna ', detail_penyewaan.warna_produk) as deskripsi_produk"),
-                    'detail_penyewaan.ukuran',
-                    'detail_penyewaan.warna_produk as warna',
-                    DB::raw(
-                        "CASE
-                        WHEN DATEDIFF(penyewaan.tanggal_selesai, penyewaan.tanggal_mulai) = 1 THEN CONCAT(DATEDIFF(penyewaan.tanggal_selesai, penyewaan.tanggal_mulai), ' Hari')
-                        ELSE CONCAT(DATEDIFF(penyewaan.tanggal_selesai, penyewaan.tanggal_mulai), ' Hari')
-                    END as durasi"
-                    ),
-                    'pembayaran_penyewaan.status_pembayaran',
-                    DB::raw('AVG(rating_produk.rating) as rating'),
-                    'detail_penyewaan.subtotal as harga',
-                    'pembayaran_penyewaan.total_pembayaran',
-                )->where('users.id', $id_user);
-            if ($tipe_riwayat === 'belum-bayar') {
-                $query->where('penyewaan.status_penyewaan', 'Pending')->where('pembayaran_penyewaan.status_pembayaran', 'Belum lunas');
-            } elseif ($tipe_riwayat === 'pengambilan') {
-                $query->where('penyewaan.status_penyewaan', 'Pending')->where('pembayaran_penyewaan.status_pembayaran', 'Lunas');
-            } else if ($tipe_riwayat === 'berlangsung') {
-                $query->where('penyewaan.status_penyewaan', 'Aktif')->where('pembayaran_penyewaan.status_pembayaran', 'Lunas');
-            } else if ($tipe_riwayat === 'selesai') {
-                $query->where('penyewaan.status_penyewaan', 'Selesai')->where('pembayaran_penyewaan.status_pembayaran', 'Lunas');
-            } else if ($tipe_riwayat === 'dibatalkan') {
-                $query->where('penyewaan.status_penyewaan', 'Dibatalkan');
-            }
-            $query->groupBy(
-                'users.id',
-                'penyewaan.id',
-                'detail_penyewaan.id',
-                'store_user.name_store',
-                'produk.nama',
-                'produk.foto_depan',
-                'detail_penyewaan.qty',
-                'detail_penyewaan.ukuran',
-                'detail_penyewaan.warna_produk',
-                'penyewaan.tanggal_selesai',
-                'penyewaan.tanggal_mulai',
-                'pembayaran_penyewaan.status_pembayaran',
-                'pembayaran_penyewaan.total_pembayaran',
-                'detail_penyewaan.subtotal'
-            );
-            $result = $query->get();
-            $data_pertama = $result->first();
-            if (!$data_pertama) {
+
+            $validTipeRiwayat = ['belum-bayar', 'pengambilan', 'berlangsung', 'selesai', 'dibatalkan'];
+            if (!in_array($tipe_riwayat, $validTipeRiwayat)) {
                 return response()->json([
                     'message' => 'error',
-                    'error' => 'Tidak ada data terkait!'
-                ], 404);
+                    'error' => 'Invalid tipe_riwayat. Harus salah satu dari: ' . implode(', ', $validTipeRiwayat)
+                ], 400);
             }
-            $total_produk_lainnya = DB::table('detail_penyewaan')
-                ->where('detail_penyewaan.id_penyewaan', $data_pertama->id_penyewaan)
-                ->count() - 1;
+
+            // Query utama untuk penyewaan
+            $penyewaans = Penyewaan::with([
+                    'pembayaran',
+                    'details' => function($query) {
+                        $query->orderBy('id')
+                              ->with(['produk.storeUser', 'produk.ratings']);
+                    }
+                ])
+                ->where('id_user', $id_user)
+                ->where(function($query) use ($tipe_riwayat) {
+                    $this->applyStatusFilter($query, $tipe_riwayat);
+                })
+                ->orderBy('created_at', 'desc')
+                ->get();
+
+            // Format response
+            $responseData = $this->formatResponseData($penyewaans);
+
             return response()->json([
                 'message' => 'success',
-                'response' => [
-                    'id' => $data_pertama->id_user,
-                    'id_penyewaan' => $data_pertama->id_penyewaan,
-                    'id_detail_penyewaan' => $data_pertama->id_detail_penyewaan,
-                    'nama_toko' => $data_pertama->name_store,
-                    'nama_produk' => $data_pertama->nama_produk,
-                    'foto_produk' => $data_pertama->foto_produk,
-                    'qty' => $data_pertama->qty,
-                    'deskripsi_produk' => $data_pertama->deskripsi_produk,
-                    'ukuran' => $data_pertama->ukuran,
-                    'warna' => $data_pertama->warna,
-                    'qty_produk_lain' => $total_produk_lainnya,
-                    'rating' => $data_pertama->rating,
-                    'subtotal_harga' => $data_pertama->harga,
-                    'total_pesanan' => $data_pertama->total_pembayaran,
-                    'durasi' => $data_pertama->durasi,
-                    'status_transaksi' => $data_pertama->status_pembayaran,
-                ],
+                'response' => $responseData
             ], 200);
+
         } catch (\Exception $error) {
-            Log::error($error->getMessage());
+            Log::error('Riwayat API Error: ' . $error->getMessage());
             return response()->json([
                 'message' => 'error',
-                'error' => $error->getMessage()
+                'error' => 'Terjadi kesalahan server. Silakan coba lagi nanti.'
             ], 500);
         }
+    }
+
+    private function applyStatusFilter($query, $tipe_riwayat)
+    {
+        switch ($tipe_riwayat) {
+            case 'belum-bayar':
+                $query->where('status_penyewaan', 'Pending')
+                      ->whereHas('pembayaran', function($q) {
+                          $q->where('status_pembayaran', 'Belum lunas');
+                      });
+                break;
+            case 'pengambilan':
+                $query->where('status_penyewaan', 'Pending')
+                      ->whereHas('pembayaran', function($q) {
+                          $q->where('status_pembayaran', 'Lunas');
+                      });
+                break;
+            case 'berlangsung':
+                $query->where('status_penyewaan', 'Aktif')
+                      ->whereHas('pembayaran', function($q) {
+                          $q->where('status_pembayaran', 'Lunas');
+                      });
+                break;
+            case 'selesai':
+                $query->where('status_penyewaan', 'Selesai')
+                      ->whereHas('pembayaran', function($q) {
+                          $q->where('status_pembayaran', 'Lunas');
+                      });
+                break;
+            case 'dibatalkan':
+                $query->where('status_penyewaan', 'Dibatalkan');
+                break;
+        }
+    }
+
+    private function formatResponseData($penyewaans)
+    {
+        return $penyewaans->map(function($penyewaan) {
+            $firstDetail = $penyewaan->details->first();
+            if (!$firstDetail) return null;
+            
+            $produk = $firstDetail->produk;
+            $storeUser = $produk->storeUser;
+
+            // Hitung rating rata-rata dari semua produk dalam penyewaan
+            $rating = $penyewaan->details->flatMap(function($detail) {
+                return $detail->produk->ratings->pluck('rating');
+            })->avg();
+
+            return [
+                'id' => $penyewaan->id_user,
+                'id_penyewaan' => $penyewaan->id,
+                'id_detail_penyewaan' => $firstDetail->id,
+                'nama_toko' => $storeUser->name_store,
+                'nama_produk' => $produk->nama,
+                'foto_produk' => $produk->foto_depan,
+                'qty' => $firstDetail->qty,
+                'deskripsi_produk' => "Size {$firstDetail->ukuran} / Warna {$firstDetail->warna_produk}",
+                'ukuran' => $firstDetail->ukuran,
+                'warna' => $firstDetail->warna_produk,
+                'qty_produk_lain' => $penyewaan->details->count() - 1,
+                'rating' => (float) $rating,
+                'subtotal_harga' => (float) $firstDetail->subtotal,
+                'total_pesanan' => (float) ($penyewaan->pembayaran->total_pembayaran ?? 0),
+                'durasi' => $this->calculateDuration($penyewaan->tanggal_mulai, $penyewaan->tanggal_selesai),
+                'status_transaksi' => $penyewaan->pembayaran->status_pembayaran ?? 'Belum lunas',
+            ];
+        })->filter()->values()->toArray();
+    }
+
+    private function calculateDuration($startDate, $endDate)
+    {
+        $days = Carbon::parse($startDate)->diffInDays(Carbon::parse($endDate));
+        return "$days Hari";
     }
 
     public function bayarSekarang(Request $request)
