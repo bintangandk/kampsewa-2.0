@@ -216,29 +216,31 @@ class TransaksiMenuController extends Controller
                 'kembalian_pembayaran' => 'required|integer',
                 'kurang_pembayaran' => 'required|integer',
                 'total_pembayaran' => 'required|integer',
-                'jaminan_sewa' => 'required|string',
+                'jaminan_sewa' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
             ]);
 
-            // Update data pada table pembayaran_penyewaan
-            $pembayaran_penyewaan = PembayaranPenyewaan::where('id_penyewaan', $id_penyewaan)->update([
-                'jaminan_sewa' => $validatedData['jaminan_sewa'],
-                'jumlah_pembayaran' => $validatedData['jumlah_pembayaran'],
-                'kembalian_pembayaran' => $validatedData['kembalian_pembayaran'],
-                'kurang_pembayaran' => $validatedData['kurang_pembayaran'],
-                'total_pembayaran' => $validatedData['total_pembayaran'],
-                'status_pembayaran' => 'Lunas',
-            ]);
+            // Proses upload file jaminan
+            $jaminanSewa = request()->file('jaminan_sewa');
+            $jaminanSewaName = time() . '_jaminan.' . $jaminanSewa->getClientOriginalExtension();
+            $jaminanSewa->move(public_path('assets/image/customers/jaminan/'), $jaminanSewaName);
 
-            if ($pembayaran_penyewaan) {
-                Alert::toast('Berhasil menyimpan pembayaran!', 'success');
-                return redirect()->back();
-            }
-            Alert::toast('Gagal menyimpan silahkan ulangi lagi!', 'warning');
+            // Tambahkan nama file ke array data yang akan diupdate
+            $validatedData['jaminan_sewa'] = $jaminanSewaName;
+
+            // Tentukan status pembayaran
+            $validatedData['status_pembayaran'] = $validatedData['kurang_pembayaran'] > 0 ? 'Belum Lunas' : 'Lunas';
+
+            // Update langsung dengan query builder
+            PembayaranPenyewaan::where('id_penyewaan', $id_penyewaan)->update($validatedData);
+
+            Alert::toast('Berhasil menyimpan pembayaran!', 'success');
             return redirect()->back();
         } catch (\Exception $e) {
-            return $e->getMessage();
+            Alert::toast('Gagal menyimpan pembayaran: ' . $e->getMessage(), 'error');
+            return redirect()->back();
         }
     }
+
 
     public function confirmOrderMasuk($id_penyewaan, $id_user, $parameter)
     {
