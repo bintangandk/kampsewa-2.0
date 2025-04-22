@@ -176,13 +176,13 @@
                                     <img class="w-[80px] h-[80px] object-cover rounded-lg"
                                         src="{{ asset('assets/image/customers/produk/' . $produk->produk_foto) }}"
                                         alt="{{ $produk->produk_nama }}">
-                                        <img class="w-[80px] h-[80px] object-cover rounded-lg"
+                                    <img class="w-[80px] h-[80px] object-cover rounded-lg"
                                         src="{{ asset('assets/image/customers/produk/' . $produk->foto_belakang) }}"
                                         alt="{{ $produk->produk_nama }}">
-                                        <img class="w-[80px] h-[80px] object-cover rounded-lg"
+                                    <img class="w-[80px] h-[80px] object-cover rounded-lg"
                                         src="{{ asset('assets/image/customers/produk/' . $produk->foto_kiri) }}"
                                         alt="{{ $produk->produk_nama }}">
-                                        <img class="w-[80px] h-[80px] object-cover rounded-lg"
+                                    <img class="w-[80px] h-[80px] object-cover rounded-lg"
                                         src="{{ asset('assets/image/customers/produk/' . $produk->foto_kanan) }}"
                                         alt="{{ $produk->produk_nama }}">
                                 </div>
@@ -240,10 +240,11 @@
                 <div class="bg-orange-500/20 mt-4 mb-4 p-2 rounded-lg w-fit font-medium text-orange-500">Total harus
                     dibayarkan
                     client anda Rp. {{ number_format($harus_dibayar, 0, ',', '.') }}</div>
+                {{-- @dump($data->id_penyewaan) --}}
                 <div class="--input-pembayaran">
                     <form id="form-pembayaran-cod" class="flex flex-col gap-6"
                         action="{{ route('menu-transaksi.input-pembayaran-cod', ['id_penyewaan' => $data->id_penyewaan]) }}"
-                        method="POST">
+                        method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
                         <input type="hidden" id="harus_dibayar" value="{{ $harus_dibayar }}">
@@ -286,11 +287,11 @@
                             </div>
                             <div class="--input-total-pembayaran">
                                 <label class="block text-gray-700 text-sm font-bold mb-2" for="">
-                                    Nomor KTP / Lainnya Untuk Jaminan
+                                    Jaminan Sewa
                                 </label>
                                 <input id="jaminan_sewa" name="jaminan_sewa"
                                     class="-mt-3 shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                    type="text" placeholder="No. KTP / Lainnya">
+                                    type="file" placeholder="No. KTP / Lainnya">
                             </div>
                         </div>
                         <button id="simpan-pembayaran"
@@ -317,7 +318,7 @@
                             Order</button></div>
                 </form>
             </div>
-            @elseif ($data->status_penyewaan == 'Pengembalian')
+        @elseif ($data->status_penyewaan == 'Pengembalian')
             <div class="--component-terima shadow-box-shadow-8 p-4 rounded-lg">
                 <p class="font-medium text-[14px] mb-2 text-center">Jika dirasa sudah memenuhi anda maka tekan tombol
                     terima
@@ -330,7 +331,8 @@
                     @method('PUT')
                     <div class="w-full flex justify-center"><button id="terima-order"
                             {{ $data->status_pembayaran == 'Belum lunas' ? 'disabled' : '' }}
-                            class="p-3 w-1/2 rounded-full {{ $data->status_pembayaran == 'Belum lunas' ? 'opacity-45' : '' }} bg-[#F6D91F] border-black border-2 font-medium text-black">Terima Pengembalian Client</button></div>
+                            class="p-3 w-1/2 rounded-full {{ $data->status_pembayaran == 'Belum lunas' ? 'opacity-45' : '' }} bg-[#F6D91F] border-black border-2 font-medium text-black">Terima
+                            Pengembalian Client</button></div>
                 </form>
             </div>
         @endif
