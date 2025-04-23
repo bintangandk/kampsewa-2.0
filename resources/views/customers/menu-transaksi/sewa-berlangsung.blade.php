@@ -23,7 +23,7 @@
                     <div class="--filter-search relative flex">
                         <input type="search" value="{{ $search }}" name="search"
                             class="shadow-box-shadow-11 rounded-lg bg-white appearance-none px-6 py-2"
-                            placeholder="Cari nama...enter" aria-label="Search" id="exampleFormControlInput3"
+                            placeholder="Cari transaksi" aria-label="Search" id="exampleFormControlInput3"
                             aria-describedby="button-addon3" />
                     </div>
                 </form>
