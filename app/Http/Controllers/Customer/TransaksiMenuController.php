@@ -105,6 +105,9 @@ class TransaksiMenuController extends Controller
                 return response()->json(['data' => $result]);
             }
 
+
+            // dump($id_user_decrypt);
+
             return view('customers.menu-transaksi.home-transaksi')->with([
                 'title' => 'Order Masuk',
                 'id_user' => $id_user_decrypt,
@@ -345,6 +348,8 @@ class TransaksiMenuController extends Controller
         if ($request->ajax()) {
             return response()->json(['data' => $result]);
         }
+
+        // dump($result);
 
         return view('customers.menu-transaksi.sewa-berlangsung')->with([
             'title' => 'Sewa Berlangsung',

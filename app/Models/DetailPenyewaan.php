@@ -17,4 +17,14 @@ class DetailPenyewaan extends Model
         'qty',
         'subtotal',
     ];
+
+    public function produk()
+    {
+        return $this->belongsTo(Produk::class, 'id_produk');
+    }
+
+    public function penyewaan()
+    {
+        return $this->belongsTo(Penyewaan::class, 'id_penyewaan');
+    }
 }

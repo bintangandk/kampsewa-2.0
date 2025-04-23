@@ -2,7 +2,7 @@
 @section('customer-content')
     <div class="--container px-10 py-5 w-full h-auto flex flex-col mobile-max:px-5 mobile-max:py-5 gap-4">
         <div class="--header">
-            <h2 class="az-dashboard-title">Hi, Selamat Pagi Agung!</h2>
+            <h2 class="az-dashboard-title">Hi, Selamat Pagi {{ session('nama_lengkap') }}</h2>
             <p class="az-dashboard-text">Lihat dahulu informasi dashboard anda.</p>
         </div>
         <div class="--component-awal grid grid-cols-2 gap-4 w-full h-auto mobile-max:grid-cols-1">
@@ -16,28 +16,28 @@
                             </div>
                             <div class="--total-nominal flex items-center gap-6">
                                 <div class="--tahun-ini">
-                                    <p class="text-[14px] text-[#808995]">Tahun Kemarin - 2023</p>
+                                    <p class="text-[14px] text-[#808995]">Tahun Kemarin - {{ date('Y') - 1 }}</p>
                                     <p class="text-[18px] small-desktop:text-[16px] mobile-max:font-medium font-bold">Rp.
-                                        430.550.240</p>
+                                        {{-- {{ number_format($totalKemarin, 0, ',', '.') }}</p> --}}
                                     <div class="flex items-center gap-1 mt-1">
                                         <p
                                             class="p-1 rounded-full bg-[#D8EDDC] w-[22px] h-[22px] flex items-center justify-center">
                                             <i class="text-[#00823E] text-[16px] font-bold bi bi-arrow-up-short"></i>
                                         </p>
-                                        <p class="text-[#00823E] text-[14px] font-medium">+20.5%</p>
+                                        {{-- <p class="text-[#00823E] text-[14px] font-medium">+20.5%</p> --}}
                                     </div>
                                     otiih
                                 </div>
                                 <div class="--tahun-sebelumnya">
-                                    <p class="text-[14px] text-[#808995]">Tahun Saat ini - 2024</p>
+                                    <p class="text-[14px] text-[#808995]">Tahun Saat ini - {{ date('Y') }}</p>
                                     <p class="text-[18px] small-desktop:text-[16px] mobile-max:font-medium font-bold">Rp.
-                                        265.606.245</p>
+                                        {{-- {{ number_format($totalSekarang, 0, ',', '.') }}</p> --}}
                                     <div class="flex items-center gap-1 mt-1">
                                         <p
                                             class="p-1 rounded-full bg-[#D8EDDC] w-[22px] h-[22px] flex items-center justify-center">
                                             <i class="text-[#00823E] text-[16px] font-bold bi bi-arrow-up-short"></i>
                                         </p>
-                                        <p class="text-[#00823E] text-[14px] font-medium">+14.5%</p>
+                                        {{-- <p class="text-[#00823E] text-[14px] font-medium">+14.5%</p> --}}
                                     </div>
                                 </div>
                             </div>
@@ -69,21 +69,22 @@
                             </div>
                             <div class="--total-nominal flex items-center gap-6">
                                 <div class="--tahun-ini">
-                                    <p class="text-[14px] text-[#808995]">Bulan Kemarin - Mei</p>
+                                    <p class="text-[14px] text-[#808995]">Bulan Kemarin -
+                                        {{ date('F', mktime(0, 0, 0, date('m') - 1, 1)) }}</p>
                                     <p class="text-[18px] small-desktop:text-[16px] mobile-max:font-medium font-bold">Rp.
-                                        430.550.240</p>
+                                        {{-- {{ number_format($totalKemarinbulanlalu, 0, ',', '.') }}</p> --}}
                                     <div class="flex items-center gap-1 mt-1">
                                         <p
                                             class="p-1 rounded-full bg-[#D8EDDC] w-[22px] h-[22px] flex items-center justify-center">
                                             <i class="text-[#00823E] text-[16px] font-bold bi bi-arrow-up-short"></i>
                                         </p>
-                                        <p class="text-[#00823E] text-[14px] font-medium">+20.5%</p>
+                                        <p class="text-[#00823E] text-[14px] font-medium"></p>
                                     </div>
                                 </div>
                                 <div class="--tahun-sebelumnya">
-                                    <p class="text-[14px] text-[#808995]">Bulan Saat ini - April</p>
+                                    <p class="text-[14px] text-[#808995]">Bulan Saat ini - {{ date('F') }}</p>
                                     <p class="text-[18px] small-desktop:text-[16px] mobile-max:font-medium font-bold">Rp.
-                                        265.606.245</p>
+                                        {{ number_format($totalSekarangbulanini, 0, ',', '.') }}</p>
                                     <div class="flex items-center gap-1 mt-1">
                                         <p
                                             class="p-1 rounded-full bg-[#D8EDDC] w-[22px] h-[22px] flex items-center justify-center">
