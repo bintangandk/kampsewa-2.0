@@ -157,13 +157,13 @@
             </div>
         </div>
         <div class="--table bg-white flex flex-col gap-4">
-            <div class="--action flex items-center gap-2">
+            {{-- <div class="--action flex items-center gap-2">
                 <div class="--button">
                     <button id="tambah-pemasukan-customer" class="gradient-1 text-white px-4 py-2 rounded-lg"><i
                             class="bi bi-plus-lg"></i> Tambah
                         Pemasukan</button>
                 </div>
-            </div>
+            </div> --}}
             <div class="overflow-scroll px-0 w-full">
                 <table class="w-full min-w-max table-auto text-left">
                     <thead>
