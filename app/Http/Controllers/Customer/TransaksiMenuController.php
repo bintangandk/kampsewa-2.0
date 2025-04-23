@@ -455,4 +455,10 @@ class TransaksiMenuController extends Controller
             Log::error($error->getMessage());
         }
     }
+
+    public function orderOffline(){
+        return view('customers.menu-transaksi.offline-transaksi')->with([
+            'title' => 'Order Offline'
+        ]);
+    }
 }
