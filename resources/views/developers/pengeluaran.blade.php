@@ -53,13 +53,13 @@
         <hr>
         <div class="--component-card w-full h-auto flex flex-col gap-6">
             <div class="--wrapper-cetak-filter w-auto h-auto flex gap-2 items-center">
-                <div class="--cetak-button">
+                {{-- <div class="--cetak-button">
                     <div><button
                             class="cursor-pointer gap-2 flex items-center px-4 py-2 bg-gradient-to-r from-[#B381F4] to-[#5038ED] rounded-[5px]">
                             <p class="mt-1"><i class="text-white fi fi-rr-inbox-out"></i></p>
                             <p class="text-white text-[14px] font-medium">Export</p>
                         </button></div>
-                </div>
+                </div> --}}
                 {{-- <div class="--filter-button">
                     <div><button
                             class="cursor-pointer gap-2 flex items-center px-4 py-2 bg-gradient-to-r from-[#283048] to-[#859398] rounded-[5px]">
@@ -161,7 +161,7 @@
                 </div>
             </div>
         </div>
-        <div class="--componeent-card-two grid grid-cols-2 gap-4">
+        {{-- <div class="--componeent-card-two grid grid-cols-2 gap-4">
             <div class="--card-total-pengeluaran-minggu-ini-total-pengeluaran-hari-ini w-full h-auto flex flex-col gap-2">
                 <div
                     class="--total-pengeluaran-minggu-ini relative flex flex-col justify-between gap-4 w-full h-full text-white p-4 rounded-[20px] m-auto bg-[#222222]">
@@ -241,7 +241,7 @@
                     @endfor
                 </div>
             </div>
-        </div>
+        </div> --}}
         <div class="--component-kedua">
             <div class="--title text-[18px] font-bold">Data Pengeluaran</div>
             {{-- todo wrapper total search filter --}}
@@ -341,8 +341,8 @@
                     </div>
                 </div>
             </div>
-              {{-- todo wrapper btn delete all, btn export data bentuk ke excel --}}
-              <div class="flex items-center gap-4 w-full">
+            {{-- todo wrapper btn delete all, btn export data bentuk ke excel --}}
+            <div class="flex items-center gap-4 w-full">
                 {{-- todo btn export --}}
                 <div><button
                         class="cursor-pointer gap-2 flex items-center px-4 py-2 bg-gradient-to-r from-[#B381F4] to-[#5038ED] rounded-[5px]">
@@ -366,8 +366,7 @@
                                 <tr>
                                     <th scope="col" class="px-3 py-3 max-w-[50px]">
                                         <div class="inline-flex items-center">
-                                            <label
-                                                class="relative flex items-center p-3 rounded-full cursor-pointer"
+                                            <label class="relative flex items-center p-3 rounded-full cursor-pointer"
                                                 htmlFor="check">
                                                 <input type="checkbox"
                                                     class="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border-2 border-gray-500 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-gray-900 checked:bg-gray-900 checked:before:bg-gray-900 hover:before:opacity-10"
@@ -375,8 +374,8 @@
                                                 <span
                                                     class="absolute text-white transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5"
-                                                        viewBox="0 0 20 20" fill="currentColor"
-                                                        stroke="currentColor" stroke-width="1">
+                                                        viewBox="0 0 20 20" fill="currentColor" stroke="currentColor"
+                                                        stroke-width="1">
                                                         <path fill-rule="evenodd"
                                                             d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
                                                             clip-rule="evenodd"></path>
@@ -395,7 +394,7 @@
                                         Deskripi
                                     </th>
                                     <th scope="col" class="px-6 py-3">
-                                    Nominal
+                                        Nominal
                                     </th>
                                     <th scope="col" class="px-6 py-3">
                                         Aksi
@@ -407,17 +406,15 @@
                                     <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                         <td class="px-3">
                                             <div class="inline-flex items-center">
-                                                <label
-                                                    class="relative flex items-center p-3 rounded-full cursor-pointer"
+                                                <label class="relative flex items-center p-3 rounded-full cursor-pointer"
                                                     htmlFor="check">
                                                     <input type="checkbox"
                                                         class="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border-2 border-gray-500 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-gray-900 checked:bg-gray-900 checked:before:bg-gray-900 hover:before:opacity-10"
                                                         id="check" />
                                                     <span
                                                         class="absolute text-white transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
-                                                        <svg xmlns="http://www.w3.org/2000/svg"
-                                                            class="h-3.5 w-3.5" viewBox="0 0 20 20"
-                                                            fill="currentColor" stroke="currentColor"
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5"
+                                                            viewBox="0 0 20 20" fill="currentColor" stroke="currentColor"
                                                             stroke-width="1">
                                                             <path fill-rule="evenodd"
                                                                 d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
