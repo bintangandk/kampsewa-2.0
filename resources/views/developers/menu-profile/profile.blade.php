@@ -69,7 +69,7 @@
                     </div>
                 </div>
             </div>
-            <div class="--card-detail-data-input-pemasukan w-full max-h-[800px]">
+            {{-- <div class="--card-detail-data-input-pemasukan w-full max-h-[800px]">
                 <div class="w-full h-full overflow-y-auto sub-wrapper flex flex-col gap-4 p-4 bg-white rounded-[20px] shadow-box-shadow-11">
                     <div class="--title">
                         <div class="w-[20%] h-[8px] rounded-full bg-blue-400"></div>
@@ -104,8 +104,8 @@
                         @endfor
                     </div>
                 </div>
-            </div>
-            <div class="--card-detail-data-input-pengeluaran w-full h-full max-h-[800px]">
+            </div> --}}
+            {{-- <div class="--card-detail-data-input-pengeluaran w-full h-full max-h-[800px]">
                 <div class="w-full h-full overflow-y-auto sub-wrapper flex flex-col gap-4 p-4 bg-white rounded-[20px] shadow-box-shadow-11">
                     <div class="--title">
                         <div class="w-[20%] h-[8px] rounded-full bg-red-400"></div>
@@ -140,7 +140,7 @@
                         @endfor
                     </div>
                 </div>
-            </div>
+            </div> --}}
         </div>
     </div>
 @endsection
