@@ -1,0 +1,167 @@
+@extends('layouts.customers.layouts-customer')
+@section('customer-content')
+    <div class="--container sm:flex sm:flex-col sm:gap-8 w-full h-auto px-6 py-5 sm:px-8 sm:py-5">
+        <div class="--title">
+            <h1 class="xl:text-[28px] font-black">Menu Order Offline/Di tempat</h1>
+        </div>
+        <div class="--action flex xl:items-center w-full xl:justify-between">
+            <ul class="--menu flex wrap gap-4 items-center">
+                {{-- <li><a class="{{ $title === 'Order Masuk' ? 'border-b-2 border-b-[#FF3F42] text-[#FF3F42]' : '' }} hover:border-b-2 hover:border-b-[#FF3F42] hover:text-[#FF3F42] p-2 xl:text-[16px] font-medium text-[#D1CDD0]"
+                        href="">Order Masuk</a></li>
+                <li><a class="{{ $title === 'Sewa Berlangsung' ? 'border-b-2 border-b-[#FF3F42] text-[#FF3F42]' : '' }} hover:border-b-2 hover:border-b-[#FF3F42] hover:text-[#FF3F42] p-2 xl:text-[16px] font-medium text-[#D1CDD0]"
+                        href="{{ route('menu-transaksi.sewa-berlangsung', ['id_user' => Crypt::encrypt(session('id_user'))]) }}">Sewa
+                        Berlangsung</a></li>
+                <li><a class="{{ $title === 'Selesai Order' ? 'border-b-2 border-b-[#FF3F42] text-[#FF3F42]' : '' }} hover:border-b-2 hover:border-b-[#FF3F42] hover:text-[#FF3F42] p-2 xl:text-[16px] font-medium text-[#D1CDD0]"
+                        href="{{ route('menu-transaksi.order-selesai', ['id_user' => Crypt::encrypt(session('id_user'))]) }}">Selesai</a>
+                </li> --}}
+                <div class="--button">
+                    <button id="#" class="gradient-1 text-white px-4 py-2 rounded-lg"><i
+                            class="bi bi-plus-lg"></i> Tambah Transaksi</button>
+                </div>
+            </ul>
+            <div class="--filter flex items-center gap-6">
+                <form method="GET">
+                    <div class="--filter-search relative flex">
+                        <input type="search" value="" name="search"
+                            class="shadow-box-shadow-11 rounded-lg bg-white appearance-none px-6 py-2"
+                            placeholder="Cari nama...enter" aria-label="Search" id="exampleFormControlInput3"
+                            aria-describedby="button-addon3" />
+                    </div>
+                </form>
+                <form method="GET" id="form_filter_tanggal">
+                    <div class="--filter-tanggal flex xl:items-center xl:gap-4">
+                        <div class="--tangga-awal">
+                            <input id="tanggal_awal" type="date"
+                                class="shadow-box-shadow-11 cursor-pointer rounded-lg bg-white appearance-none px-6 py-2">
+                        </div>
+                        <div class="bg-[#191919] w-[3px] h-[15px] rounded-full rotate-90"></div>
+                        <div class="--tangga-akhir">
+                            <input id="tanggal_akhir" type="date"
+                                class="shadow-box-shadow-11 cursor-pointer rounded-lg bg-white appearance-none px-6 py-2">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="--table bg-white w-full">
+            <table class="w-full bg-white border-spacing-2">
+                <thead class="bg-white sticky top-0 z-20 shadow-box-shadow-11">
+                    <tr class="text-left">
+                        <th class="px-4 py-2">Client</th>
+                        <th class="px-4 py-2">Tanggal Dimulai</th>
+                        <th class="px-4 py-2">Tanggal Selesai</th>
+                        <th class="px-4 py-2">Status</th>
+                        <th class="px-4 py-2">Pembayaran</th>
+                        <th class="px-4 py-2">Metode</th>
+                        <th class="px-4 py-2">Produk</th>
+                        <th class="px-4 py-2">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white">
+                    <tr>
+                        <td colspan="7" style="height: 15px;"></td>
+                    </tr>
+                        <tr
+                            class="shadow-box-shadow-8 p-2 hover:scale-105 hover:z-10 text-xs transition transform duration-200 text-[14px] font-medium">
+                            <td class="px-4 py-2 flex items-center gap-2">
+                                <img class="w-[40px] h-[40px] rounded-[10px] object-cover"
+                                    src="{{ asset('assets/image/developers/agung-kurniawan.jpg') }}"
+                                    alt="">
+                                <div>Junior</div>
+                            </td>
+                            <td class="px-4 py-2">14-04-2025</td>
+                            <td class="px-4 py-2">19-04-2025</td>
+                            <td class="px-4 py-2">
+                                <p class="py-1 px-2 rounded-md bg-amber-500/20 text-amber-900 text-center">
+                                    Aktif
+                                </p>
+                            </td>
+                            <td class="px-4 py-2">
+                                <p
+                                    class="py-1 px-2 rounded-md  bg-green-500/20 text-green-900 text-center">
+                                    Lunas
+                                    </p>
+                            </td>
+                            <td class="px-4 py-2">Transfer</td>
+                            <td class="px-4 py-2 flex items-center gap-2">
+                                <img class="w-[40px] h-[40px] rounded-[10px] object-cover"
+                                    src="{{ asset('assets/image/customers/produk/') }}" alt="">
+                                <div class="max-w-[250px] line-clamp-1"></div>
+                            </td>
+                            <td class="px-4 py-2"><a
+                                    href="#"
+                                    class="py-1 px-2 rounded-md bg-blue-500/20 text-blue-900 text-center hover:text-blue-900">Detail</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="7" style="height: 15px;"></td>
+                        </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {{-- <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Ambil nilai dari query string jika tersedia
+            var filterTglAwal = "{{ request()->input('tanggal_awal') }}";
+            var filterTglAkhir = "{{ request()->input('tanggal_akhir') }}";
+            var searchQuery = "{{ request()->input('search') }}";
+
+            // Set nilai input tanggal saat halaman dimuat
+            document.getElementById('tanggal_awal').value = filterTglAwal || '';
+            document.getElementById('tanggal_akhir').value = filterTglAkhir || '';
+
+            // Set nilai input search saat halaman dimuat
+            if (searchQuery) {
+                document.querySelector('input[name="search"]').value = searchQuery;
+            }
+
+            // Event listener untuk input tanggal_awal
+            document.getElementById('tanggal_awal').addEventListener('change', function() {
+                submitForm();
+            });
+
+            // Event listener untuk input tanggal_akhir
+            document.getElementById('tanggal_akhir').addEventListener('change', function() {
+                submitForm();
+            });
+
+            // Fungsi untuk men-submit form
+            function submitForm() {
+                // Ambil nilai dari input tanggal_awal, tanggal_akhir dan search
+                var tanggalAwal = document.getElementById('tanggal_awal').value;
+                var tanggalAkhir = document.getElementById('tanggal_akhir').value;
+                var search = document.querySelector('input[name="search"]').value;
+
+                // Bangun URL dengan parameter query yang sesuai
+                var url = window.location.pathname + '?'; // Ambil path URL saat ini
+                if (tanggalAwal) {
+                    url += 'tanggal_awal=' + tanggalAwal + '&';
+                }
+                if (tanggalAkhir) {
+                    url += 'tanggal_akhir=' + tanggalAkhir + '&';
+                }
+                if (search) {
+                    url += 'search=' + encodeURIComponent(search);
+                }
+
+                // Redirect halaman dengan URL yang baru dibangun
+                window.location.href = url;
+            }
+
+            // Event listener untuk input search
+            document.querySelector('input[name="search"]').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault(); // Prevent form submission on Enter key press
+                    submitForm();
+                }
+            });
+
+            // Update the form action when the search button is clicked
+            document.getElementById('button-addon3').addEventListener('click', function() {
+                submitForm();
+            });
+        });
+    </script> --}}
+@endsection

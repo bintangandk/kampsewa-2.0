@@ -2,7 +2,7 @@
 @section('customer-content')
     <div class="--container px-10 py-5 w-full h-auto flex flex-col mobile-max:px-5 mobile-max:py-5 gap-4">
         <div class="--header">
-            <h2 class="az-dashboard-title">Hi, Selamat Pagi Agung!</h2>
+            <h2 class="az-dashboard-title">Hi, Selamat Pagi {{ session('nama_lengkap') }}</h2>
             <p class="az-dashboard-text">Lihat dahulu informasi dashboard anda.</p>
         </div>
         <div class="--component-awal grid grid-cols-2 gap-4 w-full h-auto mobile-max:grid-cols-1">
@@ -16,25 +16,28 @@
                             </div>
                             <div class="--total-nominal flex items-center gap-6">
                                 <div class="--tahun-ini">
-                                    <p class="text-[14px] text-[#808995]">Tahun Kemarin - 2023</p>
-                                    <p class="text-[18px] small-desktop:text-[16px] mobile-max:font-medium font-bold">Rp. 430.550.240</p>
+                                    <p class="text-[14px] text-[#808995]">Tahun Kemarin - {{ date('Y') - 1 }}</p>
+                                    <p class="text-[18px] small-desktop:text-[16px] mobile-max:font-medium font-bold">Rp.
+                                        {{-- {{ number_format($totalKemarin, 0, ',', '.') }}</p> --}}
                                     <div class="flex items-center gap-1 mt-1">
                                         <p
                                             class="p-1 rounded-full bg-[#D8EDDC] w-[22px] h-[22px] flex items-center justify-center">
                                             <i class="text-[#00823E] text-[16px] font-bold bi bi-arrow-up-short"></i>
                                         </p>
-                                        <p class="text-[#00823E] text-[14px] font-medium">+20.5%</p>
+                                        {{-- <p class="text-[#00823E] text-[14px] font-medium">+20.5%</p> --}}
                                     </div>
+                                    otiih
                                 </div>
                                 <div class="--tahun-sebelumnya">
-                                    <p class="text-[14px] text-[#808995]">Tahun Saat ini - 2024</p>
-                                    <p class="text-[18px] small-desktop:text-[16px] mobile-max:font-medium font-bold">Rp. 265.606.245</p>
+                                    <p class="text-[14px] text-[#808995]">Tahun Saat ini - {{ date('Y') }}</p>
+                                    <p class="text-[18px] small-desktop:text-[16px] mobile-max:font-medium font-bold">Rp.
+                                        {{-- {{ number_format($totalSekarang, 0, ',', '.') }}</p> --}}
                                     <div class="flex items-center gap-1 mt-1">
                                         <p
                                             class="p-1 rounded-full bg-[#D8EDDC] w-[22px] h-[22px] flex items-center justify-center">
                                             <i class="text-[#00823E] text-[16px] font-bold bi bi-arrow-up-short"></i>
                                         </p>
-                                        <p class="text-[#00823E] text-[14px] font-medium">+14.5%</p>
+                                        {{-- <p class="text-[#00823E] text-[14px] font-medium">+14.5%</p> --}}
                                     </div>
                                 </div>
                             </div>
@@ -66,19 +69,22 @@
                             </div>
                             <div class="--total-nominal flex items-center gap-6">
                                 <div class="--tahun-ini">
-                                    <p class="text-[14px] text-[#808995]">Bulan Kemarin - Mei</p>
-                                    <p class="text-[18px] small-desktop:text-[16px] mobile-max:font-medium font-bold">Rp. 430.550.240</p>
+                                    <p class="text-[14px] text-[#808995]">Bulan Kemarin -
+                                        {{ date('F', mktime(0, 0, 0, date('m') - 1, 1)) }}</p>
+                                    <p class="text-[18px] small-desktop:text-[16px] mobile-max:font-medium font-bold">Rp.
+                                        {{-- {{ number_format($totalKemarinbulanlalu, 0, ',', '.') }}</p> --}}
                                     <div class="flex items-center gap-1 mt-1">
                                         <p
                                             class="p-1 rounded-full bg-[#D8EDDC] w-[22px] h-[22px] flex items-center justify-center">
                                             <i class="text-[#00823E] text-[16px] font-bold bi bi-arrow-up-short"></i>
                                         </p>
-                                        <p class="text-[#00823E] text-[14px] font-medium">+20.5%</p>
+                                        <p class="text-[#00823E] text-[14px] font-medium"></p>
                                     </div>
                                 </div>
                                 <div class="--tahun-sebelumnya">
-                                    <p class="text-[14px] text-[#808995]">Bulan Saat ini - April</p>
-                                    <p class="text-[18px] small-desktop:text-[16px] mobile-max:font-medium font-bold">Rp. 265.606.245</p>
+                                    <p class="text-[14px] text-[#808995]">Bulan Saat ini - {{ date('F') }}</p>
+                                    <p class="text-[18px] small-desktop:text-[16px] mobile-max:font-medium font-bold">Rp.
+                                        {{ number_format($totalSekarangbulanini, 0, ',', '.') }}</p>
                                     <div class="flex items-center gap-1 mt-1">
                                         <p
                                             class="p-1 rounded-full bg-[#D8EDDC] w-[22px] h-[22px] flex items-center justify-center">
@@ -120,7 +126,8 @@
                                 <img src="https://tecdn.b-cdn.net/img/new/standard/nature/184.jpg" alt="" />
                             </a>
                             <div class="p-2 text-surface dark:text-white">
-                                <h5 class="mb-2 text-[16px] small-desktop:line-clamp-1 font-medium leading-tight">Tenda Gunung REI Co-op Half Dome</h5>
+                                <h5 class="mb-2 text-[16px] small-desktop:line-clamp-1 font-medium leading-tight">Tenda
+                                    Gunung REI Co-op Half Dome</h5>
                                 <p class="text-[12px] line-clamp-3 small-desktop:line-clamp-2">
                                     Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minus itaque, tenetur enim
                                     aliquid amet voluptate alias doloribus! Excepturi impedit sapiente, alias rerum
@@ -133,7 +140,8 @@
             </div>
         </div>
 
-        <div class="--component-ketiga w-full h-auto small-desktop:grid-cols-2 grid grid-cols-3 gap-4 mobile-max:grid-cols-1">
+        <div
+            class="--component-ketiga w-full h-auto small-desktop:grid-cols-2 grid grid-cols-3 gap-4 mobile-max:grid-cols-1">
             <div class="--card-user-sewa-berlangsung p-4 shadow-box-shadow-11 flex flex-col justify-between rounded-[15px]">
                 <div class="--header">
                     <h1 class="text-[22px] font-medium">Penyewa Berlangsung</h1>
@@ -155,10 +163,12 @@
                             </div>
                         </div>
                     @endfor
-                    <p class="text-center w-full"><a href="" class="text-[14px] font-medium hover:underline">6 Penyewa Lainnya...</a></p>
+                    <p class="text-center w-full"><a href="" class="text-[14px] font-medium hover:underline">6
+                            Penyewa Lainnya...</a></p>
                 </div>
             </div>
-            <div class="--card-user-sewa-berlangsung p-4 shadow-box-shadow-11 flex flex-col justify-between rounded-[15px]">
+            <div
+                class="--card-user-sewa-berlangsung p-4 shadow-box-shadow-11 flex flex-col justify-between rounded-[15px]">
                 <div class="--header">
                     <h1 class="text-[22px] font-medium">Riwayat Penyewa</h1>
                     <p class="text-[14px] mb-4">List penyewa yang pernah melakukan transaksi dengan anda.</p>
@@ -175,14 +185,17 @@
                                 </div>
                             </div>
                             <div class="--bagian-2">
-                                <p class="text-[12px] font-medium py-1 px-2 bg-[#00823E] text-white rounded-full">Selesai</p>
+                                <p class="text-[12px] font-medium py-1 px-2 bg-[#00823E] text-white rounded-full">Selesai
+                                </p>
                             </div>
                         </div>
                     @endfor
-                    <p class="text-center w-full"><a href="" class="text-[14px] font-medium hover:underline">6 Penyewa Lainnya...</a></p>
+                    <p class="text-center w-full"><a href="" class="text-[14px] font-medium hover:underline">6
+                            Penyewa Lainnya...</a></p>
                 </div>
             </div>
-            <div class="--card-user-sewa-berlangsung p-4 shadow-box-shadow-11 flex flex-col justify-between rounded-[15px]">
+            <div
+                class="--card-user-sewa-berlangsung p-4 shadow-box-shadow-11 flex flex-col justify-between rounded-[15px]">
                 <div class="--header">
                     <h1 class="text-[22px] font-medium">Denda Penyewa</h1>
                     <p class="text-[14px] mb-4">Penyewa terkena denda Terlambat dari penyewaan yang sedang berlangsung.</p>
@@ -199,11 +212,14 @@
                                 </div>
                             </div>
                             <div class="--bagian-2">
-                                <p class="text-[12px] font-medium small-desktop:text-[10px] small-desktop:font-normal py-1 px-2 bg-[#F04444] text-white rounded-full whitespace-nowrap">2 Hari</p>
+                                <p
+                                    class="text-[12px] font-medium small-desktop:text-[10px] small-desktop:font-normal py-1 px-2 bg-[#F04444] text-white rounded-full whitespace-nowrap">
+                                    2 Hari</p>
                             </div>
                         </div>
                     @endfor
-                    <p class="text-center w-full"><a href="" class="text-[14px] font-medium hover:underline">6 Penyewa Lainnya...</a></p>
+                    <p class="text-center w-full"><a href="" class="text-[14px] font-medium hover:underline">6
+                            Penyewa Lainnya...</a></p>
                 </div>
             </div>
         </div>

@@ -16,4 +16,19 @@ class Penyewaan extends Model
         'pesan',
         'status_penyewaan',
     ];
+
+    public function details()
+    {
+        return $this->hasMany(DetailPenyewaan::class, 'id_penyewaan');
+    }
+
+    public function pembayaran()
+    {
+        return $this->hasOne(PembayaranPenyewaan::class, 'id_penyewaan');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'id_user');
+    }
 }

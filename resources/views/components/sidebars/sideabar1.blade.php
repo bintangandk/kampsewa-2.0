@@ -40,14 +40,14 @@
                                 class="ml-2 text-sm tracking-wide truncate {{ $title == 'Dashboard | Developer Kamp Sewa' ? 'text-white' : '' }}">Dashboard</span>
                         </a>
                     </li>
-                    <a href="{{ route('notification.index') }}"
+                    {{-- <a href="{{ route('notification.index') }}"
                         class="{{ $title == 'Dashboard | Notification' ? 'bg-gradient-to-bl from-[#B381F4] to-[#5038ED]' : '' }} rounded-[20px] relative flex flex-row items-center h-11 focus:outline-none hover:bg-gradient-to-bl hover:from-[#B381F4] hover:to-[#5038ED] text-gray-600 hover:text-white border-transparent pr-6">
                         <span class="inline-flex justify-center mt-1 items-center ml-4">
                             <i class="fi fi-rr-bell {{ $title == 'Dashboard | Notification' ? 'text-white' : '' }}"></i>
                         </span>
                         <span
                             class="ml-2 {{ $title == 'Dashboard | Notification' ? 'text-white' : '' }} text-sm tracking-wide truncate">Notifications</span>
-                    </a>
+                    </a> --}}
                     </li>
 
                     {{-- todo MENU CUSTOMER --}}
@@ -67,7 +67,7 @@
                                 class="ml-2 text-sm tracking-wide {{ $title == 'Detail Produk Sedang Disewa' ? 'text-white' : '' }} {{ $title == 'Detail Produk Disewakan' ? 'text-white' : '' }} {{ $title == 'Produk Disewakan' ? 'text-white' : '' }} truncate {{ $title == 'Kelola Pengguna | Developer Kamp Sewa' ? 'text-white' : '' }} {{ $title == 'Detail Pengguna' ? 'text-white' : '' }}">Kelola</span>
                         </a>
                     </li>
-                    <li>
+                    {{-- <li>
                         <a href="{{ route('informasi-pengguna.index') }}"
                             class="{{ $title == 'Informasi Pengguna' ? 'bg-gradient-to-bl from-[#B381F4] to-[#5038ED]' : '' }} relative flex flex-row items-center h-11 rounded-[20px] focus:outline-none hover:bg-gradient-to-bl hover:from-[#B381F4] hover:to-[#5038ED] text-gray-600 hover:text-white border-transparent pr-6">
                             <span
@@ -77,7 +77,7 @@
                             <span
                                 class="{{ $title == 'Informasi Pengguna' ? 'text-white' : '' }} ml-2 text-sm tracking-wide truncate">Informasi</span>
                         </a>
-                    </li>
+                    </li> --}}
 
                     {{-- todo MENU TRANSAKSI --}}
                     <li class="px-5">

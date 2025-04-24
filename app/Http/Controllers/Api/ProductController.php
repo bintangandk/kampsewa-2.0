@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Produk;
+use App\Models\Rekomendasi;
+use GuzzleHttp\Promise\Create;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -179,6 +181,9 @@ class ProductController extends Controller
                 )
                 ->where('produk.id', $parameter);
 
+
+
+
             // Filter berdasarkan warna
             if ($warna) {
                 $filtered_query->where('variant_produk.warna', 'like', '%' . $warna . '%');
@@ -201,17 +206,19 @@ class ProductController extends Controller
                 'message' => 'success',
                 'all_variants' => $all_variants,
                 'filtered_results' => $filtered_results,
+
             ], 200);
         } catch (\Exception $error) {
             Log::error($error->getMessage());
-            return response()->json(['error' => 'Terjadi kesalahan saat mengambil detail produk'], 500);
+            return response()->json(['error' => $error->getMessage()], 500);
         }
     }
 
 
     // fungsi untuk get detail produk
-    public function getDetailProduct($parameter)
+    public function getDetailProduct($parameter, $id_user)
     {
+
         try {
             $warna = request()->query('warna');
             $ukuran = request()->query('ukuran');
@@ -264,10 +271,14 @@ class ProductController extends Controller
                     'message' => 'Data tidak ditemukan!',
                 ], 404);
             }
-
+            $rekomendasi = new Rekomendasi();
+            $rekomendasi->id_produk = $parameter;
+            $rekomendasi->id_user = $id_user;
+            $rekomendasi->save();
             return response()->json([
                 'message' => 'success',
                 'detail_produk' => $all_variants,
+
             ], 200);
         } catch (\Exception $error) {
             Log::error($error->getMessage());

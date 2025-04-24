@@ -7,7 +7,8 @@
         <div class="--action flex xl:items-center w-full xl:justify-between">
             <ul class="--menu flex wrap gap-4 items-center">
                 <li><a class="{{ $title === 'Order Masuk' ? 'border-b-2 border-b-[#FF3F42] text-[#FF3F42]' : '' }} hover:border-b-2 hover:border-b-[#FF3F42] hover:text-[#FF3F42] p-2 xl:text-[16px] font-medium text-[#D1CDD0]"
-                        href="">Order Masuk</a></li>
+                        href="{{ route('menu-transaksi.index', ['id_user' => Crypt::encrypt(session('id_user'))]) }}">Order
+                        Masuk</a></li>
                 <li><a class="{{ $title === 'Sewa Berlangsung' ? 'border-b-2 border-b-[#FF3F42] text-[#FF3F42]' : '' }} hover:border-b-2 hover:border-b-[#FF3F42] hover:text-[#FF3F42] p-2 xl:text-[16px] font-medium text-[#D1CDD0]"
                         href="{{ route('menu-transaksi.sewa-berlangsung', ['id_user' => Crypt::encrypt(session('id_user'))]) }}">Sewa
                         Berlangsung</a></li>
@@ -23,11 +24,11 @@
                     <div class="--filter-search relative flex">
                         <input type="search" value="{{ $search }}" name="search"
                             class="shadow-box-shadow-11 rounded-lg bg-white appearance-none px-6 py-2"
-                            placeholder="Cari nama...enter" aria-label="Search" id="exampleFormControlInput3"
+                            placeholder="Cari transaksi" aria-label="Search" id="exampleFormControlInput3"
                             aria-describedby="button-addon3" />
                     </div>
                 </form>
-                <form method="GET" id="form-filter-order-selesai">
+                {{-- <form method="GET" id="form-filter-order-selesai">
                     <div class="--filter-tanggal flex xl:items-center xl:gap-4">
                         <div class="--filter-dropdown">
                             <div class="w-fit relative">
@@ -42,7 +43,7 @@
                             </div>
                         </div>
                     </div>
-                </form>
+                </form> --}}
             </div>
         </div>
         <div class="--warnging-alert w-fit p-2 rounded-lg bg-orange-500/20 flex items-center gap-2">
@@ -83,7 +84,8 @@
                             <td class="px-4 py-2">{{ Carbon\Carbon::parse($item->tanggal_mulai)->format('d F Y') }}</td>
                             <td class="px-4 py-2">{{ Carbon\Carbon::parse($item->tanggal_selesai)->format('d F Y') }}</td>
                             <td class="px-4 py-2">
-                                <p class="py-1 px-2 rounded-md {{ $item->status_penyewaan == 'Pengembalian' ? 'bg-amber-500/20 text-amber-900' : 'bg-green-500/20 text-green-900' }} text-center">
+                                <p
+                                    class="py-1 px-2 rounded-md {{ $item->status_penyewaan == 'Pengembalian' ? 'bg-amber-500/20 text-amber-900' : 'bg-green-500/20 text-green-900' }} text-center">
                                     {{ $item->status_penyewaan }}</p>
                             </td>
                             <td class="px-4 py-2">
@@ -97,12 +99,13 @@
                                     src="{{ asset('assets/image/customers/produk/' . $item->foto_depan) }}" alt="">
                                 <div class="max-w-[250px] line-clamp-1">{{ $item->nama }}</div>
                             </td>
-                            <td class="px-4 py-2"><a href="{{ route('menu-transaksi.terima-order-masuk', ['id_penyewaan' => Crypt::encrypt($item->id_penyewaan)]) }}"
+                            <td class="px-4 py-2"><a
+                                    href="{{ route('menu-transaksi.terima-order-masuk', ['id_penyewaan' => Crypt::encrypt($item->id_penyewaan)]) }}"
                                     class="py-1 px-2 rounded-md bg-blue-500/20 text-blue-900 text-center hover:text-blue-900">
                                     @if ($item->status_penyewaan == 'Pengembalian')
-                                    ACC
+                                        ACC
                                     @else
-                                    Detail
+                                        Detail
                                     @endif
                                 </a>
                             </td>
@@ -168,6 +171,5 @@
                 submitForm();
             });
         });
-        </script>
-
+    </script>
 @endsection

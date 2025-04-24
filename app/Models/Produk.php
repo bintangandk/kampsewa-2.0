@@ -22,4 +22,23 @@ class Produk extends Model
         'foto_kiri',
         'foto_kanan',
     ];
+
+    public function ratings()
+    {
+        return $this->hasMany(RatingProduk::class, 'id_produk');
+    }
+
+    public function storeUser()
+    {
+        return $this->belongsTo(User::class, 'id_user');
+    }
+    public function detailPenyewaan()
+    {
+        return $this->hasMany(DetailPenyewaan::class, 'id_produk');
+    }
+
+    public function rekomendasi()
+    {
+        return $this->hasMany(Rekomendasi::class, 'id_produk');
+    }
 }

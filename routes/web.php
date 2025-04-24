@@ -76,7 +76,7 @@ Route::get('developer/dashboard/profile/{nama_lengkap}', [ProfileController::cla
 
 
 // -- customer route
-Route::get('/customer/dashboard/home/{id_user?}', [DashboardCustController::class, 'index'])->name('dashboard-cust')->middleware('auth');
+Route::get('/customer/dashboard/home/{id_user}', [DashboardCustController::class, 'index'])->name('dashboard-cust')->middleware('auth');
 
 //-- produk
 Route::get('/customer/dashboard/menu-produk/{id_user}', [ProdukController::class, 'index'])->name('menu-produk.index')->middleware('auth');
@@ -123,6 +123,7 @@ Route::get('customer/dashboard/transaksi/{id_user}', [TransaksiMenuController::c
 Route::get('customer/dashboard/sewa-berlangsung/{id_user}', [TransaksiMenuController::class, 'sewaBerlangsung'])->name('menu-transaksi.sewa-berlangsung')->middleware('auth');
 Route::get('customer/dashboard/denda-transaksi/{id_user}', [TransaksiMenuController::class, 'dendaTransaksi'])->name('menu-transaksi.denda-transaksi')->middleware('auth');
 Route::get('customer/dashboard/order-selesai/{id_user}', [TransaksiMenuController::class, 'orderSelesai'])->name('menu-transaksi.order-selesai')->middleware('auth');
+Route::get('customer/dashboard/order-offline/{id_user}', [TransaksiMenuController::class, 'orderOffline'])->name('menu-transaksi.order-offline')->middleware('auth');
 Route::get('customer/dashboard/transaksi/terima-order-masuk/{id_penyewaan}', [TransaksiMenuController::class, 'terimaOrderMasuk'])->name('menu-transaksi.terima-order-masuk')->middleware('auth');
 Route::put('customer/dashboard/transaksi/input-pembayaran-cod/{id_penyewaan}', [TransaksiMenuController::class, 'inputPembayaranCOD'])->name('menu-transaksi.input-pembayaran-cod')->middleware('auth');
 Route::put('customer/dashboard/transaksi/confirm-order-masuk/{id_penyewaan}/{id_user}/{parameter}', [TransaksiMenuController::class, 'confirmOrderMasuk'])->name('menu-transaksi.confirm-order-masuk')->middleware('auth');
