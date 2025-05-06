@@ -89,7 +89,7 @@
                                 <div class="max-w-[250px] line-clamp-1"></div>
                             </td>
                             <td class="px-4 py-2"><a
-                                    href="#"
+                                    href="{{ route('transaksi-offline.detail-transaksi') }}"
                                     class="py-1 px-2 rounded-md bg-blue-500/20 text-blue-900 text-center hover:text-blue-900">Detail</a>
                             </td>
                         </tr>

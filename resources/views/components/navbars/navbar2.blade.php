@@ -17,7 +17,7 @@
                     <a href="" class="nav-link with-sub"><i class="typcn typcn-shopping-bag"></i> Transaksi</a>
                     <nav class="az-menu-sub">
                         <a href="{{ route('menu-transaksi.index', ['id_user' => Crypt::encrypt(session('id_user'))]) }}" class="nav-link">Konfirmasi Pesanan Online</a>
-                        <a href="{{ route('menu-transaksi.order-offline', ['id_user' => Crypt::encrypt(session('id_user'))]) }}" class="nav-link">Buat Pesanan Offline</a>
+                        <a href="{{ route('transaksi-offline.order-offline', ['id_user' => Crypt::encrypt(session('id_user'))]) }}" class="nav-link">Buat Pesanan Offline</a>
                         <a href="{{ route('buat-iklan.index', ['id_user' => Crypt::encrypt(session('id_user'))]) }}" class="nav-link">Buat Promosi / Iklan</a>
 
                     </nav>
