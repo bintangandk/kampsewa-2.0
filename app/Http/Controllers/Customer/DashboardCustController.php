@@ -53,7 +53,7 @@ class DashboardCustController extends Controller
                     : $pembayaran->jumlah_pembayaran;
             });
     }
-    public function index($id_user)
+    public function index()
     {
 
         $now = Carbon::now();

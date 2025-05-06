@@ -1,4 +1,5 @@
-@extends('customers.menu-dashboard-cust.dashboard')
+{{-- @extends('customers.menu-dashboard-cust.dashboard') --}}
+@extends('layouts.customers.layouts-customer')
 @section('customer-content')
     <div class="--container px-10 mobile-max:py-2 mobile-max:px-5 py-5 flex flex-col gap-8">
         <div class="--wrapper-heading-wrapper-deskripsi-halaman">
@@ -37,7 +38,8 @@
                 </div>
 
                 {{-- todo wrapper search filter --}}
-                <div class="_search-filter w-1/2 mobile-max:w-full items-center mobile-max:flex-col small-desktop:w-full flex gap-[20px]">
+                <div
+                    class="_search-filter w-1/2 mobile-max:w-full items-center mobile-max:flex-col small-desktop:w-full flex gap-[20px]">
                     {{-- todo search --}}
                     <div class="_searrh w-full">
                         <form method="GET" class="w-full">

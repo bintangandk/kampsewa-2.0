@@ -1,6 +1,7 @@
 {{-- ambil turunan design --}}
-@extends('customers.menu-dashboard-cust.dashboard')
+{{-- @extends('customers.menu-dashboard-cust.dashboard') --}}
 {{-- gunakan section dengan nama yang sesuai untuk custom content --}}
+@extends('layouts.customers.layouts-customer')
 @section('customer-content')
     {{-- container utama pembungkus kontent utama --}}
     <div class="--container small-desktop:px-7 small-desktop:py-2 px-10 py-5 flex flex-col gap-8">
@@ -34,7 +35,8 @@
         <hr>
 
         {{-- pembungkus kontent filter dan list produk --}}
-        <div class="--wrapper-filter-wrapper-list-product mobile-max:flex-col mobile-max:gap-10 w-full flex gap-4 items-start h-auto">
+        <div
+            class="--wrapper-filter-wrapper-list-product mobile-max:flex-col mobile-max:gap-10 w-full flex gap-4 items-start h-auto">
             {{-- filter --}}
             <div class="--wrapper-filter max-w-[500px] mobile-max:w-full mobile-max:relative sticky top-4">
                 <form id="formSide" method="GET" class="flex w-full flex-col gap-4">
@@ -104,7 +106,8 @@
                     @else
                         <div class="--card-design grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4">
                             @foreach ($produk as $item)
-                                <a href="{{ route('menu-produk.detail-produk', ['id_produk' => Crypt::encrypt($item->id_produk)]) }}" class="hover:text-black group">
+                                <a href="{{ route('menu-produk.detail-produk', ['id_produk' => Crypt::encrypt($item->id_produk)]) }}"
+                                    class="hover:text-black group">
                                     <div class="--card-item flex flex-col gap-2">
                                         <div class="--header">
                                             <img class="w-[250px] mobile-max:w-full mobile-max:h-full h-[250px] medium-screen:w-[200px] medium-screen:h-[200px] object-cover rounded-[30px]"
@@ -137,13 +140,13 @@
         </div>
     </div>
     <script>
-        document.addEventListener('DOMContentLoaded', function(){
+        document.addEventListener('DOMContentLoaded', function() {
             // Simpan nilai search dan filter_side saat halaman dimuat
             var searchValue = "{{ $search }}";
             var filterSideValue = "{{ $filter_side }}";
 
             // Tombol submit pada formSide
-            document.getElementById('submit').addEventListener('click', function(event){
+            document.getElementById('submit').addEventListener('click', function(event) {
                 event.preventDefault();
                 var formSide = document.getElementById('formSide');
                 var filterRightValue = document.getElementById('filterRight').value;

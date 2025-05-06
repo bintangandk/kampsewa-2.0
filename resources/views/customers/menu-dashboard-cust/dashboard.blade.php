@@ -18,7 +18,7 @@
                                 <div class="--tahun-ini">
                                     <p class="text-[14px] text-[#808995]">Tahun Kemarin - {{ date('Y') - 1 }}</p>
                                     <p class="text-[18px] small-desktop:text-[16px] mobile-max:font-medium font-bold">Rp.
-                                        {{-- {{ number_format($totalKemarin, 0, ',', '.') }}</p> --}}
+                                        {{ number_format($totalKemarin, 0, ',', '.') }}</p>
                                     <div class="flex items-center gap-1 mt-1">
                                         <p
                                             class="p-1 rounded-full bg-[#D8EDDC] w-[22px] h-[22px] flex items-center justify-center">
@@ -31,7 +31,7 @@
                                 <div class="--tahun-sebelumnya">
                                     <p class="text-[14px] text-[#808995]">Tahun Saat ini - {{ date('Y') }}</p>
                                     <p class="text-[18px] small-desktop:text-[16px] mobile-max:font-medium font-bold">Rp.
-                                        {{-- {{ number_format($totalSekarang, 0, ',', '.') }}</p> --}}
+                                        {{ number_format($totalSekarang, 0, ',', '.') }}</p>
                                     <div class="flex items-center gap-1 mt-1">
                                         <p
                                             class="p-1 rounded-full bg-[#D8EDDC] w-[22px] h-[22px] flex items-center justify-center">
@@ -84,7 +84,7 @@
                                 <div class="--tahun-sebelumnya">
                                     <p class="text-[14px] text-[#808995]">Bulan Saat ini - {{ date('F') }}</p>
                                     <p class="text-[18px] small-desktop:text-[16px] mobile-max:font-medium font-bold">Rp.
-                                        {{ number_format($totalSekarangbulanini, 0, ',', '.') }}</p>
+                                        {{-- {{ number_format($totalSekarangbulanini, 0, ',', '.') }}</p> --}}
                                     <div class="flex items-center gap-1 mt-1">
                                         <p
                                             class="p-1 rounded-full bg-[#D8EDDC] w-[22px] h-[22px] flex items-center justify-center">

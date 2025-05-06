@@ -40,6 +40,7 @@
 @endphp
 @extends('layouts.developers.ly-dashboard')
 @section('content')
+    @include('components.modals.tambah-pengeluaran')
     <div class="--container w-full h-auto p-8 flex flex-col gap-6">
         <div class="--component-filter w-full">
             <ul class="flex items-center gap-2">
@@ -73,19 +74,15 @@
                     class="--card-pengeluaran-pertahun bg-white p-4 flex flex-col gap-4 shadow-box-shadow-8 rounded-[20px]">
                     <div class="--header flex items-center justify-between">
                         <div class="--sub-header">
-                            <p class="text-[16px]">Pengeluaran Pertahun - 2024</p>
+                            <p class="text-[16px]">Pengeluaran Pertahun - {{ date('Y') }}</p>
                             <div class="--total-persen flex items-center gap-2">
-                                <p class="text-[24px] font-medium">Rp. 243.550.120,00</p>
-                                <div
-                                    class="--persen flex items-center px-2 py-1 text-[12px] font-medium rounded-full bg-[#F3D1ED] text-[#EF5D5B]">
-                                    <p class="mt-1"><i class="fi fi-rr-arrow-small-up"></i></p>
-                                    <p>+12%</p>
-                                </div>
+                                <p class="text-[24px] font-medium">Rp. {{ number_format($pengeluaran_tahun_ini) }}</p>
+
                             </div>
                         </div>
                         <div class="--filter">
                             <button class="flex items-center px-4 py-1 bg-[#F4F5F7] rounded-full">
-                                <div class="text-[12px] font-medium">Tahun 2024</div>
+                                <div class="text-[12px] font-medium">Tahun {{ date('Y') }}</div>
                                 <div class="mt-1"><i class="text-[14px] fi fi-rr-angle-small-down"></i></div>
                             </button>
                         </div>
@@ -99,8 +96,8 @@
                             <div class="--icon w-[40px] h-[40px] bg-white rounded-full flex items-center justify-center"><i
                                     class="mt-1 text-[20px] fi fi-rr-book-bookmark"></i></div>
                             <div class="--title">
-                                <p class="text-[10px] font-medium">Tahun 2023</p>
-                                <p class="text-[12px] font-bold">Rp. 243.550.120,00</p>
+                                <p class="text-[10px] font-medium">Tahun {{ date('Y', strtotime('-1 year')) }}</p>
+                                <p class="text-[12px] font-bold">Rp. {{ number_format($pengeluaran_tahun_lalu) }}</p>
                             </div>
                         </div>
                         <div
@@ -108,8 +105,8 @@
                             <div class="--icon w-[40px] h-[40px] bg-white rounded-full flex items-center justify-center"><i
                                     class="text-[20px] mt-1 fi fi-rr-folder-open"></i></div>
                             <div class="--title">
-                                <p class="text-[10px] font-medium">Tahun 2022</p>
-                                <p class="text-[12px] font-bold">Rp. 243.550.120,00</p>
+                                <p class="text-[10px] font-medium">Tahun {{ date('Y', strtotime('-2 year')) }}</p>
+                                <p class="text-[12px] font-bold">Rp.{{ number_format($pengeluaran_2tahun_lalu) }}</p>
                             </div>
                         </div>
                     </div>
@@ -118,19 +115,19 @@
                     class="--card-pengeluaran-perbulan bg-white p-4 flex flex-col gap-4 shadow-box-shadow-8 rounded-[20px]">
                     <div class="--header flex items-center justify-between">
                         <div class="--sub-header">
-                            <p class="text-[16px]">Pengeluaran Perbulan - Mei 2024</p>
+                            <p class="text-[16px]">Pengeluaran Perbulan - {{ date('F') }}-{{ date('Y') }}</p>
                             <div class="--total-persen flex items-center gap-2">
-                                <p class="text-[24px] font-medium">Rp. 22.550.120,00</p>
-                                <div
+                                <p class="text-[24px] font-medium">Rp. {{ number_format($total_perbulan_ini) }}</p>
+                                {{-- <div
                                     class="--persen flex items-center px-2 py-1 text-[12px] font-medium rounded-full bg-[#F3D1ED] text-[#EF5D5B]">
                                     <p class="mt-1"><i class="fi fi-rr-arrow-small-up"></i></p>
                                     <p>+12%</p>
-                                </div>
+                                </div> --}}
                             </div>
                         </div>
                         <div class="--filter">
                             <button class="flex items-center px-4 py-1 bg-[#F4F5F7] rounded-full">
-                                <div class="text-[12px] font-medium">Mei</div>
+                                <div class="text-[12px] font-medium">{{ date('F') }}</div>
                                 <div class="mt-1"><i class="text-[14px] fi fi-rr-angle-small-down"></i></div>
                             </button>
                         </div>
@@ -144,8 +141,9 @@
                             <div class="--icon w-[40px] h-[40px] bg-white rounded-full flex items-center justify-center"><i
                                     class="mt-1 text-[20px] fi fi-rr-book-bookmark"></i></div>
                             <div class="--title">
-                                <p class="text-[10px] font-medium">Bulan April 2024</p>
-                                <p class="text-[12px] font-bold">Rp. 243.550.120,00</p>
+                                <p class="text-[10px] font-medium">Bulan {{ date('F', strtotime('-1 month')) }} -
+                                    {{ date('Y') }}</p>
+                                <p class="text-[12px] font-bold">Rp. {{ number_format($total_perbulan_lalu) }}</p>
                             </div>
                         </div>
                         <div
@@ -153,8 +151,9 @@
                             <div class="--icon w-[40px] h-[40px] bg-white rounded-full flex items-center justify-center"><i
                                     class="text-[20px] mt-1 fi fi-rr-folder-open"></i></div>
                             <div class="--title">
-                                <p class="text-[10px] font-medium">Bulan Maret 2024</p>
-                                <p class="text-[12px] font-bold">Rp. 243.550.120,00</p>
+                                <p class="text-[10px] font-medium">Bulan {{ date('F'), strtotime('-2 month') }} -
+                                    {{ date('Y') }}</p>
+                                <p class="text-[12px] font-bold">Rp. {{ number_format($total_2bulan_lalu) }}</p>
                             </div>
                         </div>
                     </div>
@@ -249,7 +248,7 @@
 
                 {{-- todo total users --}}
                 <div class="_total">
-                    <p class="text-[#19191b] text-[14px] font-bold">1.235.134 Customer</p>
+                    {{-- <p class="text-[#19191b] text-[14px] font-bold">1.235.134 Customer</p> --}}
                 </div>
 
                 {{-- todo wrapper search filter --}}
@@ -333,11 +332,9 @@
 
                     {{-- todo untuk tombol tambah data --}}
                     <div class="_btn-tambah-data">
-                        <button onclick="modalHandler(true)"
-                            class="px-4 py-2 gradient-1 cursor-pointer text-white rounded-full">
-                            <div class="_icon-plus"></div>
-                            <span>Tambah Pengeluaran</span>
-                        </button>
+                        <button id="btn-tambah-pengeluaran" class="gradient-1 text-white px-4 py-2 rounded-lg"><i
+                                class="bi bi-plus-lg"></i> Tambah
+                            Pengeluaran</button>
                     </div>
                 </div>
             </div>
@@ -351,10 +348,7 @@
                     </button></div>
                 {{-- todo btn delete all --}}
                 <div>
-                    <button class="px-4 py-2 bg-[#F06D6B] rounded-[5px] flex items-center gap-2">
-                        <p class="mt-1"><i class="text-white fi fi-rr-trash"></i></p>
-                        <p class="text-[14px] font-medium text-white">Hapus</p>
-                    </button>
+
                 </div>
             </div>
             <div class="--table w-full h-auto mt-4">
@@ -364,26 +358,7 @@
                             <thead
                                 class="sticky top-0 z-10 text-xs text-gray-700 uppercase bg-white dark:bg-gray-700 dark:text-gray-400">
                                 <tr>
-                                    <th scope="col" class="px-3 py-3 max-w-[50px]">
-                                        <div class="inline-flex items-center">
-                                            <label class="relative flex items-center p-3 rounded-full cursor-pointer"
-                                                htmlFor="check">
-                                                <input type="checkbox"
-                                                    class="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border-2 border-gray-500 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-gray-900 checked:bg-gray-900 checked:before:bg-gray-900 hover:before:opacity-10"
-                                                    id="check" />
-                                                <span
-                                                    class="absolute text-white transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5"
-                                                        viewBox="0 0 20 20" fill="currentColor" stroke="currentColor"
-                                                        stroke-width="1">
-                                                        <path fill-rule="evenodd"
-                                                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                                            clip-rule="evenodd"></path>
-                                                    </svg>
-                                                </span>
-                                            </label>
-                                        </div>
-                                    </th>
+
                                     <th scope="col" class="px-6 py-3">
                                         Sumber
                                     </th>
@@ -402,50 +377,34 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @for ($i = 0; $i < 20; $i++)
+                                @foreach ($data_pengeluaran as $item)
                                     <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                                        <td class="px-3">
-                                            <div class="inline-flex items-center">
-                                                <label class="relative flex items-center p-3 rounded-full cursor-pointer"
-                                                    htmlFor="check">
-                                                    <input type="checkbox"
-                                                        class="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border-2 border-gray-500 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-gray-900 checked:bg-gray-900 checked:before:bg-gray-900 hover:before:opacity-10"
-                                                        id="check" />
-                                                    <span
-                                                        class="absolute text-white transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5"
-                                                            viewBox="0 0 20 20" fill="currentColor" stroke="currentColor"
-                                                            stroke-width="1">
-                                                            <path fill-rule="evenodd"
-                                                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                                                clip-rule="evenodd"></path>
-                                                        </svg>
-                                                    </span>
-                                                </label>
-                                            </div>
-                                        </td>
+
                                         <td scope="row"
                                             class="px-6 py-4 font-medium text-gray-900 flex items-center gap-2 whitespace-nowrap dark:text-white">
-                                            <p>Layanan Transaksi</p>
+                                            <p>{{ $item->sumber }}</p>
                                         </td>
                                         <td class="px-6 py-4">
                                             <p class="py-2 px-4 w-fit bg-[#F0FDF4] text-[#4ED17E] rounded-full">
-                                                2 November 2024</p>
+                                                {{ $item->created_at }}</p>
                                         </td>
                                         <td class="px-6 py-4 line-clamp-1 max-w-[200px]">
-                                            Transaksi penyewaan antar customer dari aplikasi mobile
+                                            {{ $item->deskripsi }}
                                         </td>
                                         <td class="px-6 py-4">
-                                            Rp. 1.000.000
+                                            Rp. {{ number_format($item->nominal, 2, ',', '.') }}
                                         </td>
                                         <td class="px-6 py-4 flex gap-2 items-center">
-                                            <p><a href=""><i class="text-[16px] bi bi-pen-fill"></i></a>
+                                            <p><button id="btn-ubah-pengeluaran"
+                                                    onclick="ubah_pengeluaran({{ $item }})"><i
+                                                        class="text-[16px] bi bi-pen-fill"></i></button>
                                             </p>
-                                            <p><a href=""><i class="text-[16px] bi bi-trash-fill"></i></a>
+                                            <p><a href="#" onclick="hapus_pengeluaran({{ $item->id }})"><i
+                                                        class="text-[16px] bi bi-trash-fill"></i></a>
                                             </p>
                                         </td>
                                     </tr>
-                                @endfor
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
@@ -453,4 +412,243 @@
             </div>
         </div>
     </div>
+
+
+    <div id="modal-ubah-pengeluaran-customer" class="hidden">
+        <div
+            class="_container w-full h-screen flex justify-center items-center z-20 fixed top-0 left-0 bg-white/0 backdrop-blur-sm">
+            <div
+                class="_card w-[500px] flex flex-col h-[500px] overflow-clip bg-white p-[20px] rounded-[20px] shadow-box-shadow-11">
+                <div class="_header w-full">
+                    <div class="_title flex items-center gap-2">
+                        <div class="w-[35px] h-[35px] rounded-full flex justify-center items-center text-white gradient-1">
+                            <i class="bi bi-currency-bitcoin"></i>
+                        </div>
+                        <span class="text-[16px] font-bold">Ubah Pengeluaran</span>
+                    </div>
+                    <div class="_close"></div>
+                </div>
+                <div class="_body w-full mt-4 flex-grow p-2 overflow-y-auto">
+
+
+
+
+                    <form method="POST" id="form-ubah-pengeluaran"
+                        action="{{ route('keuangan.update-pengeluaran-developer') }}" class="w-full flex flex-col gap-2">
+
+                        {{-- <form method="POST" id="form-tambah-pengeluaran"
+                        action="{{ route('keuangan.tambah-pengeluaran-customer', ['id_user' => Crypt::encrypt(session('id_user'))]) }}"
+                        class="w-full flex flex-col gap-2"> --}}
+                        @csrf
+                        <input type="hidden" name="id_user" value="{{ session('id_user') }}">
+                        <div class="_input w-full">
+                            <label for="fullname">Sumber</label>
+                            <input class="border w-full border-solid rounded-[10px] text-[14px] p-2"
+                                placeholder="Masukkan sumber pemasukan" type="text" id="sumber_pengeluaran_customerr"
+                                name="sumber" required>
+                        </div>
+                        <div class="_input w-full">
+                            <label for="number_phone">Deskripsi</label>
+                            <input class="border w-full border-solid rounded-[10px] text-[14px] p-2"
+                                placeholder="Masukkan deskripsi pemasukan" type="text"
+                                id="deskripsi_pengeluaran_customerr" name="deskripsi" required>
+                        </div>
+                        <div class="_input w-full">
+                            <label for="password">Nominal</label>
+                            <input class="border w-full border-solid rounded-[10px] text-[14px] p-2"
+                                placeholder="Masukkan nominal pemasukan" type="number"
+                                id="nominal_pengeluaran_customerr" name="nominal" required>
+                        </div>
+                        <input type="hidden" name="id" id="id_pengeluaran_customerr">
+
+
+
+                </div>
+                <hr>
+                <div class="_footer w-full p-2 flex gap-2">
+                    <button id="ubah-pengeluaran" class="gradient-1 text-white text-[14px] py-2 px-4 rounded-full"
+                        type="submit">Simpan</button>
+                    <button class="text-[14px] shadow-box-shadow-8 py-2 px-4 rounded-full"
+                        id="cancel-ubah-pengeluaran-web-customer">Cancel</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tambahkan fungsi ubah_pengeluaran
+        function ubah_pengeluaran(item) {
+            const modal = document.getElementById('modal-ubah-pengeluaran-customer');
+
+            // Isi form dengan data yang akan diubah
+            document.getElementById('sumber_pengeluaran_customerr').value = item.sumber;
+            document.getElementById('deskripsi_pengeluaran_customerr').value = item.deskripsi;
+            document.getElementById('nominal_pengeluaran_customerr').value = item.nominal;
+            document.getElementById('id_pengeluaran_customerr').value = item.id;
+
+            // Ubah action form untuk update
+
+
+            // Tampilkan modal
+            modal.style.display = "flex";
+        }
+
+        // Tambahkan event listener untuk modal edit
+        const modalEdit = document.getElementById('modal-ubah-pengeluaran-customer');
+        const cancelEditButton = modalEdit.querySelector('button[id="cancel-ubah-pengeluaran-web-customer"]');
+
+        cancelEditButton.addEventListener('click', () => {
+            modalEdit.style.display = "none";
+        });
+
+        function hapus_pengeluaran(id) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "Jika dihapus, data tidak bisa dikembalikan!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = `/developer/dashboard/keuangan/hapus-pengeluaran/${id}`;
+                }
+            })
+        }
+
+        const modal = document.getElementById('modal-tambah-pengeluaran-customer');
+        const idButton = document.getElementById('btn-tambah-pengeluaran');
+        const submitPemasukan = document.getElementById('tambah-pengeluaran');
+        const formTambahPemasukan = document.getElementById('form-tambah-pengeluaran');
+        const cancelButton = document.getElementById('cancel-tambah-pengeluaran-web-customer');
+
+        function modalHandlerPemasukanCustomer(val) {
+            if (val) {
+                modal.style.display = "flex";
+            } else {
+                modal.style.display = "none";
+            }
+        }
+
+        // function isString
+        function isStringInputPemasukanCustomer(value) {
+            const lettersAndSpacesOnlyRegex = /^[A-Za-z\s]+$/;
+            return lettersAndSpacesOnlyRegex.test(value);
+        }
+
+        // function isNumeric
+        function isNumericPemasukanCustomer(value) {
+            const numbersOnlyRegex = /^[0-9]+$/;
+            return numbersOnlyRegex.test(value)
+        }
+
+        idButton.addEventListener('click', (event) => {
+            modalHandlerPemasukanCustomer(true);
+        });
+
+        submitPemasukan.addEventListener('click', function(event) {
+            event.preventDefault();
+
+            // input tambah-pemasukan-customer.blade.php
+            let sumber = document.getElementById('sumber_pengeluaran_customer').value.trim();
+            let deskripsi = document.getElementById('deskripsi_pengeluaran_customer').value.trim();
+            let nominal = document.getElementById('nominal_pengeluaran_customer').value.trim();
+
+            if (sumber === '') {
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'warning',
+                    title: 'Input Sumber Kosong!',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                });
+                return;
+            } else if (!isStringInputPemasukanCustomer(sumber)) {
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'warning',
+                    title: 'Input Sumber tidak boleh angka!',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                });
+                return;
+            } else if (deskripsi === '') {
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'warning',
+                    title: 'Input Deskripsi Kosong!',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                });
+                return;
+            } else if (nominal === '') {
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'warning',
+                    title: 'Input Nominal Kosong!',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                });
+                return;
+            } else if (!isNumericPemasukanCustomer(nominal)) {
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'warning',
+                    title: 'Input Nominal tidak boleh huruf!',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                });
+                return;
+            }
+            Swal.fire({
+                title: 'Menyimpan data...',
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                onBeforeOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            // Submit formulir setelah penundaan kecil
+            setTimeout(() => {
+                formTambahPemasukan.submit();
+            }, 1000);
+        });
+
+        cancelButton.addEventListener('click', () => {
+            modalHandlerPemasukanCustomer(false);
+        });
+    </script>
 @endsection
