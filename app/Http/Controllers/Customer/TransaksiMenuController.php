@@ -457,8 +457,14 @@ class TransaksiMenuController extends Controller
     }
 
     public function orderOffline(){
-        return view('customers.menu-transaksi.offline-transaksi')->with([
+        return view('customers.transaksi-offline.offline-transaksi')->with([
             'title' => 'Order Offline'
+        ]);
+    }
+
+    public function detailOffline(){
+        return view('customers.transaksi-offline.detail-transaksi')->with([
+            'title' => 'Detail Order Offline'
         ]);
     }
 }
