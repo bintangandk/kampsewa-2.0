@@ -12,28 +12,39 @@
                 <div class="_close"></div>
             </div>
             <div class="_body w-full mt-4 flex-grow p-2 overflow-y-auto">
-                <form method="POST" id="form-tambah-pengeluaran" action="{{ route('keuangan.tambah-pengeluaran-customer', ['id_user' => Crypt::encrypt(session('id_user'))]) }}"
-                    class="w-full flex flex-col gap-2">
-                    @csrf
-                    <input type="hidden" name="id_user" value="{{ session('id_user') }}">
-                    <div class="_input w-full">
-                        <label for="fullname">Sumber</label>
-                        <input class="border w-full border-solid rounded-[10px] text-[14px] p-2"
-                            placeholder="Masukkan sumber pemasukan" type="text" id="sumber_pengeluaran_customer" name="sumber"
-                            required>
-                    </div>
-                    <div class="_input w-full">
-                        <label for="number_phone">Deskripsi</label>
-                        <input class="border w-full border-solid rounded-[10px] text-[14px] p-2"
-                            placeholder="Masukkan deskripsi pemasukan" type="text" id="deskripsi_pengeluaran_customer" name="deskripsi"
-                            required>
-                    </div>
-                    <div class="_input w-full">
-                        <label for="password">Nominal</label>
-                        <input class="border w-full border-solid rounded-[10px] text-[14px] p-2"
-                            placeholder="Masukkan nominal pemasukan" type="number" id="nominal_pengeluaran_customer" name="nominal"
-                            required>
-                    </div>
+
+                @if (Auth::user()->type == '0')
+                    <form method="POST" id="form-tambah-pengeluaran"
+                        action="{{ route('keuangan.tambah-pengeluaran-customer', ['id_user' => Crypt::encrypt(session('id_user'))]) }}"
+                        class="w-full flex flex-col gap-2">
+                    @else
+                        <form method="POST" id="form-tambah-pengeluaran"
+                            action="{{ route('keuangan.tambah-pengeluaran-developer', ['id_user' => Crypt::encrypt(session('id_user'))]) }}"
+                            class="w-full flex flex-col gap-2">
+                @endif
+                {{-- <form method="POST" id="form-tambah-pengeluaran"
+                    action="{{ route('keuangan.tambah-pengeluaran-customer', ['id_user' => Crypt::encrypt(session('id_user'))]) }}"
+                    class="w-full flex flex-col gap-2"> --}}
+                @csrf
+                <input type="hidden" name="id_user" value="{{ session('id_user') }}">
+                <div class="_input w-full">
+                    <label for="fullname">Sumber</label>
+                    <input class="border w-full border-solid rounded-[10px] text-[14px] p-2"
+                        placeholder="Masukkan sumber pemasukan" type="text" id="sumber_pengeluaran_customer"
+                        name="sumber" required>
+                </div>
+                <div class="_input w-full">
+                    <label for="number_phone">Deskripsi</label>
+                    <input class="border w-full border-solid rounded-[10px] text-[14px] p-2"
+                        placeholder="Masukkan deskripsi pemasukan" type="text" id="deskripsi_pengeluaran_customer"
+                        name="deskripsi" required>
+                </div>
+                <div class="_input w-full">
+                    <label for="password">Nominal</label>
+                    <input class="border w-full border-solid rounded-[10px] text-[14px] p-2"
+                        placeholder="Masukkan nominal pemasukan" type="number" id="nominal_pengeluaran_customer"
+                        name="nominal" required>
+                </div>
                 </form>
             </div>
             <hr>
@@ -41,7 +52,7 @@
                 <button id="tambah-pengeluaran"
                     class="gradient-1 text-white text-[14px] py-2 px-4 rounded-full">Simpan</button>
                 <button class="text-[14px] shadow-box-shadow-8 py-2 px-4 rounded-full"
-                 id="cancel-tambah-pengeluaran-web-customer">Cancel</button>
+                    id="cancel-tambah-pengeluaran-web-customer">Cancel</button>
             </div>
         </div>
     </div>

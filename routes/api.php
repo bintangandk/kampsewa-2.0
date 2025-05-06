@@ -21,6 +21,10 @@
     Route::get('/chart-penghasilan-menu-penghasilan', [ChartWebController::class, 'apiChartMenuPenghasilan']);
     Route::get('/chart-penghasilan-perbulan-menu-penghasilan', [ChartWebController::class, 'apiChartTotalPenghasilanPerbulanSaatIniMenuPenghasilan']);
     Route::get('/chart-perbandingan-pertahun-web-cust/{id_user}', [ChartWebController::class, 'apiPerbandinganPemasukanPertahunWebCust']);
+    Route::get('/chart/weekly-income', [ChartWebController::class, 'getWeeklyIncome']);
+    Route::get('/chart/monthly-income', [ChartWebController::class, 'getMonthlyIncome']);
+
+    Route::get('/chart/expense-data', [ChartWebController::class, 'getExpenseData']);
 
     // lupa password api
     Route::post('/lupa-password', [LupaPassword::class, 'verifikasiPhone']);

@@ -410,7 +410,8 @@
                                         <div class="col-md-6 col-lg-4">
                                             <div class="national-item">
                                                 <img src="{{ asset('template/envato/img/tempat-tumpak-sewu.webp') }}"
-                                                    class="img-fluid w-100 rounded" alt="Image">
+                                                    class="img-fluid w-100 rounded" alt="Image"
+                                                    style="height: 300px;">
                                                 <div class="national-content">
                                                     <div class="national-info">
                                                         <h5 class="text-white text-uppercase mb-2">Tumpak Sewu</h5>
@@ -427,7 +428,8 @@
                                         <div class="col-md-6 col-lg-4">
                                             <div class="national-item">
                                                 <img src="{{ asset('template/envato/img/tempat-gili-noko.webp') }}"
-                                                    class="img-fluid w-100 rounded" alt="Image">
+                                                    class="img-fluid w-100 rounded" alt="Image"
+                                                    style="height: 300px">
                                                 <div class="national-content">
                                                     <div class="national-info">
                                                         <h5 class="text-white text-uppercase mb-2">Gili dan Noko</h5>
@@ -444,7 +446,8 @@
                                         <div class="col-md-6 col-lg-4">
                                             <div class="national-item">
                                                 <img src="{{ asset('template/envato/img/tempat-lombok.jpg') }}"
-                                                    class="img-fluid w-100 rounded" alt="Image">
+                                                    class="img-fluid w-100 rounded" alt="Image"
+                                                    style="height: 100%;">
                                                 <div class="national-content">
                                                     <div class="national-info">
                                                         <h5 class="text-white text-uppercase mb-2">Lombok</h5>
@@ -474,7 +477,8 @@
                                         <div class="col-md-6 col-lg-4">
                                             <div class="national-item">
                                                 <img src="{{ asset('template/envato/img/tempat-tumpak-sewu.webp') }}"
-                                                    class="img-fluid w-100 rounded" alt="Image">
+                                                    class="img-fluid w-100 rounded" alt="Image"
+                                                    style="height: 300px;">
                                                 <div class="national-content">
                                                     <div class="national-info">
                                                         <h5 class="text-white text-uppercase mb-2">Air Terjun Tumpak

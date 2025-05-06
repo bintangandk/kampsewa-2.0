@@ -34,7 +34,7 @@ class LupaPassword extends Controller
             $resetPassword->expired_at = now()->addMinutes(1);
             $resetPassword->save();
 
-            $token = 'RwxiLamgrVPaRCrfSE7k';
+            $token = 'kYjrG5tSaij9kXNG2dYf';
             $telfon = $validate['nomor_telephone'];
             $encrypt_telfon = Crypt::encryptString($telfon);
             $nama_user = $user->name;
@@ -123,7 +123,8 @@ class LupaPassword extends Controller
         }
     }
 
-    public function kirimUlang($nomor_telephone) {
+    public function kirimUlang($nomor_telephone)
+    {
         $nomor = Crypt::decryptString($nomor_telephone);
         $user = User::where('nomor_telephone', $nomor)->first();
         if ($user) {
