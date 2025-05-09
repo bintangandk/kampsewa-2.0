@@ -725,7 +725,7 @@
                                     <div class="guide-img">
                                         <div class="guide-img-efects">
                                             <img src="{{ asset('template/envato/img/toko-deca.jpg') }}"
-                                                class="img-fluid w-100 rounded-top" alt="Image">
+                                                class="img-fluid w-100 rounded-top" alt="Image"" >
                                         </div>
                                         <div class="guide-icon rounded-pill p-2">
                                             <a class="btn btn-square btn-primary rounded-circle mx-1"
@@ -751,7 +751,7 @@
                                     <div class="guide-img">
                                         <div class="guide-img-efects">
                                             <img src="{{ asset('template/envato/img/toko-deuter.webp') }}"
-                                                class="img-fluid w-100 rounded-top" alt="Image">
+                                                class="img-fluid w-100 rounded-top custom-img-height" alt="Image"> 
                                         </div>
                                         <div class="guide-icon rounded-pill p-2">
                                             <a class="btn btn-square btn-primary rounded-circle mx-1"
@@ -777,7 +777,7 @@
                                     <div class="guide-img">
                                         <div class="guide-img-efects">
                                             <img src="{{ asset('template/envato/img/toko-avtech.jpg') }}"
-                                                class="img-fluid w-100 rounded-top" alt="Image">
+                                                class="img-fluid w-100 rounded-top" alt="Image" >
                                         </div>
                                         <div class="guide-icon rounded-pill p-2">
                                             <a class="btn btn-square btn-primary rounded-circle mx-1"

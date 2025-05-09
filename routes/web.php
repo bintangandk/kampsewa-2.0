@@ -1,4 +1,4 @@
-<?php
+endsec<?php
 
 use App\Http\Controllers\Api\ChartWebController;
 use App\Http\Controllers\Auth\AuthController;
@@ -21,6 +21,7 @@ use App\Http\Controllers\Developer\Penyewaan;
 use App\Http\Controllers\Developer\ProfileController;
 use App\Http\Controllers\Developer\RekapKeuanganController;
 use App\Http\Controllers\LandingPageController;
+use App\Http\Controllers\ReportController;
 use Illuminate\Support\Facades\Route;
 
 // -- auth route
@@ -73,6 +74,9 @@ Route::delete('developer/dashboard/iklan/delete-iklan-pending/{id_iklan}', [Ikla
 
 Route::get('developer/dashboard/penyewaan', [Penyewaan::class, 'index'])->name('penyewaan.index')->middleware('auth');
 Route::get('developer/dashboard/penghasilan', [PenghasilanController::class, 'index'])->name('penghasilan.index')->middleware('auth');
+
+Route::get('developer/dashboard/report', [ReportController::class, 'index'])->name('report.index')->middleware('auth');
+
 Route::get('developer/dashboard/pengeluaran', [PengeluaranController::class, 'index'])->name('pengeluaran.index')->middleware('auth');
 Route::post('developer/dashboard/keuangan/tambah-pengeluaran/{id_user}', [PengeluaranController::class, 'tambahPengeluaran'])->name('keuangan.tambah-pengeluaran-developer')->middleware('auth');
 Route::post('developer/dashboard/keuangan/update-pengeluaran', [PengeluaranController::class, 'updatePenghasilan'])->name('keuangan.update-pengeluaran-developer')->middleware('auth');
