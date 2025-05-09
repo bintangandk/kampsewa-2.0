@@ -10,6 +10,7 @@
     use App\Http\Controllers\Api\RiwayatPencarianController;
     use App\Http\Controllers\Api\TransaksiController;
     use App\Http\Controllers\Api\UserController;
+    use App\Http\Controllers\Developer\DashboardController;
     use Illuminate\Support\Facades\Route;
 
     // auth
@@ -25,7 +26,8 @@
     Route::get('/chart/monthly-income', [ChartWebController::class, 'getMonthlyIncome']);
 
     Route::get('/chart/expense-data', [ChartWebController::class, 'getExpenseData']);
-
+    Route::get('/yearly-profit-comparison', [ChartWebController::class, 'getYearlyProfitComparison']);
+    Route::get('/chart/income-chart-data', [ChartWebController::class, 'getIncomeChartData']);
     // lupa password api
     Route::post('/lupa-password', [LupaPassword::class, 'verifikasiPhone']);
     Route::post('/lupa-password/verifikasi-otp/{nomor_telephone}', [LupaPassword::class, 'verifikasiOTP']);

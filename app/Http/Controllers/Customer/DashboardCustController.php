@@ -3,11 +3,15 @@
 namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
+use App\Models\DetailPenyewaan;
 use App\Models\Pemasukan;
 use App\Models\PembayaranPenyewaan;
+use App\Models\Penyewaan;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class DashboardCustController extends Controller
@@ -19,7 +23,7 @@ class DashboardCustController extends Controller
 
     function totalPemasukanByYear($userId, $year)
     {
-        return PembayaranPenyewaan::whereYear('created_at', $year)
+        return PembayaranPenyewaan::with('penyewaan')->whereYear('created_at', $year)
 
             ->whereHas('penyewaan.details.produk', function ($query) use ($userId) {
                 $query->where('id_user', $userId);
@@ -38,7 +42,7 @@ class DashboardCustController extends Controller
     }
     public function totalPemasukanByMonth($userId, $year, $month)
     {
-        return PembayaranPenyewaan::whereYear('created_at', $year)
+        return PembayaranPenyewaan::with('penyewaan')->whereYear('created_at', $year)
             ->whereMonth('created_at', $month)
             ->whereHas('penyewaan.details.produk', function ($query) use ($userId) {
                 $query->where('id_user', $userId);
@@ -63,6 +67,49 @@ class DashboardCustController extends Controller
         $lastMonth = $now->copy()->subMonth()->month;
         $userId = auth()->user()->id;
 
+        $peralatanTerlaris = DetailPenyewaan::select('id_produk', DB::raw('SUM(qty) as total_qty'))
+            ->whereHas('produk', function ($query) {
+                $query->where('id_user', Auth::id()); // hanya produk milik user login
+            })
+            ->groupBy('id_produk')
+            ->orderByDesc('total_qty')
+            ->with('produk') // include relasi produk
+            ->limit(5)
+            ->get();
+
+        $penyewaAktif = Penyewaan::with(['user', 'details.produk'])
+            ->where('status_penyewaan', 'Aktif')
+            ->whereDate('tanggal_selesai', '>=', Carbon::today())
+            ->whereHas('details.produk', function ($query) {
+                $query->where('id_user', Auth::id()); // hanya produk milik user login
+            })
+            ->take(5) // ambil 5 penyewaan aktif
+            ->get();
+
+
+        $penyewaSelesai = Penyewaan::with(['user', 'details.produk'])
+            ->where('status_penyewaan', 'Aktif')
+            ->whereDate('tanggal_selesai', '>=', Carbon::today())
+            ->whereHas('details.produk', function ($query) {
+                $query->where('id_user', Auth::id()); // hanya produk milik user login
+            })
+            ->take(5)
+            ->get();
+
+
+        $penyewaTelat = Penyewaan::with(['user', 'details.produk'])
+            ->where('status_penyewaan', 'Aktif')
+            ->whereDate('tanggal_selesai', '<', Carbon::today())
+            ->whereHas('details.produk', function ($query) {
+                $query->where('id_user', Auth::id());
+            })
+            ->take(5) // Batasi 5 data SEBELUM get()
+            ->get()
+            ->map(function ($penyewaan) {
+                $hariTelat = Carbon::today()->diffInDays($penyewaan->tanggal_selesai);
+                $penyewaan->hari_telat = $hariTelat;
+                return $penyewaan;
+            });
         // $p = Crypt::decrypt($id_user);
 
 
@@ -105,6 +152,10 @@ class DashboardCustController extends Controller
             'totalKemarin' => $totalKemarin,
             'totalSekarangbulanini' => $totalSekarangbulanini,
             'totalKemarinbulanlalu' => $totalKemarinbulanlalu,
+            'peralatanTerlaris' => $peralatanTerlaris,
+            'penyewaAktif' => $penyewaAktif,
+            'penyewaSelesai' => $penyewaSelesai,
+            'penyewaTelat' => $penyewaTelat,
             // 'pemasukan_tahun_ini' => $pemasukan_tahun_ini,
             // 'pemasukan_tahun_lalu' => $pemasukan_tahun_lalu,
             // 'id' => $id_user_dec,

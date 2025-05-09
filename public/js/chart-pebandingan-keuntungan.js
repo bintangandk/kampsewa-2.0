@@ -3,143 +3,179 @@
 /- chart perbandingan keuntungan pertahun -/
 /---------------------------------/
 */
-const labelsPerbandinganKeuntunganPertahun = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "Mei",
-    "Jun",
-    "Jul",
-    "Ag",
-    "Sep",
-    "Okt",
-    "Nov",
-    "Des"
-];
-const dataPerbandinganPenghasilanPertahun = {
-    labels: labelsPerbandinganKeuntunganPertahun,
-    datasets: [
-        {
-            label: "Total:",
-            data: [65, 59, 80, 81, 56, 55, 40, 65, 59, 80, 81, 56],
-            borderWidth: 3,
-            borderColor: "rgb(51,145,133)",
-            tension: 0.4,
-        },
-        {
-            label: "Total:",
-            data: [65, 23, 80, 31, 56, 85, 48, 25, 98, 80, 75, 56],
-            borderWidth: 3,
-            borderColor: "rgb(235,134,43)",
-            tension: 0.4,
-            yAxisID: "precentage",
-        },
-        {
-            label: "Total:",
-            data: [65, 23, 20, 31, 51, 85, 48, 25, 28, 80, 75, 56],
-            borderWidth: 3,
-            borderColor: "rgb(179, 129, 244)",
-            tension: 0.4,
-            yAxisID: "precentage-kerugian1",
-        },
-        {
-            label: "Total:",
-            data: [55, 23, 20, 31, 21, 85, 68, 25, 89, 40, 75, 76],
-            borderWidth: 3,
-            borderColor: "rgb(207,245,0)",
-            tension: 0.4,
-            yAxisID: "precentage-kerugian2",
-        },
-    ],
-};
-const configPerbandinganKeuntunganPertahun = {
-    type: "line",
-    data: dataPerbandinganPenghasilanPertahun,
-    options: {
-        scales: {
-            y: {
-                beginAtZero: true,
-                ticks: {
-                    callback: function (value) {
-                        // Hanya tampilkan label jika nilainya bukan 0
-                        if (value !== 0) {
-                            return value;
-                        }
-                    },
-                    callback: function (value) {
-                        return `${value} M`;
-                    }
-                },
-                border: {
-                    display: false,
-                },
-                grid: {
-                    display: false, // hilangkan garis vertikal
-                }
-            },
-            "precentage-kerugian1": {
-                beginAtZero: true,
-                position: 'left',
-                border: {
-                    display: false,
-                },
-                grid: {
-                    display: false,
-                },
-                ticks: {
-                    callback: function (value) {
-                        return `${value} M`;
-                    }
-                }
-            },
-            "precentage-kerugian2": {
-                beginAtZero: true,
-                position: 'right',
-                border: {
-                    display: false,
-                },
-                grid: {
-                    display: false,
-                },
-                ticks: {
-                    callback: function (value) {
-                        return `${value} M`;
-                    }
-                }
-            },
-            precentage: {
-              beginAtZero: true,
-              position: 'right',
-              border: {
-                display: false,
-              },
-              grid: {
-                display: false,
-              },
-              ticks: {
-                  callback: function (value) {
-                      return `${value} M`;
-                  }
-              }
-            },
-            x: {
-                grid: {
-                    display: true,
-                },
-                border: {
-                    display: false,
-                },
-            }
-        },
-        plugins: {
-            legend: {
-                display: false,
-            }
+async function fetchYearlyProfitComparison() {
+    try {
+        const response = await fetch("/api/yearly-profit-comparison");
+        if (!response.ok) throw new Error("Network response was not ok");
+        const result = await response.json();
+
+        if (result?.success && result?.data) {
+            return result.data;
         }
-    },
-};
-const canvasIDPerbandinganKeuntunganPertahun = document.getElementById(
-    "pebandingan-keuntungan-pertahun"
-);
-new Chart(canvasIDPerbandinganKeuntunganPertahun, configPerbandinganKeuntunganPertahun);
+        throw new Error("Invalid data structure");
+    } catch (error) {
+        console.error("Error fetching yearly profit comparison:", error);
+        return null;
+    }
+}
+
+async function initYearlyProfitComparisonChart() {
+    const canvas = document.getElementById("pebandingan-keuntungan-pertahun");
+    if (!canvas) return;
+
+    // Hancurkan chart lama jika ada
+    if (canvas.chart) {
+        canvas.chart.destroy();
+    }
+
+    const yearlyData = await fetchYearlyProfitComparison();
+    if (!yearlyData) return;
+
+    const monthNames = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "Mei",
+        "Jun",
+        "Jul",
+        "Ag",
+        "Sep",
+        "Okt",
+        "Nov",
+        "Des",
+    ];
+    const colors = [
+        "rgb(51,145,133)",
+        "rgb(235,134,43)",
+        "rgb(179,129,244)",
+        "rgb(207,245,0)",
+    ];
+
+    const datasets = yearlyData.map((data, index) => ({
+        label: `Tahun ${data.year}`,
+        data: data.monthly_profit,
+        borderWidth: 3,
+        borderColor: colors[index],
+        tension: 0.4,
+        yAxisID: index === 0 ? "y" : `y${index}`,
+    }));
+
+    const config = {
+        type: "line",
+        data: {
+            labels: monthNames,
+            datasets: datasets,
+        },
+        options: {
+            responsive: true,
+            interaction: {
+                mode: "index",
+                intersect: false,
+            },
+            scales: {
+                y: {
+                    type: "linear",
+                    display: true,
+                    position: "left",
+                    title: {
+                        display: true,
+                        text: "Juta Rupiah",
+                    },
+                    ticks: {
+                        callback: function (value) {
+                            return `${value} Jt`;
+                        },
+                    },
+                    border: {
+                        display: false,
+                    },
+                    grid: {
+                        display: false,
+                    },
+                },
+                y1: {
+                    type: "linear",
+                    display: true,
+                    position: "right",
+                    grid: {
+                        drawOnChartArea: false,
+                    },
+                    ticks: {
+                        callback: function (value) {
+                            return `${value} Jt`;
+                        },
+                    },
+                    border: {
+                        display: false,
+                    },
+                },
+                y2: {
+                    type: "linear",
+                    display: true,
+                    position: "right",
+                    grid: {
+                        drawOnChartArea: false,
+                    },
+                    ticks: {
+                        callback: function (value) {
+                            return `${value} Jt`;
+                        },
+                    },
+                    border: {
+                        display: false,
+                    },
+                },
+                y3: {
+                    type: "linear",
+                    display: true,
+                    position: "right",
+                    grid: {
+                        drawOnChartArea: false,
+                    },
+                    ticks: {
+                        callback: function (value) {
+                            return `${value} Jt`;
+                        },
+                    },
+                    border: {
+                        display: false,
+                    },
+                },
+                x: {
+                    grid: {
+                        display: true,
+                    },
+                    border: {
+                        display: false,
+                    },
+                },
+            },
+            plugins: {
+                legend: {
+                    position: "top",
+                    labels: {
+                        usePointStyle: true,
+                        pointStyle: "circle",
+                        padding: 20,
+                    },
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            return `${context.dataset.label}: Rp ${(
+                                context.raw * 1000000
+                            ).toLocaleString("id-ID")}`;
+                        },
+                    },
+                },
+            },
+        },
+    };
+
+    // Buat chart baru
+    canvas.chart = new Chart(canvas, config);
+}
+
+// Panggil fungsi inisialisasi saat DOM siap
+document.addEventListener("DOMContentLoaded", initYearlyProfitComparisonChart);
