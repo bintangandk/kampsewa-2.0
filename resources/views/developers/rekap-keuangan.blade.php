@@ -9,48 +9,51 @@
                         class="--card-keuntungan-pertahun shadow-box-shadow-8 flex p-4 rounded-[20px] flex-col gap-4 justify-between">
                         <div class="--header w-full flex items-center justify-between">
                             <div class="--title-desk">
-                                <p class="text-[14px] font-medium capitalize text-[#677689]">Total Tahun 2024</p>
+                                <p class="text-[14px] font-medium capitalize text-[#677689]">Total Tahun {{ date('Y') }}
+                                </p>
                                 <p class="text-[12px] font-normal text-[#677689]">Seluruh keuntungan pertahun yang
                                     didapatkan.</p>
                             </div>
                             <div class="--filter">
                                 <button class="flex items-center px-4 py-1 bg-[#F8F7F4] rounded-[10px]">
-                                    <div class="text-[10px] font-bold whitespace-nowrap">2024</div>
+                                    <div class="text-[10px] font-bold whitespace-nowrap">{{ date('Y') }}</div>
                                     <div class="mt-1"><i class="text-[12px] fi fi-rr-angle-small-down"></i></div>
                                 </button>
                             </div>
                         </div>
                         <div class="--footer flex flex-col gap-2">
-                            <p class="text-[18px] font-bold">Rp. 653.560.550,00</p>
-                            <div class="--presentase flex items-center gap-1 whitespace-nowrap">
+                            <p class="text-[18px] font-bold">Rp. {{ number_format($sisa_keuntungantahunini, 0, ',', '.') }}
+                            </p>
+                            {{-- <div class="--presentase flex items-center gap-1 whitespace-nowrap">
                                 <p class="text-[12px] font-medium py-1 px-2 bg-[#D8F2EE] text-[#339185] rounded-[5px]"><i
                                         class="mt-1 text-[10px] fi fi-rr-arrow-up"></i> 10.00%</p>
                                 <p class="text-[12px]">Dari tahun kemarin - <b>2023</b></p>
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
                     <div
                         class="--card-keuntungan-perbulan shadow-box-shadow-8 flex p-4 rounded-[20px] flex-col gap-4 justify-between">
                         <div class="--header w-full flex items-center justify-between">
                             <div class="--title-desk">
-                                <p class="text-[14px] font-medium capitalize text-[#677689]">Total Mei 2024</p>
+                                <p class="text-[14px] font-medium capitalize text-[#677689]">Total {{ date('F') }}
+                                    {{ date('Y') }}</p>
                                 <p class="text-[12px] font-normal text-[#677689]">Seluruh keuntungan perbulan yang
                                     didapatkan.</p>
                             </div>
                             <div class="--filter">
                                 <button class="flex items-center px-4 py-1 bg-[#F8F7F4] rounded-[10px]">
-                                    <div class="text-[10px] font-bold whitespace-nowrap">Mei</div>
+                                    <div class="text-[10px] font-bold whitespace-nowrap">{{ date('F') }}</div>
                                     <div class="mt-1"><i class="text-[12px] fi fi-rr-angle-small-down"></i></div>
                                 </button>
                             </div>
                         </div>
                         <div class="--footer flex flex-col gap-2">
-                            <p class="text-[18px] font-bold">Rp. 653.560.550,00</p>
-                            <div class="--presentase flex items-center gap-1 whitespace-nowrap">
+                            <p class="text-[18px] font-bold">Rp. {{ number_format($keuntungan_bulan_ini, 0, ',', '.') }}</p>
+                            {{-- <div class="--presentase flex items-center gap-1 whitespace-nowrap">
                                 <p class="text-[12px] font-medium py-1 px-2 bg-[#D8F2EE] text-[#339185] rounded-[5px]"><i
                                         class="mt-1 text-[10px] fi fi-rr-arrow-up"></i> 23.50%</p>
                                 <p class="text-[12px]">Dari Bulan kemarin - <b>April</b></p>
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
                 </div>
@@ -62,48 +65,50 @@
                         class="--card-kerugian-pertahun shadow-box-shadow-8 flex p-4 rounded-[20px] flex-col gap-4 justify-between">
                         <div class="--header w-full flex items-center justify-between">
                             <div class="--title-desk">
-                                <p class="text-[14px] font-medium capitalize text-[#677689]">Total Tahun 2024</p>
+                                <p class="text-[14px] font-medium capitalize text-[#677689]">Total Tahun {{ date('Y') }}
+                                </p>
                                 <p class="text-[12px] font-normal text-[#677689]">Seluruh kerugian pertahun yang
                                     didapatkan.</p>
                             </div>
                             <div class="--filter">
                                 <button class="flex items-center px-4 py-1 bg-[#F8F7F4] rounded-[10px]">
-                                    <div class="text-[10px] font-bold whitespace-nowrap">2024</div>
+                                    <div class="text-[10px] font-bold whitespace-nowrap">{{ date('Y') }}</div>
                                     <div class="mt-1"><i class="text-[12px] fi fi-rr-angle-small-down"></i></div>
                                 </button>
                             </div>
                         </div>
                         <div class="--footer flex flex-col gap-2">
-                            <p class="text-[18px] font-bold">Rp. 653.560.550,00</p>
-                            <div class="--presentase flex items-center gap-1 whitespace-nowrap">
+                            <p class="text-[18px] font-bold">Rp. {{ number_format($kerugian_tahunini, 0, ',', '.') }}
+                            </p>
+                            {{-- <div class="--presentase flex items-center gap-1 whitespace-nowrap">
                                 <p class="text-[12px] font-medium py-1 px-2 bg-[#D8F2EE] text-[#339185] rounded-[5px]"><i
                                         class="mt-1 text-[10px] fi fi-rr-arrow-up"></i> 10.00%</p>
                                 <p class="text-[12px]">Dari tahun kemarin - <b>2023</b></p>
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
                     <div
                         class="--card-kerugian-perbulan shadow-box-shadow-8 flex p-4 rounded-[20px] flex-col gap-4 justify-between">
                         <div class="--header w-full flex items-center justify-between">
                             <div class="--title-desk">
-                                <p class="text-[14px] font-medium capitalize text-[#677689]">Total Mei 2024</p>
+                                <p class="text-[14px] font-medium capitalize text-[#677689]">Tota</p>
                                 <p class="text-[12px] font-normal text-[#677689]">Seluruh kerugian perbulan yang
                                     didapatkan.</p>
                             </div>
                             <div class="--filter">
                                 <button class="flex items-center px-4 py-1 bg-[#F8F7F4] rounded-[10px]">
-                                    <div class="text-[10px] font-bold whitespace-nowrap">Mei</div>
+                                    <div class="text-[10px] font-bold whitespace-nowrap">{{ date('F') }}</div>
                                     <div class="mt-1"><i class="text-[12px] fi fi-rr-angle-small-down"></i></div>
                                 </button>
                             </div>
                         </div>
                         <div class="--footer flex flex-col gap-2">
-                            <p class="text-[18px] font-bold">Rp. 653.560.550,00</p>
-                            <div class="--presentase flex items-center gap-1 whitespace-nowrap">
+                            <p class="text-[18px] font-bold">Rp. {{ number_format($kerugian_bulan_ini, 0, ',', '.') }}</p>
+                            {{-- <div class="--presentase flex items-center gap-1 whitespace-nowrap">
                                 <p class="text-[12px] font-medium py-1 px-2 bg-[#D8F2EE] text-[#339185] rounded-[5px]"><i
                                         class="mt-1 text-[10px] fi fi-rr-arrow-up"></i> 23.50%</p>
                                 <p class="text-[12px]">Dari Bulan kemarin - <b>April</b></p>
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
                 </div>
@@ -115,34 +120,24 @@
                 <div class="--header flex flex-col gap-4">
                     <p class="text-[16px] font-bold">Perbandingan Keuntungan Pertahun</p>
                     <div class="--title-total flex items-center gap-4">
-                        <div class="--tahun-sekarang flex items-start gap-2">
-                            <div class="--icon w-[12px] h-[12px] rounded-[2px] mt-1 transform rotate-45 bg-[#287f71]"></div>
-                            <div class="--title">
-                                <p class="text-[14px] font-medium text-[#677689]">Total Tahun 2024</p>
-                                <p class="text-[18px] font-bold">Rp. 623.560.550,00</p>
+                        @foreach ($profitComparison as $index => $data)
+                            <div class="flex items-start gap-2">
+                                <div
+                                    class="--icon w-[12px] h-[12px] rounded-[2px] mt-1 transform rotate-45
+                                    @switch($index)
+                                        @case(0) bg-[#287f71] @break
+                                        @case(1) bg-[#EB862B] @break
+                                        @case(2) bg-[#B381F4] @break
+                                        @case(3) bg-[#CFF500] @break
+                                    @endswitch">
+                                </div>
+                                <div class="--title">
+                                    <p class="text-[14px] font-medium text-[#677689]">Total Tahun {{ $data['year'] }}</p>
+                                    <p class="text-[18px] font-bold">Rp. {{ number_format($data['profit'], 0, ',', '.') }}
+                                    </p>
+                                </div>
                             </div>
-                        </div>
-                        <div class="--tahun-sebelumnya-keuntungan flex items-start gap-2">
-                            <div class="--icon w-[12px] h-[12px] rounded-[2px] mt-1 transform rotate-45 bg-[#EB862B]"></div>
-                            <div class="--title">
-                                <p class="text-[14px] font-medium text-[#677689]">Total Tahun 2023</p>
-                                <p class="text-[18px] font-bold">Rp. 623.560.550,00</p>
-                            </div>
-                        </div>
-                        <div class="--tahun-sekarang-kerugian flex items-start gap-2">
-                            <div class="--icon w-[12px] h-[12px] rounded-[2px] mt-1 transform rotate-45 bg-[#B381F4]"></div>
-                            <div class="--title">
-                                <p class="text-[14px] font-medium text-[#677689]">Total Tahun 2022</p>
-                                <p class="text-[18px] font-bold">Rp. 623.560.550,00</p>
-                            </div>
-                        </div>
-                        <div class="--tahun-sebelumnya-kerugian flex items-start gap-2">
-                            <div class="--icon w-[12px] h-[12px] rounded-[2px] mt-1 transform rotate-45 bg-[#CFF500]"></div>
-                            <div class="--title">
-                                <p class="text-[14px] font-medium text-[#677689]">Total Tahun 2021</p>
-                                <p class="text-[18px] font-bold">Rp. 623.560.550,00</p>
-                            </div>
-                        </div>
+                        @endforeach
                     </div>
                 </div>
                 <div class="--body">

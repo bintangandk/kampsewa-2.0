@@ -4,198 +4,161 @@
 /- id canvas = customer-chart-pemasukan-dsb
 /----------------------------------------
 */
+async function fetchIncomeData() {
+    try {
+        const response = await fetch("/api/chart/income-chart-data");
+        if (!response.ok) throw new Error("Network response was not ok");
+        return await response.json();
+    } catch (error) {
+        console.error("Error fetching income data:", error);
+        return null;
+    }
+}
 
-// setup chart
-const labelsMonthPemasukanTahunDashboard = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "Mei",
-    "Jun",
-    "Jul",
-    "Agu",
-    "Sep",
-    "Okt",
-    "Nov",
-    "Des",
-];
-const dataPemasukanTahunDashboard = {
-    labels: labelsMonthPemasukanTahunDashboard,
-    datasets: [
-        {
-            label: "Total Tahun 2023",
-            data: [37, 43, 23, 19, 87, 35, 22, 55, 74, 39, 41, 121],
-            fill: false,
-            borderColor: "rgb(86,11,208)",
-            bordeWidth: 3,
-            tension: 0.4,
-        },
-        {
-            label: "Total Tahun 2024",
-            data: [34, 56, 12, 66, 86, 12, 44, 66, 22, 33, 44, 55],
-            fill: false,
-            borderColor: "rgb(3,118,253)",
-            bordeWidth: 3,
-            tension: 0.4,
-            yAxisID: "precentage",
-        },
-    ],
-};
+async function initIncomeCharts() {
+    const chartData = await fetchIncomeData();
+    if (!chartData?.success) return;
 
-// config
-const configPemasukanTahunDashboard = {
-    type: "line",
-    data: dataPemasukanTahunDashboard,
-    options: {
-        plugins: {
-            legend: {
-                display: false,
+    // Formatting function untuk tooltip
+    const formatRupiah = (value) => {
+        return `Rp ${value.toLocaleString("id-ID")}`;
+    };
+
+    // Chart Pemasukan Pertahun
+    const yearlyCtx = document.getElementById("customer-chart-pemasukan-dsb");
+    if (yearlyCtx) {
+        new Chart(yearlyCtx, {
+            type: "line",
+            data: {
+                labels: chartData.data.labels,
+                datasets: [
+                    {
+                        label: `Total Tahun ${new Date().getFullYear() - 1}`,
+                        data: chartData.data.lastYear,
+                        fill: false,
+                        borderColor: "rgb(86,11,208)",
+                        borderWidth: 3,
+                        tension: 0.4,
+                    },
+                    {
+                        label: `Total Tahun ${new Date().getFullYear()}`,
+                        data: chartData.data.currentYear,
+                        fill: false,
+                        borderColor: "rgb(3,118,253)",
+                        borderWidth: 3,
+                        tension: 0.4,
+                    },
+                ],
             },
-        },
-        scales: {
-            y: {
-                border: {
-                    display: false,
+            options: {
+                plugins: {
+                    legend: {
+                        position: "top",
+                        labels: {
+                            usePointStyle: true,
+                            padding: 20,
+                        },
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: (context) => {
+                                return `${
+                                    context.dataset.label
+                                }: ${formatRupiah(context.raw)}`;
+                            },
+                        },
+                    },
                 },
-                grid: {
-                    display: true,
-                },
-                ticks: {
-                    callback: function (value) {
-                        return `${value} M`;
-                    }
-                }
-            },
-            x: {
-                border: {
-                    display: false,
-                },
-                grid: {
-                    display: false,
-                },
-            },
-            precentage: {
-                beginAtZero: true,
-                position: 'right',
-                border: {
-                    display: false,
-                },
-                grid: {
-                    display: false,
-                },
-                ticks: {
-                    callback: function (value) {
-                        return `${value} M`;
-                    }
-                }
-            }
-        },
-    },
-};
-
-// render init block
-const ctx = document.getElementById("customer-chart-pemasukan-dsb");
-new Chart(ctx, configPemasukanTahunDashboard);
-
-/*
-/----------------------------------------
-/- customer chart pemasukan tahun saat ini dashboard
-/- id canvas = customer-chart-pemasukan-perbulan-dsb
-/----------------------------------------
-*/
-
-// setup chart
-const labelsMonthPemasukanBulanDashboard = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "Mei",
-    "Jun",
-    "Jul",
-    "Agu",
-    "Sep",
-    "Okt",
-    "Nov",
-    "Des",
-];
-const dataPemasukanBulanDashboard = {
-    labels: labelsMonthPemasukanBulanDashboard,
-    datasets: [
-        {
-            label: "Total Bulan April",
-            data: [37, 43, 23, 19, 87, 35, 22, 55, 74, 39, 41, 121],
-            fill: false,
-            borderColor: "rgb(255,206,86)",
-            backgroundColor: "rgb(255,206,86)",
-            bordeWidth: 3,
-            tension: 0.4,
-        },
-        {
-            label: "Total Bulan Mei",
-            data: [34, 56, 12, 66, 86, 12, 44, 66, 22, 33, 44, 55],
-            fill: false,
-            borderColor: "rgb(75,192,192)",
-            backgroundColor: "rgb(75,192,192)",
-            bordeWidth: 3,
-            tension: 0.4,
-            yAxisID: "precentageperbulan",
-        },
-    ],
-};
-
-// config
-const configPemasukanBulanDashboard = {
-    type: "bar",
-    data: dataPemasukanBulanDashboard,
-    options: {
-        plugins: {
-            legend: {
-                display: false,
-            },
-        },
-        scales: {
-            y: {
-                border: {
-                    display: false,
-                },
-                grid: {
-                    display: true,
-                },
-                ticks: {
-                    callback: function (value) {
-                        return `${value} M`;
-                    }
-                }
-            },
-            x: {
-                border: {
-                    display: false,
-                },
-                grid: {
-                    display: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        border: { display: false },
+                        grid: { display: true },
+                        ticks: {
+                            callback: (value) => formatRupiah(value),
+                        },
+                    },
+                    x: {
+                        border: { display: false },
+                        grid: { display: false },
+                    },
                 },
             },
-            precentageperbulan: {
-                beginAtZero: true,
-                position: 'right',
-                border: {
-                    display: false,
-                },
-                grid: {
-                    display: false,
-                },
-                ticks: {
-                    callback: function (value) {
-                        return `${value} M`;
-                    }
-                }
-            }
-        },
-    },
-};
+        });
+    }
 
-// render init block
-const ctxPerbulan = document.getElementById("customer-chart-pemasukan-perbulan-dsb");
-new Chart(ctxPerbulan, configPemasukanBulanDashboard);
+    // Chart Pemasukan Perbulan
+    const monthlyCtx = document.getElementById(
+        "customer-chart-pemasukan-perbulan-dsb"
+    );
+    if (monthlyCtx) {
+        const currentMonth = new Date().getMonth();
+        const lastMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+
+        new Chart(monthlyCtx, {
+            type: "bar",
+            data: {
+                labels: chartData.data.labels,
+                datasets: [
+                    {
+                        label: `Total Bulan ${chartData.data.labels[lastMonth]}`,
+                        data: chartData.data.currentYear.map((val, i) =>
+                            i === lastMonth ? val : 0
+                        ),
+                        backgroundColor: "rgb(255,206,86)",
+                        borderColor: "rgb(255,206,86)",
+                        borderWidth: 3,
+                    },
+                    {
+                        label: `Total Bulan ${chartData.data.labels[currentMonth]}`,
+                        data: chartData.data.currentYear.map((val, i) =>
+                            i === currentMonth ? val : 0
+                        ),
+                        backgroundColor: "rgb(75,192,192)",
+                        borderColor: "rgb(75,192,192)",
+                        borderWidth: 3,
+                    },
+                ],
+            },
+            options: {
+                plugins: {
+                    legend: {
+                        position: "top",
+                        labels: {
+                            usePointStyle: true,
+                            padding: 20,
+                        },
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: (context) => {
+                                return context.raw !== 0
+                                    ? `${context.dataset.label}: ${formatRupiah(
+                                          context.raw
+                                      )}`
+                                    : null;
+                            },
+                        },
+                    },
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        border: { display: false },
+                        grid: { display: true },
+                        ticks: {
+                            callback: (value) => formatRupiah(value),
+                        },
+                    },
+                    x: {
+                        border: { display: false },
+                        grid: { display: false },
+                    },
+                },
+            },
+        });
+    }
+}
+
+// Panggil fungsi inisialisasi saat DOM siap
+document.addEventListener("DOMContentLoaded", initIncomeCharts);

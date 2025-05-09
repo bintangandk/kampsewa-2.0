@@ -67,6 +67,42 @@ class ChartWebController extends Controller
         ]);
     }
 
+    function totalPemasukanByYear($userId, $year)
+    {
+        return PembayaranPenyewaan::whereYear('created_at', $year)
+
+            ->whereHas('penyewaan.details.produk', function ($query) use ($userId) {
+                $query->where('id_user', $userId);
+            })
+            ->whereHas('penyewaan', function ($query) {
+                $query->whereIn('status_penyewaan', ['Selesai', 'Aktif']);
+            })
+
+
+            ->get()
+            ->sum(function ($pembayaran) {
+                return $pembayaran->status_pembayaran === 'Lunas'
+                    ? $pembayaran->total_pembayaran
+                    : $pembayaran->jumlah_pembayaran;
+            });
+    }
+    public function totalPemasukanByMonth($userId, $year, $month)
+    {
+        return PembayaranPenyewaan::whereYear('created_at', $year)
+            ->whereMonth('created_at', $month)
+            ->whereHas('penyewaan.details.produk', function ($query) use ($userId) {
+                $query->where('id_user', $userId);
+            })
+            ->whereHas('penyewaan', function ($query) {
+                $query->whereIn('status_penyewaan', ['Selesai', 'Aktif']);
+            })
+            ->get()
+            ->sum(function ($pembayaran) {
+                return $pembayaran->status_pembayaran === 'Lunas'
+                    ? $pembayaran->total_pembayaran
+                    : $pembayaran->jumlah_pembayaran;
+            });
+    }
     public function apiChartMenuPenghasilan()
     {
         $year = Carbon::now()->year;
@@ -232,6 +268,92 @@ class ChartWebController extends Controller
                     }, range(0, 11)),
                     'values' => $monthlyExpenses
                 ]
+            ]
+        ]);
+    }
+
+
+
+    public function getYearlyProfitComparison()
+    {
+        $currentYear = now()->year;
+        $years = [$currentYear, $currentYear - 1, $currentYear - 2, $currentYear - 3];
+        $result = [];
+
+        foreach ($years as $year) {
+            // Hitung penghasilan
+            $incomeAdmin = PembayaranPenyewaan::whereYear('created_at', $year)->sum('biaya_admin');
+            $incomeAds = PembayaranIklan::whereYear('created_at', $year)
+                ->where('status_bayar', 'aktif')
+                ->sum('total_bayar');
+            $totalIncome = $incomeAdmin + $incomeAds;
+
+            // Hitung pengeluaran
+            $totalExpense = Pengeluaran::whereHas('user', function ($query) {
+                $query->where('type', '1');
+            })
+                ->whereYear('created_at', $year)
+                ->sum('nominal');
+
+            // Hitung keuntungan per bulan
+            $monthlyProfit = [];
+            for ($month = 1; $month <= 12; $month++) {
+                $monthIncomeAdmin = PembayaranPenyewaan::whereYear('created_at', $year)
+                    ->whereMonth('created_at', $month)
+                    ->sum('biaya_admin');
+                $monthIncomeAds = PembayaranIklan::whereYear('created_at', $year)
+                    ->whereMonth('created_at', $month)
+                    ->where('status_bayar', 'aktif')
+                    ->sum('total_bayar');
+                $monthExpense = Pengeluaran::whereHas('user', function ($query) {
+                    $query->where('type', '1');
+                })
+                    ->whereYear('created_at', $year)
+                    ->whereMonth('created_at', $month)
+                    ->sum('nominal');
+
+                $monthlyProfit[] = ($monthIncomeAdmin + $monthIncomeAds - $monthExpense) / 1000000; // Dalam juta
+            }
+
+            $result[] = [
+                'year' => $year,
+                'total_profit' => ($totalIncome - $totalExpense) / 1000000, // Dalam juta
+                'monthly_profit' => $monthlyProfit
+            ];
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $result
+        ]);
+    }
+
+
+
+    public function getIncomeChartData()
+    {
+        $userId = auth()->user()->id;
+        $currentYear = Carbon::now()->year;
+        $lastYear = $currentYear - 1;
+
+        // Data tahun ini
+        $currentYearData = [];
+        for ($month = 1; $month <= 12; $month++) {
+            $currentYearData[] = $this->totalPemasukanByMonth($userId, $currentYear, $month);
+        }
+
+        // Data tahun lalu
+        $lastYearData = [];
+        for ($month = 1; $month <= 12; $month++) {
+            $lastYearData[] = $this->totalPemasukanByMonth($userId, $lastYear, $month);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'currentYear' => $currentYearData,
+                'lastYear' => $lastYearData,
+                'labels' => ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"]
             ]
         ]);
     }

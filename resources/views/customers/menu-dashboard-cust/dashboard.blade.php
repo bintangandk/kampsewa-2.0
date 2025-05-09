@@ -20,23 +20,23 @@
                                     <p class="text-[18px] small-desktop:text-[16px] mobile-max:font-medium font-bold">Rp.
                                         {{ number_format($totalKemarin, 0, ',', '.') }}</p>
                                     <div class="flex items-center gap-1 mt-1">
-                                        <p
+                                        {{-- <p
                                             class="p-1 rounded-full bg-[#D8EDDC] w-[22px] h-[22px] flex items-center justify-center">
                                             <i class="text-[#00823E] text-[16px] font-bold bi bi-arrow-up-short"></i>
-                                        </p>
+                                        </p> --}}
                                         {{-- <p class="text-[#00823E] text-[14px] font-medium">+20.5%</p> --}}
                                     </div>
-                                    otiih
+
                                 </div>
                                 <div class="--tahun-sebelumnya">
                                     <p class="text-[14px] text-[#808995]">Tahun Saat ini - {{ date('Y') }}</p>
                                     <p class="text-[18px] small-desktop:text-[16px] mobile-max:font-medium font-bold">Rp.
                                         {{ number_format($totalSekarang, 0, ',', '.') }}</p>
                                     <div class="flex items-center gap-1 mt-1">
-                                        <p
+                                        {{-- <p
                                             class="p-1 rounded-full bg-[#D8EDDC] w-[22px] h-[22px] flex items-center justify-center">
                                             <i class="text-[#00823E] text-[16px] font-bold bi bi-arrow-up-short"></i>
-                                        </p>
+                                        </p> --}}
                                         {{-- <p class="text-[#00823E] text-[14px] font-medium">+14.5%</p> --}}
                                     </div>
                                 </div>
@@ -65,6 +65,7 @@
                         <div class="--header flex flex-col gap-2">
                             <div class="--title-btn flex items-center justify-between">
                                 <div class="--title text-[16px] font-medium">Total Pemasukan Perbulan</div>
+
                                 <div class="--icon"><i class="text-[16px] bi bi-three-dots"></i></div>
                             </div>
                             <div class="--total-nominal flex items-center gap-6">
@@ -72,11 +73,11 @@
                                     <p class="text-[14px] text-[#808995]">Bulan Kemarin -
                                         {{ date('F', mktime(0, 0, 0, date('m') - 1, 1)) }}</p>
                                     <p class="text-[18px] small-desktop:text-[16px] mobile-max:font-medium font-bold">Rp.
-                                        {{-- {{ number_format($totalKemarinbulanlalu, 0, ',', '.') }}</p> --}}
+                                        {{ number_format($totalKemarinbulanlalu, 0, ',', '.') }}</p>
                                     <div class="flex items-center gap-1 mt-1">
-                                        <p
+                                        {{-- <p
                                             class="p-1 rounded-full bg-[#D8EDDC] w-[22px] h-[22px] flex items-center justify-center">
-                                            <i class="text-[#00823E] text-[16px] font-bold bi bi-arrow-up-short"></i>
+                                            <i class="text-[#00823E] text-[16px] font-bold bi bi-arrow-up-short"></i> --}}
                                         </p>
                                         <p class="text-[#00823E] text-[14px] font-medium"></p>
                                     </div>
@@ -84,13 +85,13 @@
                                 <div class="--tahun-sebelumnya">
                                     <p class="text-[14px] text-[#808995]">Bulan Saat ini - {{ date('F') }}</p>
                                     <p class="text-[18px] small-desktop:text-[16px] mobile-max:font-medium font-bold">Rp.
-                                        {{-- {{ number_format($totalSekarangbulanini, 0, ',', '.') }}</p> --}}
+                                        {{ number_format($totalSekarangbulanini, 0, ',', '.') }}</p>
                                     <div class="flex items-center gap-1 mt-1">
-                                        <p
+                                        {{-- <p
                                             class="p-1 rounded-full bg-[#D8EDDC] w-[22px] h-[22px] flex items-center justify-center">
                                             <i class="text-[#00823E] text-[16px] font-bold bi bi-arrow-up-short"></i>
-                                        </p>
-                                        <p class="text-[#00823E] text-[14px] font-medium">+14.5%</p>
+                                        </p> --}}
+                                        {{-- <p class="text-[#00823E] text-[14px] font-medium">+14.5%</p> --}}
                                     </div>
                                 </div>
                             </div>
@@ -116,84 +117,142 @@
         <div class="--component-keduua w-full flex flex-col gap-4">
             <div class="--title w-full flex items-center justify-between">
                 <p class="text-[22px] font-medium">Peralatan Terlaris</p>
-                <p><a href="" class="text-[14px] text-blue-400 underline">Lihat Semua</a></p>
+                {{-- <p><a href="" class="text-[14px] text-blue-400 underline">Lihat Semua</a></p> --}}
             </div>
             <div class="--wrapper-card w-full grid grid-cols-5 gap-2 mobile-max:grid-cols-2">
-                @for ($i = 1; $i <= 5; $i++)
+
+
+                @if (count($peralatanTerlaris) == 0)
                     <div class="--card">
                         <div class="block bg-white shadow-box-shadow-8 rounded-[15px] overflow-hidden dark:bg-surface-dark">
-                            <a href="#!">
-                                <img src="https://tecdn.b-cdn.net/img/new/standard/nature/184.jpg" alt="" />
-                            </a>
+                            {{-- <a href="#!">
+                                <img src="{{ asset('assets/image/customers/produk/empty.png') }}" alt=""
+                                    style="width: 250px; height: 200px; object-fit: cover;" />
+
+                            </a> --}}
                             <div class="p-2 text-surface dark:text-white">
-                                <h5 class="mb-2 text-[16px] small-desktop:line-clamp-1 font-medium leading-tight">Tenda
-                                    Gunung REI Co-op Half Dome</h5>
-                                <p class="text-[12px] line-clamp-3 small-desktop:line-clamp-2">
-                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minus itaque, tenetur enim
-                                    aliquid amet voluptate alias doloribus! Excepturi impedit sapiente, alias rerum
-                                    asperiores rem consequatur quod quos, explicabo, ad iste?
-                                </p>
+                                <h5 class="mb-2 text-[16px] small-desktop:line-clamp-1 font-medium leading-tight">
+                                    Tidak ada produk terlaris</h5>
                             </div>
                         </div>
                     </div>
-                @endfor
+                @else
+                    @foreach ($peralatanTerlaris as $item)
+                        <div class="--card">
+                            <div
+                                class="block bg-white shadow-box-shadow-8 rounded-[15px] overflow-hidden dark:bg-surface-dark">
+                                <a href="#!">
+                                    {{-- @dump($item->produk->id) --}}
+                                    <img src="{{ asset('assets/image/customers/produk/' . $item->produk->foto_depan) }}"
+                                        alt="" style="width: 250px; height: 200px; object-fit: cover;" />
+
+                                </a>
+                                <div class="p-2 text-surface dark:text-white">
+                                    <h5 class="mb-2 text-[16px] small-desktop:line-clamp-1 font-medium leading-tight">
+                                        {{ $item->produk->nama }}</h5>
+                                    <p class="text-[12px] line-clamp-3 small-desktop:line-clamp-2">
+                                        {{ $item->produk->deskripsi }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                @endif
             </div>
         </div>
 
         <div
             class="--component-ketiga w-full h-auto small-desktop:grid-cols-2 grid grid-cols-3 gap-4 mobile-max:grid-cols-1">
-            <div class="--card-user-sewa-berlangsung p-4 shadow-box-shadow-11 flex flex-col justify-between rounded-[15px]">
-                <div class="--header">
+            <div class="--card-user-sewa-berlangsung p-4 shadow-box-shadow-11 flex flex-col justify-start rounded-[15px]">
+                <div class="--header mb-4">
                     <h1 class="text-[22px] font-medium">Penyewa Berlangsung</h1>
-                    <p class="text-[14px] mb-4">Penyewa yang sedang berlangsung dan aktif saat ini.</p>
+                    <p class="text-[14px]">Penyewa yang sedang berlangsung dan aktif saat ini.</p>
                 </div>
+
                 <div class="--list-item flex flex-col gap-2">
-                    @for ($i = 1; $i <= 5; $i++)
+
+                    @if (count($penyewaAktif) == 0)
                         <div class="--card p-2 bg-[#F9F9F9] rounded-[15px] flex items-center justify-between">
                             <div class="--bagian-1 flex items-center gap-4">
-                                <div class="--image"><img class="rounded-[15px] w-[50px] h-[50px] object-cover"
-                                        src="{{ asset('assets/image/jokowi.jpg') }}" alt=""></div>
+                                <div class="--image">
+                                    <img class="rounded-[15px] w-[50px] h-[50px] object-cover"
+                                        src="{{ asset('assets/image/customers/produk/empty.png') }}" alt="">
+                                </div>
                                 <div class="--title">
-                                    <p class="text-[14px] font-bold">Jokowi Dodo</p>
-                                    <p class="text-[12px] line-clamp-1">Jl. Cempaka Besar No. 1 Kota Surabaya</p>
+                                    <p class="text-[14px] font-bold">Tidak ada penyewa aktif</p>
                                 </div>
                             </div>
                             <div class="--bagian-2">
                                 <p class="text-[12px] font-medium py-1 px-2 bg-[#FFCE56] rounded-full">Berlangsung</p>
                             </div>
                         </div>
-                    @endfor
-                    <p class="text-center w-full"><a href="" class="text-[14px] font-medium hover:underline">6
-                            Penyewa Lainnya...</a></p>
-                </div>
-            </div>
-            <div
-                class="--card-user-sewa-berlangsung p-4 shadow-box-shadow-11 flex flex-col justify-between rounded-[15px]">
-                <div class="--header">
-                    <h1 class="text-[22px] font-medium">Riwayat Penyewa</h1>
-                    <p class="text-[14px] mb-4">List penyewa yang pernah melakukan transaksi dengan anda.</p>
-                </div>
-                <div class="--list-item flex flex-col gap-2">
-                    @for ($i = 1; $i <= 5; $i++)
-                        <div class="--card p-2 bg-[#F9F9F9] rounded-[15px] flex items-center justify-between">
-                            <div class="--bagian-1 flex items-center gap-4">
-                                <div class="--image"><img class="rounded-[15px] w-[50px] h-[50px] object-cover"
-                                        src="{{ asset('assets/image/jokowi.jpg') }}" alt=""></div>
-                                <div class="--title">
-                                    <p class="text-[14px] font-bold">Jokowi Dodo</p>
-                                    <p class="text-[12px] line-clamp-1">Jl. Cempaka Besar No. 1 Kota Surabaya</p>
+                    @else
+                        @foreach ($penyewaAktif as $item)
+                            <div class="--card p-2 bg-[#F9F9F9] rounded-[15px] flex items-center justify-between">
+                                <div class="--bagian-1 flex items-center gap-4">
+                                    <div class="--image">
+                                        <img class="rounded-[15px] w-[50px] h-[50px] object-cover"
+                                            src="{{ asset('assets/image/profile/' . $item->user->foto) }}" alt="">
+                                    </div>
+                                    <div class="--title">
+                                        <p class="text-[14px] font-bold">{{ $item->user->name }}</p>
+                                    </div>
+                                </div>
+                                <div class="--bagian-2">
+                                    <p class="text-[12px] font-medium py-1 px-2 bg-[#FFCE56] rounded-full">Berlangsung</p>
                                 </div>
                             </div>
-                            <div class="--bagian-2">
-                                <p class="text-[12px] font-medium py-1 px-2 bg-[#00823E] text-white rounded-full">Selesai
-                                </p>
-                            </div>
-                        </div>
-                    @endfor
-                    <p class="text-center w-full"><a href="" class="text-[14px] font-medium hover:underline">6
-                            Penyewa Lainnya...</a></p>
+                        @endforeach
+                    @endif
+                    {{-- <p class="text-center w-full">
+                        <a href="" class="text-[14px] font-medium hover:underline">6 Penyewa Lainnya...</a>
+                    </p> --}}
                 </div>
             </div>
+
+            <div class="p-4 bg-white rounded-[15px] shadow-md">
+                <div class="--header mb-4">
+                    <h1 class="text-[22px] font-medium">Riwayat Penyewa</h1>
+                    <p class="text-[14px]">Riwayat penyewa yang telah selesai.</p>
+                </div>
+
+
+                <div class="flex flex-col gap-2">
+                    @if (count($penyewaSelesai) == 0)
+                        <div class="p-2 bg-[#F9F9F9] rounded-[15px] flex items-center justify-between">
+                            <div class="flex items-center gap-4">
+                                <div>
+                                    <img class="rounded-[15px] w-[50px] h-[50px] object-cover"
+                                        src="{{ asset('assets/image/customers/produk/empty.png') }}" alt="Empty">
+                                </div>
+                                <div>
+                                    <p class="text-[14px] font-bold">Belum ada penyewa</p>
+                                </div>
+                            </div>
+                        </div>
+                    @else
+                        @foreach ($penyewaSelesai as $item)
+                            <div class="p-2 bg-[#F9F9F9] rounded-[15px] flex items-center justify-between">
+                                <div class="flex items-center gap-4">
+                                    <div class="--image">
+                                        <img class="rounded-[15px] w-[50px] h-[50px] object-cover"
+                                            src="{{ asset('assets/image/profile/' . $item->user->foto) }}"
+                                            alt="">
+                                    </div>
+                                    <div>
+                                        <p class="text-[14px] font-bold text-[#001D6E]">{{ $item->user->name }}</p>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p class="text-[12px] font-medium py-1 px-2 bg-[#00823E] text-white rounded-full">
+                                        Selesai</p>
+                                </div>
+                            </div>
+                        @endforeach
+                    @endif
+                </div>
+            </div>
+
             <div
                 class="--card-user-sewa-berlangsung p-4 shadow-box-shadow-11 flex flex-col justify-between rounded-[15px]">
                 <div class="--header">
@@ -201,25 +260,41 @@
                     <p class="text-[14px] mb-4">Penyewa terkena denda Terlambat dari penyewaan yang sedang berlangsung.</p>
                 </div>
                 <div class="--list-item flex flex-col gap-2">
-                    @for ($i = 1; $i <= 5; $i++)
+                    @forelse ($penyewaTelat as $sewa)
                         <div class="--card p-2 bg-[#F9F9F9] rounded-[15px] flex items-center justify-between">
                             <div class="--bagian-1 flex items-center gap-4">
-                                <div class="--image"><img class="rounded-[15px] w-[50px] h-[50px] object-cover"
-                                        src="{{ asset('assets/image/jokowi.jpg') }}" alt=""></div>
+                                <div class="--image">
+                                    <!-- Foto profil user (contoh: ambil dari relasi user) -->
+                                    <img class="rounded-[15px] w-[50px] h-[50px] object-cover"
+                                        src="{{ asset($sewa->user->foto_profil ?? 'assets/image/default-avatar.jpg') }}"
+                                        alt="Foto {{ $sewa->user->name }}">
+                                </div>
                                 <div class="--title">
-                                    <p class="text-[14px] font-bold">Jokowi Dodo</p>
-                                    <p class="text-[12px] line-clamp-1">Jl. Cempaka Besar No. 1 Kota Surabaya</p>
+                                    <p class="text-[14px] font-bold">{{ $sewa->user->name }}</p>
+                                    <p class="text-[12px] line-clamp-1">
+                                        {{ $sewa->details->first()->produk->nama_produk ?? 'Produk Tidak Ditemukan' }}
+                                    </p>
                                 </div>
                             </div>
                             <div class="--bagian-2">
                                 <p
-                                    class="text-[12px] font-medium small-desktop:text-[10px] small-desktop:font-normal py-1 px-2 bg-[#F04444] text-white rounded-full whitespace-nowrap">
-                                    2 Hari</p>
+                                    class="text-[12px] font-medium small-desktop:text-[10px] py-1 px-2 bg-[#F04444] text-white rounded-full whitespace-nowrap">
+                                    {{ $sewa->hari_telat }} Hari
+                                </p>
                             </div>
                         </div>
-                    @endfor
-                    <p class="text-center w-full"><a href="" class="text-[14px] font-medium hover:underline">6
-                            Penyewa Lainnya...</a></p>
+                    @empty
+                        <p class="text-center text-gray-500">Tidak ada penyewa yang telat saat ini.</p>
+                    @endforelse
+
+                    <!-- Tautan "Lihat Semua" (jika data lebih dari 5) -->
+                    @if ($penyewaTelat->count() > 5)
+                        <p class="text-center w-full">
+                            <a href="{{ route('denda.index') }}" class="text-[14px] font-medium hover:underline">
+                                {{ $penyewaTelat->count() - 5 }} Penyewa Lainnya...
+                            </a>
+                        </p>
+                    @endif
                 </div>
             </div>
         </div>

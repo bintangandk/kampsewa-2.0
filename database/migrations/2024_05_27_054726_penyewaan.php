@@ -19,6 +19,7 @@ return new class extends Migration
             $table->date('tanggal_selesai')->nullable();
             $table->text('pesan');
             $table->string('status_penyewaan')->default('Pending');
+            $table->enum('jenis_penyewaan', ['online', 'offline'])->default('online');
             $table->timestamps();
         });
     }

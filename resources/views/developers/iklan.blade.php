@@ -188,7 +188,7 @@
                 <div class="_sub-wrapper flex flex-col gap-4 bg-white rounded-[20px] w-full h-full p-4">
                     <div class="_title">
                         <p class="text-[18px] font-medium">Iklan Sedang Aktif</p>
-                        <p class="text-[14px]"><b>10</b> Iklan Sedang Aktif saat ini.</p>
+                        <p class="text-[14px]"><b>{{ $data_iklan_aktif->count() }}</b> Iklan Sedang Aktif saat ini.</p>
                     </div>
                     <div class="_divider w-full h-[2px] bg-[#E5E7EB]"></div>
                     <div class="_card-wrapper w-full h-full overflow-scroll p-2 flex flex-col gap-6">
@@ -229,7 +229,9 @@
                                             </div>
                                         </div>
                                         @php
-                                            $total_hari = Carbon\Carbon::parse($user->tanggal_akhir)->diffInDays($user->tanggal_mulai);
+                                            $total_hari = Carbon\Carbon::parse($user->tanggal_akhir)->diffInDays(
+                                                $user->tanggal_mulai,
+                                            );
                                         @endphp
                                         <div class="_waktu-sewa">
                                             <span class="text-[12px] font-medium">Waktu Iklan Ditampilkan : </span>

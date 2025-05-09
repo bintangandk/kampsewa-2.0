@@ -15,22 +15,22 @@
                         <!-- Profile Image -->
                         <div class="--image">
                             <img class="object-cover border-2 border-solid border-white outline outline-[#5038ED] w-[120px] h-[120px] rounded-full"
-                                src="{{ asset('assets/image/allysa.jpg') }}" alt="">
+                                src="{{ asset('assets/image/developers/' . auth()->user()->foto) }}" alt="">
                         </div>
 
                         <!-- Name and ID -->
                         <div class="--name-id">
-                            <p class="text-[20px] font-bold">{{ session('nama_lengkap') }}</p>
+                            <p class="text-[20px] font-bold">{{ auth()->user()->name }}</p>
                             <p class="text-[14px] font-medium text-gray-400">ID : {{ session('id') }}</p>
                         </div>
 
                         <!-- Edit Button -->
                         <div class="--button">
-                            <button
+                            <a href="{{ route('edit_profile') }}"
                                 class="px-6 py-2 gradient-1 text-[14px] font-bold cursor-pointer text-white rounded-full"
                                 onclick="document.getElementById('editModal').classList.remove('hidden')">
                                 Edit Profile
-                            </button>
+                            </a>
                         </div>
 
                         <!-- Profile Details Grid -->
@@ -87,7 +87,7 @@
                                 </div>
                                 <div class="text-left">
                                     <p class="text-[12px] font-medium text-gray-400">Email:</p>
-                                    <p class="text-[14px] font-bold">cha@gmail.com</p>
+                                    <p class="text-[14px] font-bold">{{ auth()->user()->email }}</p>
                                 </div>
                             </div>
 
