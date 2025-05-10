@@ -1,18 +1,33 @@
 @extends('layouts.developers.ly-dashboard')
 @section('content')
-<div class="--container w-full h-auto p-8 flex flex-col gap-6">
-    <div class="--component-filter w-full">
-        <ul class="flex items-center gap-2">
-            <li class="text-[12px] font-medium">Filter:</li>
-            <li><a class="{{ $title == 'Penghasilan' ? 'bg-[#F8F7F4]' : '' }} text-[14px] font-medium px-4 py-2 rounded-full"
-                    href="{{ route('penghasilan.index') }}">Penghasilan</a></li>
-            <li><a class="{{ $title == 'Pengeluaran' ? 'bg-[#F8F7F4]' : '' }} text-[14px] font-medium px-4 py-2 rounded-full"
-                    href="{{ route('pengeluaran.index') }}">Pengeluaran</a></li>
-        </ul>
-    </div>
-    <hr>
- 
-    {{-- <div class="--componeent-card-two grid grid-cols-2 gap-4">
+    <div class="--container w-full h-auto p-8 flex flex-col gap-6">
+        <div class="--component-filter w-full">
+            <ul class="flex items-center gap-2">
+                <li class="text-[12px] font-medium">Filter:</li>
+                <li>
+                    <a href="{{ route('report.index') }}"
+                        class="{{ request()->routeIs('report.index') ? 'bg-[#F8F7F4]' : '' }} text-[14px] font-medium px-4 py-2 rounded-full">
+                        Pending
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('report.tolak') }}"
+                        class="{{ request()->routeIs('report.tolak') ? 'bg-[#F8F7F4]' : '' }} text-[14px] font-medium px-4 py-2 rounded-full">
+                        Ditolak
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('report.terima') }}"
+                        class="{{ request()->routeIs('report.terima') ? 'bg-[#F8F7F4]' : '' }} text-[14px] font-medium px-4 py-2 rounded-full">
+                        Diterima
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <hr>
+
+        {{-- <div class="--componeent-card-two grid grid-cols-2 gap-4">
         <div class="--card-total-pengeluaran-minggu-ini-total-pengeluaran-hari-ini w-full h-auto flex flex-col gap-2">
             <div
                 class="--total-pengeluaran-minggu-ini relative flex flex-col justify-between gap-4 w-full h-full text-white p-4 rounded-[20px] m-auto bg-[#222222]">
@@ -91,10 +106,10 @@
                     </a>
                 @endfor
             </div>
-        </div>
-    </div> --}}
+        </div> --}}
+    </div>
     <div class="--component-kedua">
-        <div class="--title text-[18px] font-bold">Data Pengeluaran</div>
+        <div class="--title text-[18px] font-bold">Data Report {{ $status }}</div>
         {{-- todo wrapper total search filter --}}
         <div class="flex w-full justify-between items-center mb-4">
 
@@ -110,8 +125,7 @@
                     <div class="_search">
                         <form class="form">
                             <label for="search">
-                                <input class="input" type="text" required="" placeholder="Cari kata"
-                                    id="search">
+                                <input class="input" type="text" required="" placeholder="Cari kata" id="search">
                                 <div class="fancy-bg"></div>
                                 <div class="search">
                                     <svg viewBox="0 0 24 24" aria-hidden="true"
@@ -140,11 +154,7 @@
                 <div class="_filter">
                     <div class="flex items-center justify-center">
                         <div class="relative inline-block text-left">
-                            <button id="dropdown-button"
-                                class="flex items-center gap-[5px] justify-center w-full px-4 py-2 font-medium text-gray-700 bg-white border border-gray-300 rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">
-                                <i class="mt-[2px] text-[14px] fi fi-rr-settings-sliders"></i>
-                                <p class="text-[14px]">Filter</p>
-                            </button>
+
                             <div id="dropdown-menu"
                                 class="origin-top-right z-10 absolute hidden right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
                                 <div class="py-2 p-2" role="menu" aria-orientation="vertical"
@@ -183,84 +193,161 @@
                 </div>
 
                 {{-- todo untuk tombol tambah data --}}
-                <div class="_btn-tambah-data">
-                    <button id="btn-tambah-pengeluaran" class="gradient-1 text-white px-4 py-2 rounded-lg"><i
-                            class="bi bi-plus-lg"></i> Tambah
-                        Pengeluaran</button>
-                </div>
+
             </div>
         </div>
         {{-- todo wrapper btn delete all, btn export data bentuk ke excel --}}
         <div class="flex items-center gap-4 w-full">
             {{-- todo btn export --}}
-            <div><button
-                    class="cursor-pointer gap-2 flex items-center px-4 py-2 bg-gradient-to-r from-[#B381F4] to-[#5038ED] rounded-[5px]">
-                    <p class="mt-1"><i class="text-white fi fi-rr-inbox-out"></i></p>
-                    <p class="text-white text-[14px] font-medium">Export</p>
-                </button></div>
-            {{-- todo btn delete all --}}
-            <div>
 
-            </div>
         </div>
-        <div class="--table w-full h-auto mt-4">
-            <div class="relative w-full h-[500px] overflow-hidden shadow-box-shadow-11 rounded-[20px] bg-white">
-                <div class="w-full h-full overflow-x-auto">
+    </div>
+    <div class="--table w-full h-auto mt-4">
+        <div class="relative w-full h-[500px] overflow-hidden shadow-box-shadow-11 rounded-[20px] bg-white">
+            <div class="w-full h-full overflow-x-auto">
+                @if ($data->isEmpty())
+                    <div class="w-full h-[300px] flex justify-center items-center">
+                        <div class="bg-white shadow-md rounded-lg p-6 text-center">
+                            <h2 class="text-gray-700 text-lg font-semibold">Data tidak ada</h2>
+                            <p class="text-sm text-gray-500">Tidak ditemukan laporan untuk saat ini.</p>
+                        </div>
+                    </div>
+                @else
                     <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                         <thead
                             class="sticky top-0 z-10 text-xs text-gray-700 uppercase bg-white dark:bg-gray-700 dark:text-gray-400">
                             <tr>
-
-                                <th scope="col" class="px-6 py-3">
-                                    Sumber
-                                </th>
-                                <th scope="col" class="px-6 py-3">
-                                    Tanggal Pengeluaran
-                                </th>
-                                <th scope="col" class="px-6 py-3">
-                                    Deskripi
-                                </th>
-                                <th scope="col" class="px-6 py-3">
-                                    Nominal
-                                </th>
-                                <th scope="col" class="px-6 py-3">
-                                    Aksi
-                                </th>
+                                <th scope="col" class="px-6 py-3">Pelapor</th>
+                                <th scope="col" class="px-6 py-3">Tanggal Lapor</th>
+                                <th scope="col" class="px-6 py-3">Deskripsi</th>
+                                <th scope="col" class="px-6 py-3">Status</th>
+                                <th scope="col" class="px-6 py-3">Bukti Laporan</th>
+                                <th scope="col" class="px-6 py-3">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
-                            
+                            @foreach ($data as $report)
                                 <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-
-                                    <td scope="row"
-                                        class="px-6 py-4 font-medium text-gray-900 flex items-center gap-2 whitespace-nowrap dark:text-white">
-                                        <p></p>
+                                    <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                        {{ $report->pelapor->name ?? '-' }}
                                     </td>
                                     <td class="px-6 py-4">
                                         <p class="py-2 px-4 w-fit bg-[#F0FDF4] text-[#4ED17E] rounded-full">
-                                            </p>
+                                            {{ $report->created_at->format('d M Y') }}
+                                        </p>
                                     </td>
                                     <td class="px-6 py-4 line-clamp-1 max-w-[200px]">
-                                       
+                                        {{ $report->deskripsi }}
+                                    </td>
+                                    <td class="px-6 py-4 capitalize">
+                                        {{ $report->status }}
                                     </td>
                                     <td class="px-6 py-4">
-                                        Rp.
+                                        <a href="{{ asset('uploads/report/' . $report->bukti_laporan) }}" target="_blank"
+                                            class="text-blue-600 hover:underline">
+                                            Lihat Bukti
+                                        </a>
                                     </td>
                                     <td class="px-6 py-4 flex gap-2 items-center">
-                                        <p><button id="btn-ubah-pengeluaran"
-                                                onclick="ubah_pengeluaran()"><i
-                                                    class="text-[16px] bi bi-pen-fill"></i></button>
-                                        </p>
-                                        <p><a href="#" onclick="hapus_pengeluaran()"><i
-                                                    class="text-[16px] bi bi-trash-fill"></i></a>
-                                        </p>
+                                        @if ($report->status == 'pending')
+                                            <button onclick="openVerifikasiModal({{ $report }})"
+                                                class="bg-[#FBBF24] text-white py-2 px-4 rounded-full">
+                                                Verifikasi
+                                            </button>
+                                        @endif
+                                        {{-- <a href="{{ route('detail_report') }}"></a> --}}
+                                        <a href="{{ route('detail_report', ['id_penyewaan' => $report->id_penyewaan, 'status' => $status]) }}"
+                                            class="bg-blue-100 text-blue-600 px-4 py-2 rounded-md hover:bg-blue-200 transition">
+                                            Lihat Detail
+                                        </a>
                                     </td>
                                 </tr>
+                            @endforeach
                         </tbody>
                     </table>
+                @endif
+            </div>
+
+        </div>
+    </div>
+    </div>
+    </div>
+
+
+    <div id="verifikasi-modal" class="hidden">
+        <div
+            class="_container w-full h-screen flex justify-center items-center z-20 fixed top-0 left-0 bg-white/0 backdrop-blur-sm">
+            <div
+                class="_card w-[500px] flex flex-col h-[500px] overflow-clip bg-white p-[20px] rounded-[20px] shadow-box-shadow-11">
+                <div class="_header w-full">
+                    <div class="_title flex items-center gap-2">
+                        <div class="w-[35px] h-[35px] rounded-full flex justify-center items-center text-white gradient-1">
+                            <i class="bi bi-currency-bitcoin"></i>
+                        </div>
+                        <span class="text-[16px] font-bold">Verifikasi Laporan</span>
+                    </div>
+                    <div class="_close"></div>
+                </div>
+                <div class="_body w-full mt-4 flex-grow p-2 overflow-y-auto">
+
+
+                    <form method="post" action="{{ route('verifikasi_report') }}" class="w-full flex flex-col gap-2">
+                        {{-- @endif --}}
+                        {{-- <form method="POST" id="form-tambah-pengeluaran"
+                    action="{{ route('keuangan.tambah-pengeluaran-customer', ['id_user' => Crypt::encrypt(session('id_user'))]) }}"
+                    class="w-full flex flex-col gap-2"> --}}
+                        @csrf
+                        <input type="hidden" name="id_report" id="id_report">
+                        <div class="_input w-full">
+                            <label for="fullname">Verifikasi</label>
+                            <select class="border w-full border-solid rounded-[10px] text-[14px] p-2" id="status"
+                                name="status" required>
+                                <option value="" disabled selected>Pilih Status</option>
+                                <option value="terima">Diterima</option>
+                                <option value="tolak">Ditolak</option>
+                            </select>
+                        </div>
+
+
+                </div>
+                <hr>
+                <div class="_footer w-full p-2 flex gap-2">
+                    <button type="submit"
+                        class="gradient-1 text-white text-[14px] py-2 px-4 rounded-full">Simpan</button>
+
+                    </form>
+                    <button class="text-[14px] shadow-box-shadow-8 py-2 px-4 rounded-full"
+                        id="cancel-tambah-pengeluaran-web-customer" onclick="closeVerifikasiModal()">
+                        Cancel
+                    </button>
+
                 </div>
             </div>
         </div>
     </div>
-</div>
-@endsection 
+
+
+
+
+
+    <script>
+        function openVerifikasiModal(reportId) {
+            const modal = document.getElementById('verifikasi-modal');
+
+            document.getElementById('id_report').value = reportId.id;
+
+
+
+
+
+            // Update action URL dengan ID yang diklik
+            // form.action = `/developer/dashboard/report/verifikasi/${reportId}`;
+
+            modal.classList.remove('hidden');
+        }
+
+        function closeVerifikasiModal() {
+            document.getElementById('verifikasi-modal').classList.add('hidden');
+        }
+    </script>
+@endsection

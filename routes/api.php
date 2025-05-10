@@ -11,6 +11,7 @@
     use App\Http\Controllers\Api\TransaksiController;
     use App\Http\Controllers\Api\UserController;
     use App\Http\Controllers\Developer\DashboardController;
+    use App\Http\Controllers\ReportController;
     use Illuminate\Support\Facades\Route;
 
     // auth
@@ -33,6 +34,10 @@
     Route::post('/lupa-password/verifikasi-otp/{nomor_telephone}', [LupaPassword::class, 'verifikasiOTP']);
     Route::post('/lupa-password/reset-password/{nomor_telephone}', [LupaPassword::class, 'resetPassword']);
     Route::post('/lupa-password/kirim-ulang-otp/{nomor_telephone}', [LupaPassword::class, 'kirimUlangOTP']);
+    Route::post('/report/{id_user}', [UserController::class, 'lapor']);
+
+
+
 
     Route::group(['middleware' => 'auth:sanctum'], function () {
         // user

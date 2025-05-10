@@ -10,6 +10,7 @@ class Report extends Model
     use HasFactory;
 
     protected $table = 'reports';
+    protected $guarded = ['id'];
 
 
     public function penyewaan()
