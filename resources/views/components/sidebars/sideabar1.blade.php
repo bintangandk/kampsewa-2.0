@@ -64,23 +64,22 @@
 
                     <li>
                         <a href="{{ route('report.index') }}"
-                            class="{{ request()->routeIs('report.index') ? 'bg-gradient-to-bl from-[#B381F4] to-[#5038ED] text-white' : 'text-gray-600' }}
-          rounded-[20px] relative flex flex-row items-center h-11 focus:outline-none
-          hover:bg-gradient-to-bl hover:from-[#B381F4] hover:to-[#5038ED] hover:text-white
-          border-transparent pr-6">
+                            class="rounded-[20px] relative flex flex-row items-center h-11 focus:outline-none border-transparent pr-6
+              {{ request()->routeIs('report.*')
+                  ? 'bg-gradient-to-bl from-[#B381F4] to-[#5038ED] text-white'
+                  : 'text-gray-600 hover:bg-gradient-to-bl hover:from-[#B381F4] hover:to-[#5038ED] hover:text-white' }}">
 
                             <span class="inline-flex justify-center mt-1 items-center ml-4">
-                                <i
-                                    class="fi fi-rr-bell {{ request()->routeIs('report.index') ? 'text-white' : '' }}"></i>
+                                <i class="fi fi-rr-bell {{ request()->routeIs('report.*') ? 'text-white' : '' }}"></i>
                             </span>
 
                             <span
-                                class="ml-2 {{ request()->routeIs('report.index') ? 'text-white' : '' }} text-sm tracking-wide truncate">
-                                report
+                                class="ml-2 text-sm tracking-wide truncate {{ request()->routeIs('report.*') ? 'text-white' : '' }}">
+                                Pending
                             </span>
                         </a>
-
                     </li>
+
                     {{-- <li>
                         <a href="{{ route('informasi-pengguna.index') }}"
                             class="{{ $title == 'Informasi Pengguna' ? 'bg-gradient-to-bl from-[#B381F4] to-[#5038ED]' : '' }} relative flex flex-row items-center h-11 rounded-[20px] focus:outline-none hover:bg-gradient-to-bl hover:from-[#B381F4] hover:to-[#5038ED] text-gray-600 hover:text-white border-transparent pr-6">
