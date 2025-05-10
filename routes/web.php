@@ -1,4 +1,4 @@
-endsec<?php
+<?php
 
 use App\Http\Controllers\Api\ChartWebController;
 use App\Http\Controllers\Auth\AuthController;
