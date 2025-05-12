@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Alamat;
 use App\Models\Bank;
+use App\Models\Penyewaan;
+use App\Models\Report;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -378,6 +380,44 @@ class UserController extends Controller
         }
     }
 
+    public function lapor(Request $request, $id_user)
+    {
+        // Validasi input dari request
+        $request->validate([
+            'deskripsi' => 'required|string',
+            'bukti_laporan' => 'required|image|mimes:jpg,jpeg,png',
+            'id_penyewaan' => 'required|exists:penyewaan,id',
+        ]);
+
+        // Proses upload bukti laporan
+        $file = $request->file('bukti_laporan');
+        $filename = time() . '_' . $file->getClientOriginalName();
+        $file->move(public_path('uploads/report'), $filename);
+
+        // Ambil data penyewaan dan relasi produk
+        $penyewaan = Penyewaan::with('details.produk')->findOrFail($request->id_penyewaan);
+
+        $detail = $penyewaan->details->first();
+        if (!$detail || !$detail->produk) {
+            return response()->json(['message' => 'Produk tidak ditemukan'], 404);
+        }
+
+        $idTerlapor = $detail->produk->id_user;
+        // Membuat laporan
+        $report = Report::create([
+            'deskripsi' => $request->deskripsi,
+            'bukti_laporan' => $filename,
+            'id_penyewaan' => $request->id_penyewaan,
+            'id_pelapor' => $id_user,  // Gunakan parameter id_user untuk pelapor
+            'id_terlapor' => $idTerlapor,  // ID Terlapor diambil dari relasi produk
+            'status' => 'pending'
+        ]);
+
+        return response()->json([
+            'message' => 'Laporan berhasil dikirim',
+            'data' => $report
+        ]);
+    }
     public function logout(Request $request)
     {
         // Menghapus token saat ini yang digunakan untuk otentikasi

@@ -11,7 +11,8 @@
 </head>
 
 <body>
-    <div class="min-h-screen flex flex-col small-desktop:hidden flex-auto flex-shrink-0 antialiased bg-gray-50 text-gray-800">
+    <div
+        class="min-h-screen flex flex-col small-desktop:hidden flex-auto flex-shrink-0 antialiased bg-gray-50 text-gray-800">
         <div class="fixed flex flex-col top-0 left-0 w-64 bg-white h-full border-r">
             <div class="px-5 flex mt-[20px] items-center h-14">
                 <div onclick="location.href='{{ route('home.index') }}'"
@@ -40,14 +41,7 @@
                                 class="ml-2 text-sm tracking-wide truncate {{ $title == 'Dashboard | Developer Kamp Sewa' ? 'text-white' : '' }}">Dashboard</span>
                         </a>
                     </li>
-                    {{-- <a href="{{ route('notification.index') }}"
-                        class="{{ $title == 'Dashboard | Notification' ? 'bg-gradient-to-bl from-[#B381F4] to-[#5038ED]' : '' }} rounded-[20px] relative flex flex-row items-center h-11 focus:outline-none hover:bg-gradient-to-bl hover:from-[#B381F4] hover:to-[#5038ED] text-gray-600 hover:text-white border-transparent pr-6">
-                        <span class="inline-flex justify-center mt-1 items-center ml-4">
-                            <i class="fi fi-rr-bell {{ $title == 'Dashboard | Notification' ? 'text-white' : '' }}"></i>
-                        </span>
-                        <span
-                            class="ml-2 {{ $title == 'Dashboard | Notification' ? 'text-white' : '' }} text-sm tracking-wide truncate">Notifications</span>
-                    </a> --}}
+
                     </li>
 
                     {{-- todo MENU CUSTOMER --}}
@@ -67,6 +61,25 @@
                                 class="ml-2 text-sm tracking-wide {{ $title == 'Detail Produk Sedang Disewa' ? 'text-white' : '' }} {{ $title == 'Detail Produk Disewakan' ? 'text-white' : '' }} {{ $title == 'Produk Disewakan' ? 'text-white' : '' }} truncate {{ $title == 'Kelola Pengguna | Developer Kamp Sewa' ? 'text-white' : '' }} {{ $title == 'Detail Pengguna' ? 'text-white' : '' }}">Kelola</span>
                         </a>
                     </li>
+
+                    <li>
+                        <a href="{{ route('report.index') }}"
+                            class="rounded-[20px] relative flex flex-row items-center h-11 focus:outline-none border-transparent pr-6
+              {{ request()->routeIs('report.*')
+                  ? 'bg-gradient-to-bl from-[#B381F4] to-[#5038ED] text-white'
+                  : 'text-gray-600 hover:bg-gradient-to-bl hover:from-[#B381F4] hover:to-[#5038ED] hover:text-white' }}">
+
+                            <span class="inline-flex justify-center mt-1 items-center ml-4">
+                                <i class="fi fi-rr-bell {{ request()->routeIs('report.*') ? 'text-white' : '' }}"></i>
+                            </span>
+
+                            <span
+                                class="ml-2 text-sm tracking-wide truncate {{ request()->routeIs('report.*') ? 'text-white' : '' }}">
+                                Pending
+                            </span>
+                        </a>
+                    </li>
+
                     {{-- <li>
                         <a href="{{ route('informasi-pengguna.index') }}"
                             class="{{ $title == 'Informasi Pengguna' ? 'bg-gradient-to-bl from-[#B381F4] to-[#5038ED]' : '' }} relative flex flex-row items-center h-11 rounded-[20px] focus:outline-none hover:bg-gradient-to-bl hover:from-[#B381F4] hover:to-[#5038ED] text-gray-600 hover:text-white border-transparent pr-6">

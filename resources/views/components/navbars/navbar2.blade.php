@@ -16,7 +16,8 @@
                 <li class="nav-item {{ $title == 'Order Selesai' ? 'active' : '' }} {{ $title == 'Denda Pelanggan' ? 'active' : '' }} {{ $title == 'Sewa Berlangsung' ? 'active' : '' }} {{ $title == 'Terima Order Masuk' ? 'active' : '' }} {{ $title == 'Order Masuk' ? 'active' : ''}} {{ $title == 'Kelola Iklan' ? 'active' : '' }} {{ $title == 'Iklan | Customer' ? 'active' : '' }}">
                     <a href="" class="nav-link with-sub"><i class="typcn typcn-shopping-bag"></i> Transaksi</a>
                     <nav class="az-menu-sub">
-                        <a href="{{ route('menu-transaksi.index', ['id_user' => Crypt::encrypt(session('id_user'))]) }}" class="nav-link">Konfirmasi Pesanan</a>
+                        <a href="{{ route('menu-transaksi.index', ['id_user' => Crypt::encrypt(session('id_user'))]) }}" class="nav-link">Konfirmasi Pesanan Online</a>
+                        <a href="{{ route('transaksi-offline.order-offline', ['id_user' => Crypt::encrypt(session('id_user'))]) }}" class="nav-link">Buat Pesanan Offline</a>
                         <a href="{{ route('buat-iklan.index', ['id_user' => Crypt::encrypt(session('id_user'))]) }}" class="nav-link">Buat Promosi / Iklan</a>
 
                     </nav>

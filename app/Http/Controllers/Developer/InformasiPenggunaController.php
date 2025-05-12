@@ -7,6 +7,8 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class InformasiPenggunaController extends Controller
 {
@@ -62,19 +64,19 @@ class InformasiPenggunaController extends Controller
         $produk_terbanyak = $request->query('produk_terbanyak');
 
         $query = DB::table('produk')
-        ->rightJoin('users', 'produk.id_user', '=', 'users.id')
-        ->whereIn('users.type', [0]) // Filter user dengan type 0 (Customer)
-        ->select(
-            'users.id as user_id',
-            'users.name',
-            'users.nomor_telephone',
-            'users.created_at',
-            'users.jenis_kelamin',
-            'users.foto',
-            'users.last_login',
-            DB::raw('COUNT(produk.id) as total_product') // Menghitung total produk
-        )
-        ->groupBy('users.id', 'users.name', 'users.nomor_telephone', 'users.created_at', 'users.jenis_kelamin', 'users.foto');
+            ->rightJoin('users', 'produk.id_user', '=', 'users.id')
+            ->whereIn('users.type', [0]) // Filter user dengan type 0 (Customer)
+            ->select(
+                'users.id as user_id',
+                'users.name',
+                'users.nomor_telephone',
+                'users.created_at',
+                'users.jenis_kelamin',
+                'users.foto',
+                'users.last_login',
+                DB::raw('COUNT(produk.id) as total_product') // Menghitung total produk
+            )
+            ->groupBy('users.id', 'users.name', 'users.nomor_telephone', 'users.created_at', 'users.jenis_kelamin', 'users.foto');
 
         // Tambahkan klausa WHERE jika ada kata kunci pencarian
         if (!empty($cari_customer)) {
@@ -122,5 +124,75 @@ class InformasiPenggunaController extends Controller
             'get_customer_online' => $get_customer_online,
             'count_user_online' => $count_customer_online
         ]);
+    }
+
+    public function editProfile()
+    {
+        $user_baru_terdaftar = User::select('users.*')
+            ->join('status_notifikasi_user', 'users.id', '=', 'status_notifikasi_user.id_user')
+            ->where('users.type', 0)
+            ->whereDate('users.created_at', Carbon::today())
+            ->where('status_notifikasi_user.status', 'unread')
+            ->orderByDesc('users.created_at')->limit(10)
+            ->get();
+        return view('developers.menu-profile.edit_profile')->with([
+            'title' => 'Edit Profile',
+            'user_baru_terdaftar' => $user_baru_terdaftar
+        ]);
+    }
+
+    public function updateProfile(Request $request)
+    {
+        // cek apakkah ada file gambar yang diupload
+
+        if ($request->hasFile('foto')) {
+            $validation = Validator::make($request->all(), [
+                'name' => 'required|string|max:255',
+                'nomor_telephone' => 'required|digits_between:11,14',
+                'email' => 'required|email|max:255|unique:users,email,' . auth()->user()->id,
+                'jenis_kelamin' => 'required|string|max:10',
+                'tanggal_lahir' => 'required|date',
+                'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+            ]);
+        } else {
+            # code...
+            $validation = Validator::make($request->all(), [
+                'name' => 'required|string|max:255',
+                'nomor_telephone' => 'required|digits_between:11,14',
+                'email' => 'required|email|max:255|unique:users,email,' . auth()->user()->id,
+                'jenis_kelamin' => 'required|string|max:10',
+            ]);
+        }
+
+
+        if ($validation->fails()) {
+            return redirect()->back()->withErrors($validation)->withInput();
+        }
+
+        $user = User::find(auth()->user()->id);
+        $user->name = $request->input('name');
+        $user->nomor_telephone = $request->input('nomor_telephone');
+        $user->email = $request->input('email');
+        $user->jenis_kelamin = $request->input('jenis_kelamin');
+
+        //  tempat nympan foto nya disini   src="{{ asset('assets/image/developers/' . auth()->user()->foto) }}" alt="Foto Profil">
+
+
+        if ($request->hasFile('foto')) {
+            $file = $request->file('foto');
+            $filename = time() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('assets/image/developers'), $filename);
+            $user->foto = $filename; // hanya nama file saja
+
+        }
+        if ($user->save()) {
+
+            Alert::success('Success', 'Profile updated successfully.');
+            return redirect()->route('profile.index', ['nama_lengkap' => $request->name])
+                ->with('success', 'Profile updated successfully.');
+        } else {
+            Alert::error('Error', 'Failed to update profile.');
+            return redirect()->back()->with('error', 'Failed to update profile.');
+        }
     }
 }

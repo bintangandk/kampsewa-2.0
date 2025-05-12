@@ -34,6 +34,7 @@ class UserFactory extends Factory
             'name_store' => $this->faker->name(),
             'remember_token' => Str::random(10),
             'created_at' => now(),
+            'updated_at' => now(),
         ];
     }
 

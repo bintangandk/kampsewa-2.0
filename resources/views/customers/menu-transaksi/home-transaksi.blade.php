@@ -9,11 +9,13 @@
                 <li><a class="{{ $title === 'Order Masuk' ? 'border-b-2 border-b-[#FF3F42] text-[#FF3F42]' : '' }} hover:border-b-2 hover:border-b-[#FF3F42] hover:text-[#FF3F42] p-2 xl:text-[16px] font-medium text-[#D1CDD0]"
                         href="">Order Masuk</a></li>
                 <li><a class="{{ $title === 'Sewa Berlangsung' ? 'border-b-2 border-b-[#FF3F42] text-[#FF3F42]' : '' }} hover:border-b-2 hover:border-b-[#FF3F42] hover:text-[#FF3F42] p-2 xl:text-[16px] font-medium text-[#D1CDD0]"
-                        href="{{ route('menu-transaksi.sewa-berlangsung', ['id_user' => Crypt::encrypt(session('id_user'))]) }}">Sewa Berlangsung</a></li>
+                        href="{{ route('menu-transaksi.sewa-berlangsung', ['id_user' => Crypt::encrypt(session('id_user'))]) }}">Sewa
+                        Berlangsung</a></li>
                 {{-- <li><a class="{{ $title === 'Denda' ? 'border-b-2 border-b-[#FF3F42] text-[#FF3F42]' : '' }} hover:border-b-2 hover:border-b-[#FF3F42] hover:text-[#FF3F42] p-2 xl:text-[16px] font-medium text-[#D1CDD0]"
                         href="{{ route('menu-transaksi.denda-transaksi', ['id_user' => Crypt::encrypt(session('id_user'))]) }}">Denda</a></li> --}}
                 <li><a class="{{ $title === 'Selesai Order' ? 'border-b-2 border-b-[#FF3F42] text-[#FF3F42]' : '' }} hover:border-b-2 hover:border-b-[#FF3F42] hover:text-[#FF3F42] p-2 xl:text-[16px] font-medium text-[#D1CDD0]"
-                        href="{{ route('menu-transaksi.order-selesai', ['id_user' => Crypt::encrypt(session('id_user'))]) }}">Selesai</a></li>
+                        href="{{ route('menu-transaksi.order-selesai', ['id_user' => Crypt::encrypt(session('id_user'))]) }}">Selesai</a>
+                </li>
             </ul>
             <div class="--filter flex items-center gap-6">
                 <form method="GET">
@@ -88,7 +90,8 @@
                                     src="{{ asset('assets/image/customers/produk/' . $item->foto_depan) }}" alt="">
                                 <div class="max-w-[250px] line-clamp-1">{{ $item->nama }}</div>
                             </td>
-                            <td class="px-4 py-2"><a href="{{ route('menu-transaksi.terima-order-masuk', ['id_penyewaan' => Crypt::encrypt($item->id_penyewaan)]) }}"
+                            <td class="px-4 py-2"><a
+                                    href="{{ route('menu-transaksi.terima-order-masuk', ['id_penyewaan' => Crypt::encrypt($item->id_penyewaan)]) }}"
                                     class="py-1 px-2 rounded-md bg-blue-500/20 text-blue-900 text-center hover:text-blue-900">Terima</a>
                             </td>
                         </tr>
@@ -164,5 +167,4 @@
             });
         });
     </script>
-
 @endsection

@@ -1,109 +1,110 @@
-async function fetchDataTotalPerbandinganPenghasilanDariTigaBulanLalu() {
-    const url = 'http://192.168.1.3:8000/api/chart-penghasilan-perbulan-menu-penghasilan';
+async function fetchMonthlyIncome() {
+    const url = "/api/chart/monthly-income";
     try {
         const response = await fetch(url, {
-            method: 'GET',
+            method: "GET",
             headers: {
-                'Accept' : 'application/json',
-            }
+                Accept: "application/json",
+            },
         });
-        const data = response.json();
-        return data
-    } catch(error) {
-        console.error(error);
-        return null;
+
+        if (!response.ok) {
+            throw new Error("Network response was not ok");
+        }
+
+        const result = await response.json();
+
+        if (result.success && result.data) {
+            return result.data;
+        }
+        throw new Error("Invalid data format");
+    } catch (error) {
+        console.error("Error fetching monthly income:", error);
+        return {
+            labels: ["Feb", "Mar", "Apr", "Mei"],
+            values: [0, 0, 0, 0], // Fallback data
+        };
     }
 }
 
-fetchDataTotalPerbandinganPenghasilanDariTigaBulanLalu().then(data => {
-    if(data) {
-        console.log(data.total_pemasukan_per_bulan);
+async function initializeChart() {
+    // Pastikan elemen canvas ada
+    const canvas = document.getElementById("penghasilan-perbulan");
+    if (!canvas) {
+        console.error("Canvas element not found!");
+        return;
     }
-});
-const labelsPenghasilanPerbulan = [
-    "Feb",
-    "Mar",
-    "Apr",
-    "Mei",
-];
 
-const dataPenghasilanPerbulan = {
-    labels: labelsPenghasilanPerbulan,
-    datasets: [
-        {
-            label: "My First Dataset",
-            data: [
-                30_435_142, 25_234_134, 30_345_123, 50_456_250
+    // Hancurkan chart lama jika ada
+    if (canvas.chart) {
+        canvas.chart.destroy();
+    }
+
+    // Ambil data dari API
+    const { labels, values } = await fetchMonthlyIncome();
+    console.log("Data from API:", { labels, values });
+
+    // Konfigurasi Chart
+    const config = {
+        type: "line",
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: "Penghasilan Perbulan",
+                    data: values,
+                    fill: true,
+                    borderWidth: 3,
+                    borderColor: "rgb(124,169,207)",
+                    tension: 0.4,
+                    backgroundColor: createGradientPenghasilanPerbulan(canvas),
+                },
             ],
-            fill: true,
-            borderWidth: 3,
-            borderColor: "rgb(124,169,207)",
-            tension: 0.4,
-            backgroundColor: createGradientPenghasilanPerbulan(),
         },
-    ],
-};
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: (ctx) => `Rp ${ctx.raw.toLocaleString("id-ID")}`,
+                    },
+                },
+            },
+            scales: {
+                x: {
+                    grid: { display: false },
+                    border: { display: false },
+                    ticks: { color: "white" },
+                },
+                y: {
+                    ticks: {
+                        callback: (val) =>
+                            val !== 0
+                                ? `Rp ${val.toLocaleString("id-ID")}`
+                                : undefined,
+                        display: false,
+                    },
+                    beginAtZero: true,
+                    grid: { display: false },
+                    border: { display: false },
+                },
+            },
+        },
+    };
 
-function createGradientPenghasilanPerbulan() {
-    const ctx = document.getElementById("penghasilan-perbulan").getContext("2d");
-    const gradient = ctx.createLinearGradient(0, 0, 0, 70); // Sesuaikan lebar gradien dengan ukuran grafik Anda
-    gradient.addColorStop(0, "rgb(124,169,207)"); // Warna atas
-    gradient.addColorStop(1, "rgba(8,14,46,1)"); // Transparansi putih di bagian bawah
+    // Buat chart baru
+    canvas.chart = new Chart(canvas, config);
+}
+
+// Fungsi gradient yang dimodifikasi
+function createGradientPenghasilanPerbulan(canvas) {
+    const ctx = canvas.getContext("2d");
+    const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+    gradient.addColorStop(0, "rgb(124,169,207)");
+    gradient.addColorStop(1, "rgba(8,14,46,1)");
     return gradient;
 }
 
-const configPenghasilanPerbulan = {
-    type: "line",
-    data: dataPenghasilanPerbulan,
-    options: {
-        layout: {
-            padding: {
-                left: 0,
-                right: 0,
-                top: 0,
-                bottom: 0,
-            },
-        },
-        tooltips: {
-            line: false,
-        },
-        plugins: {
-            legend: {
-                display: false,
-            },
-        },
-        scales: {
-            x: {
-                grid: {
-                    display: false,
-                },
-                border: {
-                    display: false,
-                },
-                ticks: {
-                    color : 'white',
-                }
-            },
-            y: {
-                ticks: {
-                    callback: function (value) {
-                        // Hanya tampilkan label jika nilainya bukan 0
-                        if (value !== 0) {
-                            return value;
-                        }
-                    },
-                    display: false
-                },
-                beginAtZero: true,
-                border: {
-                    display: false,
-                },
-                grid: {
-                    display: false, // hilangkan garis vertikal
-                },
-            },
-        },
-    },
-};
-const penghasilanPerbulan = document.getElementById("penghasilan-perbulan");
-new Chart(penghasilanPerbulan, configPenghasilanPerbulan);
+// Inisialisasi chart saat halaman dimuat
+document.addEventListener("DOMContentLoaded", initializeChart);

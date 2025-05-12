@@ -10,6 +10,8 @@
     use App\Http\Controllers\Api\RiwayatPencarianController;
     use App\Http\Controllers\Api\TransaksiController;
     use App\Http\Controllers\Api\UserController;
+    use App\Http\Controllers\Developer\DashboardController;
+    use App\Http\Controllers\ReportController;
     use Illuminate\Support\Facades\Route;
 
     // auth
@@ -21,12 +23,21 @@
     Route::get('/chart-penghasilan-menu-penghasilan', [ChartWebController::class, 'apiChartMenuPenghasilan']);
     Route::get('/chart-penghasilan-perbulan-menu-penghasilan', [ChartWebController::class, 'apiChartTotalPenghasilanPerbulanSaatIniMenuPenghasilan']);
     Route::get('/chart-perbandingan-pertahun-web-cust/{id_user}', [ChartWebController::class, 'apiPerbandinganPemasukanPertahunWebCust']);
+    Route::get('/chart/weekly-income', [ChartWebController::class, 'getWeeklyIncome']);
+    Route::get('/chart/monthly-income', [ChartWebController::class, 'getMonthlyIncome']);
 
+    Route::get('/chart/expense-data', [ChartWebController::class, 'getExpenseData']);
+    Route::get('/yearly-profit-comparison', [ChartWebController::class, 'getYearlyProfitComparison']);
+    Route::get('/chart/income-chart-data', [ChartWebController::class, 'getIncomeChartData']);
     // lupa password api
     Route::post('/lupa-password', [LupaPassword::class, 'verifikasiPhone']);
     Route::post('/lupa-password/verifikasi-otp/{nomor_telephone}', [LupaPassword::class, 'verifikasiOTP']);
     Route::post('/lupa-password/reset-password/{nomor_telephone}', [LupaPassword::class, 'resetPassword']);
     Route::post('/lupa-password/kirim-ulang-otp/{nomor_telephone}', [LupaPassword::class, 'kirimUlangOTP']);
+    Route::post('/report/{id_user}', [UserController::class, 'lapor']);
+
+
+
 
     Route::group(['middleware' => 'auth:sanctum'], function () {
         // user

@@ -44,7 +44,7 @@
                 </div>
 
                 {{-- todo filter --}}
-                <div class="_filter">
+                {{-- <div class="_filter">
                     <div class="flex items-center justify-center">
                         <div class="relative inline-block text-left">
                             <select id="filter" name="filter"
@@ -56,7 +56,7 @@
                             </select>
                         </div>
                     </div>
-                </div>
+                </div> --}}
 
                 {{-- todo untuk tombol tambah data --}}
                 <div class="_btn-tambah-data">
@@ -82,7 +82,7 @@
                         <div class="_name-address">
                             <div class="_name font-bold text-[#19191b] line-clamp-1">{{ $item->name }}</div>
                             <div class="_address text-gray-400 font-normal text-[12px] line-clamp-1">
-                            Belum di isi.
+                                Belum di isi.
                             </div>
                             <div class="_level w-fit mt-2">
                                 <p class="bg-[#FDEAEE] text-[10px] font-bold rounded-full text-[#F5325C] text-center p-1">
@@ -115,12 +115,12 @@
                             <p class="text-[14px] font-medium text-[#19191b]">
                                 {{ $item->jenis_kelamin ? $item->jenis_kelamin : 'Belum di isi.' }}</p>
                         </div>
-                        <div class="_moreicon btn-more relative cursor-pointer">
+                        {{-- <div class="_moreicon btn-more relative cursor-pointer">
                             <div class="relative"><i class="text-[20px] text-gray-400 fi fi-rr-rectangle-list"></i>
                             </div>
-                            {{-- Dropdown menu --}}
+
                             <div class="dropdown-menu right-0 z-10 hidden absolute bg-white shadow-md rounded-md py-2 px-3">
-                                {{-- Dropdown items --}}
+
                                 <a href="{{ route('detail-pengguna.index', ['fullname' => $item->name]) }}"
                                     class="hover:text-[#12A4ED] dropdown-item flex gap-1 py-2">
                                     <span class="mt-[0.15rem]"><i class="fi fi-rr-folder-open"></i></span>
@@ -130,7 +130,7 @@
                                     <span class="mt-[0.15rem]"><i class="fi fi-rr-trash"></i></span>
                                     <span>Delete</span></a>
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
             @endforeach

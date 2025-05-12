@@ -1,6 +1,6 @@
 // Fetch API total keuntungan
 async function fetchApiTotalKerugian() {
-    const url = "http://192.168.1.3:8000/api/chart-keuntungan-menu-dashboard";
+    const url = "/api/chart-keuntungan-menu-dashboard";
     try {
         const response = await fetch(url, { mode: 'cors' }); // Use 'cors' mode
         const data = await response.json();

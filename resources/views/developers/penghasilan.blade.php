@@ -32,16 +32,23 @@
                     class="--card w-full {{-- bg-[#E5F1FD]  --}} shadow-box-shadow-8 rounded-[20px] flex flex-col justify-between gap-4">
                     <div class="--header flex justify-between items-center">
                         <div class="--sub-1 p-4">
-                            <p class="text-gray-400 font-medium text-[14px]">Tahun 2024:</p>
-                            <p class="text-[24px] font-bold mb-2">Rp.
-                                {{ number_format($penghasilan_tahun_ini, 0, ',', '.') }}</p>
+                            <p class="text-gray-400 font-medium text-[14px]">
+                                Tahun {{ date('Y') }}:
+                            </p>
+                            <p class="text-[24px] font-bold mb-2">
+                                Rp. {{ number_format($penghasilan_tahun_ini, 0, ',', '.') }}
+                            </p>
                             <div class="--penghasilan-tahun-lalu">
-                                <p class="text-[12px]  font-normal">Total penghasilan tahun lalu:</p>
-                                <p class="font-bold text-[16px]">Rp.
-                                    {{ number_format($penghasilan_tahun_lalu, 0, ',', '.') }}</p>
+                                <p class="text-[12px] font-normal">
+                                    Total penghasilan tahun {{ date('Y', strtotime('-1 year')) }}:
+                                </p>
+                                <p class="font-bold text-[16px]">
+                                    Rp. {{ number_format($penghasilan_tahun_lalu, 0, ',', '.') }}
+                                </p>
                             </div>
                         </div>
-                        <div class="--sub-2 p-4">
+
+                        {{-- <div class="--sub-2 p-4">
                             @if ($persentase_perubahan >= 0)
                                 <p class="py-2 px-4 bg-[#F0FDF4] text-[#4AD07B] text-[14px] font-medium rounded-full">Naik :
                                     {{ number_format($persentase_perubahan, 2) }}% <i class="bi bi-arrow-up-right"></i></p>
@@ -51,7 +58,7 @@
                                     {{ number_format($persentase_perubahan, 2) }} % <i class="bi bi-arrow-down-right"></i>
                                 </p>
                             @endif
-                        </div>
+                        </div> --}}
                     </div>
                     <div class="--body">
                         <canvas id="penghasilan"></canvas>
@@ -73,18 +80,12 @@
                         <div class="--header">
                             <p class="text-white font-medium text-[16px] mb-1">Total Perbulan</p>
                             <div class="--total">
-                                <p class="text-[12px] font-bold text-gray-400">Bulan <b>{{ date('F') }}</b> 2024</p>
+                                <p class="text-[12px] font-bold text-gray-400">Bulan
+                                    <b>{{ date('F') }}</b> {{ date('Y') }}
+                                </p>
                                 <p class="text-white text-[18px] font-medium">Rp.
                                     {{ number_format($monthCurrentTotal, 0, ',', '.') }}</p>
-                                @if ($totalPemasukanPerbulanSebelumBulanSaatIni >= 0)
-                                    <p class="text-white text-[12px]">Naik
-                                        <b>{{ number_format($totalPemasukanPerbulanSebelumBulanSaatIni, 2) }}%</b> dari 3
-                                        bulan kemarin.</p>
-                                @else
-                                    <p class="text-white text-[12px]">Turun
-                                        <b>{{ number_format($totalPemasukanPerbulanSebelumBulanSaatIni, 2) }}%</b> dari 3
-                                        bulan kemarin.</p>
-                                @endif
+
                             </div>
                         </div>
                         <div class="--body mb-4">
@@ -109,9 +110,19 @@
                         <div class="--header">
                             <p class="text-white font-medium text-[16px] mb-1">Total Perminggu</p>
                             <div class="--total">
-                                <p class="text-[12px] font-normal text-gray-200">Minggu Bulan <b>Mei</b> 2024</p>
-                                <p class="text-white text-[18px] font-medium">Rp. 254.550.240,00</p>
-                                <p class="text-white text-[12px]">Naik <b>65%</b> dari 3 minggu kemarin.</p>
+                                <p class="text-[12px] font-normal text-gray-200">Minggu Bulan
+                                    <b>{{ $currentMonth }}</b>
+                                    {{ $currentYear }}
+                                </p>
+                                <p class="text-white text-[18px] font-medium">Rp.
+                                    {{ number_format($currentWeekIncome, 2, ',', '.') }}</p>
+                                {{-- <p class="text-white text-[12px]">
+                                    @if ($percentageIncrease >= 0)
+                                        Naik <b>{{ round($percentageIncrease) }}%</b> dari 3 minggu kemarin.
+                                    @else
+                                        Turun <b>{{ abs(round($percentageIncrease)) }}%</b> dari 3 minggu kemarin.
+                                    @endif
+                                </p> --}}
                             </div>
                         </div>
                         <div class="--body mb-4">
@@ -121,8 +132,9 @@
                             <p class="text-white text-[14px] font-semibold">Total Minggu lalu</p>
                             <div class="--card-total-bulan-lalu bg-white rounded-[10px] flex items-center justify-between">
                                 <div class="-total p-4">
-                                    <p class="font-bold text-gray-400 text-[12px]">Minggu ke 2</p>
-                                    <p class="text-[#080E2E] font-medium">Rp. 15.550.566,00</p>
+                                    <p class="font-bold text-gray-400 text-[12px]">Minggu ke {{ $previousWeekOfMonth }}</p>
+                                    <p class="text-[#080E2E] font-medium">Rp.
+                                        {{ number_format($previousWeekIncome, 2, ',', '.') }}</p>
                                 </div>
                                 <div class="--icon bg-[#C7B4EE] rounded-tl-[10px] rounded-bl-[10px]">
                                     <i class="text-[20px] text-white p-2 bi bi-currency-exchange"></i>
@@ -138,29 +150,29 @@
                             <i class="text-white bi bi-calendar-week-fill"></i>
                         </div>
                         <div class="--title">
-                            <p class="font-medium text-white text-[14px]">Penghasilan Hari ini - Selasa</p>
-                            <p class="text-white text-[12px]">Mendapatkan <b>Rp. 6.564.245,00 Minggu lalu.</b></p>
+                            <p class="font-medium text-white text-[14px]">Penghasilan Hari ini - </p>
+                            {{-- <p class="text-white text-[12px]">Mendapatkan <b>Rp. 6.564.245,00 Minggu lalu.</b></p> --}}
                         </div>
                     </div>
                     <div class="-total text-[16px] font-bold text-white">
-                        Rp. 5.914.135,00
+                        Rp. {{ number_format($todayIncome, 0, ',', '.') }}
                     </div>
                 </div>
             </div>
         </div>
         <div class="--component-kedua">
-            <div class="--title text-[18px] font-bold">Data Pemasukan</div>
-            {{-- todo wrapper total search filter --}}
-            <div class="flex w-full justify-between items-center mb-4">
+            {{-- <div class="--title text-[18px] font-bold">Data Pemasukan</div> --}}
 
-                {{-- todo total users --}}
+            {{-- <div class="flex w-full justify-between items-center mb-4">
+
+
                 <div class="_total">
                     <p class="text-[#19191b] text-[14px] font-bold">1.235.134 Customer</p>
                 </div>
 
-                {{-- todo wrapper search filter --}}
+
                 <div class="_search-filter flex gap-4">
-                    {{-- todo search --}}
+
                     <div class="_search">
                         <div class="_search">
                             <form class="form">
@@ -191,7 +203,7 @@
                         </div>
                     </div>
 
-                    {{-- todo filter --}}
+
                     <div class="_filter">
                         <div class="flex items-center justify-center">
                             <div class="relative inline-block text-left">
@@ -237,33 +249,33 @@
                         </div>
                     </div>
 
-                    {{-- todo untuk tombol tambah data --}}
-                    {{-- <div class="_btn-tambah-data">
+
+                    <div class="_btn-tambah-data">
                         <button onclick="modalHandler(true)"
                             class="px-4 py-2 gradient-1 cursor-pointer text-white rounded-full">
                             <div class="_icon-plus"></div>
                             <span>Tambah Pemasukan</span>
                         </button>
-                    </div> --}}
+                    </div>
                 </div>
-            </div>
+            </div> --}}
             {{-- todo wrapper btn delete all, btn export data bentuk ke excel --}}
-            <div class="flex items-center gap-4 w-full">
-                {{-- todo btn export --}}
+            {{-- <div class="flex items-center gap-4 w-full">
+
                 <div><button
                         class="cursor-pointer gap-2 flex items-center px-4 py-2 bg-gradient-to-r from-[#B381F4] to-[#5038ED] rounded-[5px]">
                         <p class="mt-1"><i class="text-white fi fi-rr-inbox-out"></i></p>
                         <p class="text-white text-[14px] font-medium">Export</p>
                     </button></div>
-                {{-- todo btn delete all --}}
+
                 <div>
                     <button class="px-4 py-2 bg-[#F06D6B] rounded-[5px] flex items-center gap-2">
                         <p class="mt-1"><i class="text-white fi fi-rr-trash"></i></p>
                         <p class="text-[14px] font-medium text-white">Hapus</p>
                     </button>
                 </div>
-            </div>
-            <div class="--table w-full h-auto mt-4">
+            </div> --}}
+            {{-- <div class="--table w-full h-auto mt-4">
                 <div class="relative w-full h-[500px] overflow-hidden shadow-box-shadow-11 rounded-[20px] bg-white">
                     <div class="w-full h-full overflow-x-auto">
                         <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
@@ -356,7 +368,7 @@
                         </table>
                     </div>
                 </div>
-            </div>
+            </div> --}}
         </div>
     </div>
 @endsection
