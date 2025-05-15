@@ -318,7 +318,7 @@
                             Order</button></div>
                 </form>
             </div>
-        @elseif ($data->status_penyewaan == 'Pengembalian')
+        @elseif ($data->status_penyewaan == 'Aktif')
             <div class="--component-terima shadow-box-shadow-8 p-4 rounded-lg">
                 <p class="font-medium text-[14px] mb-2 text-center">Jika dirasa sudah memenuhi anda maka tekan tombol
                     terima

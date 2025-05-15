@@ -15,8 +15,8 @@
                         href="{{ route('menu-transaksi.order-selesai', ['id_user' => Crypt::encrypt(session('id_user'))]) }}">Selesai</a>
                 </li> --}}
                 <div class="--button">
-                    <button id="#" class="gradient-1 text-white px-4 py-2 rounded-lg"><i
-                            class="bi bi-plus-lg"></i> Tambah Transaksi</button>
+                    <a href="{{ route('transaksi-offline.tambah-transaksi') }}" class="gradient-1 text-white px-4 py-2 rounded-lg"><i
+                            class="bi bi-plus-lg"></i> Tambah Transaksi</a>
                 </div>
             </ul>
             <div class="--filter flex items-center gap-6">
