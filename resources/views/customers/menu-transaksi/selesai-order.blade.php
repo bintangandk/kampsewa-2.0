@@ -102,11 +102,7 @@
                             <td class="px-4 py-2"><a
                                     href="{{ route('menu-transaksi.terima-order-masuk', ['id_penyewaan' => Crypt::encrypt($item->id_penyewaan)]) }}"
                                     class="py-1 px-2 rounded-md bg-blue-500/20 text-blue-900 text-center hover:text-blue-900">
-                                    @if ($item->status_penyewaan == 'Pengembalian')
-                                        ACC
-                                    @else
-                                        Detail
-                                    @endif
+                                   Detail
                                 </a>
                             </td>
                         </tr>

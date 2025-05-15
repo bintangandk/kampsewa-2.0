@@ -467,4 +467,10 @@ class TransaksiMenuController extends Controller
             'title' => 'Detail Order Offline'
         ]);
     }
+
+    public function tambahTransaksi(){
+        return view('customers.transaksi-offline.tambah-transaksi')->with([
+            'title' => 'Tambah Transaksi Offline'
+        ]);
+    }
 }
