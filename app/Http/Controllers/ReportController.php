@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ReportStatusMail;
 use App\Models\Penyewaan;
 use App\Models\Report;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use RealRashid\SweetAlert\Facades\Alert;
+
 
 class ReportController extends Controller
 {
@@ -75,10 +78,26 @@ class ReportController extends Controller
             'status' => 'required|in:terima,tolak'
         ]);
 
-        // dump($request->all());
         $report = Report::findOrFail($request->id_report);
         $report->status = $request->status;
         $report->save();
+
+        // Ambil data user
+        $pelapor = User::find($report->id_pelapor);
+        $terlapor = User::find($report->id_terlapor);
+
+        // Kirim email berdasarkan status
+        if ($request->status == 'terima') {
+            $terlapor->SP += 1;
+            $terlapor->save();
+
+            // Kirim email ke pelapor dan terlapor
+            Mail::to($pelapor->email)->send(new ReportStatusMail($report, 'terima', 'pelapor'));
+            Mail::to($terlapor->email)->send(new ReportStatusMail($report, 'terima', 'terlapor'));
+        } elseif ($request->status == 'tolak') {
+            // Kirim email hanya ke pelapor
+            Mail::to($pelapor->email)->send(new ReportStatusMail($report, 'tolak', 'pelapor'));
+        }
 
         Alert::success('Berhasil', 'Laporan berhasil diverifikasi');
         return redirect()->back();

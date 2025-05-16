@@ -23,7 +23,7 @@
                         <th scope="col" class="px-6 py-4 font-medium text-gray-900">Status</th>
                         <th scope="col" class="px-6 py-4 font-medium text-gray-900">Role</th>
                         <th scope="col" class="px-6 py-4 font-medium text-gray-900">Waktu Aktif</th>
-                        <th scope="col" class="px-6 py-4 font-medium text-gray-900">Aksi</th>
+                        {{-- <th scope="col" class="px-6 py-4 font-medium text-gray-900">Aksi</th> --}}
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100 border-t border-gray-100">
@@ -56,8 +56,8 @@
                                     {{ \Carbon\Carbon::parse($item->time_login)->diffForHumans() }}
                                 @endif
                             </td>
-                            <td><a href="{{ route('detail-pengguna.index', [$item->name]) }}" class="px-4 py-2"><i
-                                        class="bi bi-pen-fill"></i></a></td>
+                            {{-- <td><a href="{{ route('detail-pengguna.index', [$item->name]) }}" class="px-4 py-2"><i
+                                        class="bi bi-pen-fill"></i></a></td> --}}
                         </tr>
                     @endforeach
                 </tbody>

@@ -6,9 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Models\Alamat;
 use App\Models\Bank;
 use App\Models\DetailPenyewaan;
+use App\Models\DetailVariantProduk;
 use App\Models\PembayaranPenyewaan;
 use App\Models\Penyewaan;
+use App\Models\Produk;
 use App\Models\User;
+use App\Models\VariantProduk;
 use Geocoder\Provider\Nominatim\Nominatim;
 use Geocoder\Query\GeocodeQuery;
 use GuzzleHttp\Client;
@@ -258,6 +261,28 @@ class TransaksiMenuController extends Controller
                 }
             } else {
                 $penyewaan = Penyewaan::where('id', $id_penyewaan)->update(['status_penyewaan' => 'Selesai']);
+                $detail_penyewaan = DetailPenyewaan::where('id_penyewaan', $id_penyewaan)->get();
+                foreach ($detail_penyewaan as $item) {
+                    $produk = Produk::where('id', $item->id_produk)->update(['status' => 'Tersedia']);
+                    $variant = VariantProduk::where('id_produk', $item->id_produk)
+                        ->where('warna', $item->warna_produk)
+                        ->first();
+
+                    // Jika varian ditemukan, lanjut cari detail varian
+                    if ($variant) {
+                        $detail_variant = DetailVariantProduk::where('id_variant_produk', $variant->id)
+                            ->where('ukuran', $item->ukuran)
+                            ->first();
+
+                        // Jika detail varian ditemukan, update stok
+                        if ($detail_variant) {
+                            $detail_variant->stok += $item->qty;
+                            $detail_variant->save();
+                        }
+                    }
+                }
+
+
                 if ($penyewaan) {
                     Alert::toast('Pengembalian berhasil di simpan!', 'success');
                     return redirect('customer/dashboard/order-selesai/' . $id_user);
@@ -456,19 +481,22 @@ class TransaksiMenuController extends Controller
         }
     }
 
-    public function orderOffline(){
+    public function orderOffline()
+    {
         return view('customers.transaksi-offline.offline-transaksi')->with([
             'title' => 'Order Offline'
         ]);
     }
 
-    public function detailOffline(){
+    public function detailOffline()
+    {
         return view('customers.transaksi-offline.detail-transaksi')->with([
             'title' => 'Detail Order Offline'
         ]);
     }
 
-    public function tambahTransaksi(){
+    public function tambahTransaksi()
+    {
         return view('customers.transaksi-offline.tambah-transaksi')->with([
             'title' => 'Tambah Transaksi Offline'
         ]);
