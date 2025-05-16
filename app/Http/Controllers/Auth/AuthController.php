@@ -30,10 +30,16 @@ class AuthController extends Controller
             ->first();
 
         if ($user) {
+            if ($user->SP >= 3) {
+                // # code...
+                Alert::toast('Akun Anda Terlblokir pada toko', 'error');
+                return redirect()->route('login')->with('error', 'Akun Anda Terlblokir pada toko');
+            }
             if (
                 Auth::attempt(['nomor_telephone' => $user->nomor_telfon, 'password' => $credentials['password']]) ||
                 Auth::attempt(['email' => $user->email, 'password' => $credentials['password']])
             ) {
+
                 $request->session()->regenerate();
 
                 // todo Mengambil pengguna yang berhasil login
@@ -50,6 +56,7 @@ class AuthController extends Controller
                     Alert::toast('Login success', 'success');
                     return redirect()->intended('/developer/dashboard/home')->with('success', 'Login success');
                 } elseif ($user->type == 0) {
+
                     Alert::toast('Login success', 'success');
                     return redirect()->route('dashboard-cust')->with('success', 'Login success');
                 }
