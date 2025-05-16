@@ -15,7 +15,8 @@
                 {{-- <li><a class="{{ $title === 'Denda' ? 'border-b-2 border-b-[#FF3F42] text-[#FF3F42]' : '' }} hover:border-b-2 hover:border-b-[#FF3F42] hover:text-[#FF3F42] p-2 xl:text-[16px] font-medium text-[#D1CDD0]"
                         href="{{ route('menu-transaksi.denda-transaksi', ['id_user' => Crypt::encrypt(session('id_user'))]) }}">Denda</a></li> --}}
                 <li><a class="{{ $title === 'Selesai Order' ? 'border-b-2 border-b-[#FF3F42] text-[#FF3F42]' : '' }} hover:border-b-2 hover:border-b-[#FF3F42] hover:text-[#FF3F42] p-2 xl:text-[16px] font-medium text-[#D1CDD0]"
-                        href="{{ route('menu-transaksi.order-selesai', ['id_user' => Crypt::encrypt(session('id_user'))]) }}">Selesai</a></li>
+                        href="{{ route('menu-transaksi.order-selesai', ['id_user' => Crypt::encrypt(session('id_user'))]) }}">Selesai</a>
+                </li>
             </ul>
             <div class="--filter flex items-center gap-6">
                 <form method="GET"
@@ -55,6 +56,7 @@
             <table class="w-full bg-white border-spacing-2">
                 <thead class="bg-white sticky top-0 z-20 shadow-box-shadow-11">
                     <tr class="text-left">
+                        <th class="px-4 py-2">Id Transaksi</th>
                         <th class="px-4 py-2">Client</th>
                         <th class="px-4 py-2">Tanggal Dimulai</th>
                         <th class="px-4 py-2">Tanggal Selesai</th>
@@ -72,6 +74,9 @@
                     @foreach ($data as $item)
                         <tr
                             class="shadow-box-shadow-8 p-2 hover:scale-105 hover:z-10 text-xs transition transform duration-200 text-[14px] font-medium">
+                            <td class="px-4 py-2">
+                                <p class="py-1 px-2 rounded-md bg-blue-500/20 text-blue-900 text-center">
+                                    {{ $item->id_penyewaan }}</p>
                             <td class="px-4 py-2 flex items-center gap-2">
                                 <img class="w-[40px] h-[40px] rounded-[10px] object-cover"
                                     src="{{ $item->foto_users != null ? asset('assets/image/customers/profile/' . $item->foto_users) : asset('assets/image/developers/agung-kurniawan.jpg') }}"
