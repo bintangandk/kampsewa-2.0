@@ -117,7 +117,7 @@
                         class="mobile-max:w-full p-2 bg-blue-500 rounded text-white font-medium text-[14px]"
                         onclick="addProduct()">Tambah Produk</button>
                     <button class="mobile-max:w-full p-2 bg-green-500 rounded text-white font-medium text-[14px]"
-                        id="">Sewa Barang</button>
+                        id="">Lanjut Pembayaran</button>
                 </div>
             </form>
         </div>
