@@ -2,7 +2,7 @@
 @section('customer-content')
     <div class="--container sm:flex sm:flex-col sm:gap-8 w-full h-auto px-6 py-5 sm:px-8 sm:py-5">
         <div class="--title">
-            <h1 class="xl:text-[28px] font-black">Menu Order, Transaksi & Denda</h1>
+            <h1 class="xl:text-[28px] font-black">Menu Transaksi Offline Selesai</h1>
         </div>
         <div class="--action flex xl:items-center w-full xl:justify-between">
             <ul class="--menu flex wrap gap-4 items-center">
