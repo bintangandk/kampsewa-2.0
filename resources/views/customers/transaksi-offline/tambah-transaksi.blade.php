@@ -116,10 +116,73 @@
                     <button type="button"
                         class="mobile-max:w-full p-2 bg-blue-500 rounded text-white font-medium text-[14px]"
                         onclick="addProduct()">Tambah Produk</button>
-                    <button class="mobile-max:w-full p-2 bg-green-500 rounded text-white font-medium text-[14px]"
-                        id="">Lanjut Pembayaran</button>
+                    <button type="button"
+                        class="mobile-max:w-full p-2 bg-green-500 rounded text-white font-medium text-[14px]" id=""
+                        data-toggle="modal" data-target="#paymentModal">Lanjut Pembayaran</button>
                 </div>
             </form>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="paymentModal" tabindex="-1" role="dialog" aria-labelledby="paymentModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <form id="paymentForm" action="" method="POST">
+                    @csrf
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Pembayaran</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Tutup">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+
+                        <div class="modal-body">
+                            <!-- Total -->
+                            <div class="form-group">
+                                <label>Total yang harus dibayar</label>
+                                <input type="text" class="form-control" id="total" name="total" value="50000"
+                                    readonly>
+                            </div>
+
+                            <!-- Uang yang dibayarkan -->
+                            <div class="form-group">
+                                <label>Uang yang dibayarkan customer</label>
+                                <input type="number" class="form-control" id="uang_dibayar" name="uang_dibayar"
+                                    required>
+                            </div>
+
+                            <!-- Kembalian -->
+                            <div class="form-group">
+                                <label>Kembalian</label>
+                                <input type="text" class="form-control" id="kembalian" readonly>
+                            </div>
+
+                            <!-- Metode Pembayaran -->
+                            <div class="form-group">
+                                <label>Metode Pembayaran</label>
+                                <select class="form-control" name="metode_pembayaran" required>
+                                    <option value="Cash">Cash</option>
+                                    <option value="Transfer">Transfer</option>
+                                </select>
+                            </div>
+
+                            <!-- Jenis Transaksi -->
+                            <div class="form-group">
+                                <label>Jenis Transaksi</label>
+                                <select class="form-control" name="jenis_transaksi" required>
+                                    <option value="Ambil di Tempat">Ambil di Tempat</option>
+                                    <option value="Delivery">Delivery</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-success">Proses Pembayaran</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -201,6 +264,16 @@
                 direction: "asc"
             },
             placeholder: 'Cari dan pilih produk...'
+        });
+    </script>
+
+    <script>
+        document.getElementById('uang_dibayar').addEventListener('input', function() {
+            const total = parseInt(document.getElementById('total').value);
+            const dibayar = parseInt(this.value);
+            const kembalian = dibayar - total;
+
+            document.getElementById('kembalian').value = kembalian >= 0 ? kembalian : 0;
         });
     </script>
 @endsection
