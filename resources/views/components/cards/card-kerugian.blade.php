@@ -19,7 +19,7 @@
     {{-- todo bagian canvas statistik chartjs --}}
     <div class="h-full flex justify-center items-center">
         <div class="_chart w-[100px] h-[100px] relative">
-            <canvas class="" id="chart-kerugian"></canvas>
+            {{-- <canvas class="" id="chart-kerugian"></canvas> --}}
         </div>
     </div>
 </div>

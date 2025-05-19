@@ -2,7 +2,7 @@
 @section('customer-content')
     <div class="--container sm:flex sm:flex-col sm:gap-8 w-full h-auto px-6 py-5 sm:px-8 sm:py-5">
         <div class="--title">
-            <h1 class="xl:text-[28px] font-black">Menu Sewa Pelanggan Berlangsung.</h1>
+            <h1 class="xl:text-[28px] font-black">Sewa Di tolak</h1>
         </div>
         <div class="--action flex xl:items-center w-full xl:justify-between">
             <ul class="--menu flex wrap gap-4 items-center">
@@ -24,18 +24,15 @@
                 </li>
             </ul>
             <div class="--filter flex items-center gap-6">
-                <form method="GET"
-                    action="{{ route('menu-transaksi.sewa-berlangsung', ['id_user' => Crypt::encrypt(session('id_user'))]) }}">
+                <form method="GET">
                     <div class="--filter-search relative flex">
                         <input type="search" value="{{ $search }}" name="search"
                             class="shadow-box-shadow-11 rounded-lg bg-white appearance-none px-6 py-2"
-                            placeholder="Cari transaksi" aria-label="Search" id="exampleFormControlInput3"
+                            placeholder="Cari nama...enter" aria-label="Search" id="exampleFormControlInput3"
                             aria-describedby="button-addon3" />
                     </div>
                 </form>
-                <form method="GET"
-                    action="{{ route('menu-transaksi.sewa-berlangsung', ['id_user' => Crypt::encrypt(session('id_user'))]) }}"
-                    id="form_filter_tanggal">
+                <form method="GET" id="form_filter_tanggal">
                     <div class="--filter-tanggal flex xl:items-center xl:gap-4">
                         <div class="--tangga-awal">
                             <input id="tanggal_awal" type="date"
@@ -52,10 +49,8 @@
         </div>
         <div class="--warnging-alert w-fit p-2 rounded-lg bg-orange-500/20 flex items-center gap-2">
             <div class="--icon"><i class="text-orange-500 bi bi-exclamation-diamond-fill"></i></div>
-            <p class="text-[14px] font-medium text-orange-500">Disini anda hanya dapat melihat siapa saja pelanggan yang
-                menyewa peralatan anda waktu penyewaan sedang berlangsung, anda bisa melihat detailnya dengan menekan tombol
-                <b>Detail</b>
-            </p>
+            <p class="text-[14px] font-medium text-orange-500">Tekan tombol terima saat pelanggan sudah sampai dilokasi atau
+                saat pengiriman barang, dengan ketentuan waktu dan tanggal penyewaan sudah masuk permintaan!</p>
         </div>
         <div class="--table bg-white w-full">
             <table class="w-full bg-white border-spacing-2">
@@ -124,6 +119,7 @@
             </table>
         </div>
     </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Ambil nilai dari query string jika tersedia
@@ -176,7 +172,7 @@
             // Event listener untuk input search
             document.querySelector('input[name="search"]').addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
-                    e.preventDefault();
+                    e.preventDefault(); // Prevent form submission on Enter key press
                     submitForm();
                 }
             });
