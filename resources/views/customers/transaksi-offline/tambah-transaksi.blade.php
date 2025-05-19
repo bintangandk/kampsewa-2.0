@@ -61,6 +61,22 @@
 
                 </div>
 
+                <div class="grid grid-cols-2 gap-x-4 mobile-max:grid-cols-1">
+                    <div class="--input-tanggal-mulai w-full">
+                        <p class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Tanggal Mulai Sewa</p>
+                        <input
+                            class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                            type="date" id="tanggal_mulai" name="tanggal_mulai" required>
+                    </div>
+
+                    <div class="--input-tanggal-selesai w-full">
+                        <p class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Tanggal Selesai Sewa
+                        </p>
+                        <input
+                            class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                            type="date" id="tanggal_selesai" name="tanggal_selesai" required>
+                    </div>
+                </div>
 
                 <div class="--input-table-variant-detail-variant" id="variantContainer">
                     <div class="variant">
@@ -164,15 +180,6 @@
                                 <select class="form-control" name="metode_pembayaran" required>
                                     <option value="Cash">Cash</option>
                                     <option value="Transfer">Transfer</option>
-                                </select>
-                            </div>
-
-                            <!-- Jenis Transaksi -->
-                            <div class="form-group">
-                                <label>Jenis Transaksi</label>
-                                <select class="form-control" name="jenis_transaksi" required>
-                                    <option value="Ambil di Tempat">Ambil di Tempat</option>
-                                    <option value="Delivery">Delivery</option>
                                 </select>
                             </div>
                         </div>
