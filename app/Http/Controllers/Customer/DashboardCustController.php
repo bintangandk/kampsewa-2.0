@@ -88,8 +88,8 @@ class DashboardCustController extends Controller
 
 
         $penyewaSelesai = Penyewaan::with(['user', 'details.produk'])
-            ->where('status_penyewaan', 'Aktif')
-            ->whereDate('tanggal_selesai', '>=', Carbon::today())
+            ->where('status_penyewaan', 'Selesai')
+            // ->whereDate('tanggal_selesai', '>=', Carbon::today())
             ->whereHas('details.produk', function ($query) {
                 $query->where('id_user', Auth::id()); // hanya produk milik user login
             })
