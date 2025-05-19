@@ -182,24 +182,23 @@
                 </div>
             </div>
         </div>
-        {{-- @elseif ($data->status_penyewaan == 'Pengembalian')
+        {{-- @elseif ($data->status_penyewaan == 'Pengembalian') --}}
             <div class="--component-terima shadow-box-shadow-8 p-4 rounded-lg">
                 <p class="font-medium text-[14px] mb-2 text-center">Jika dirasa sudah memenuhi anda maka tekan tombol
                     terima
                     dibawah ini,
                     dan client anda akan memiliki status selesai.</p>
                 <form id="form-confirm-order"
-                    action="{{ route('menu-transaksi.confirm-order-masuk', ['id_penyewaan' => $data->id_penyewaan, 'id_user' => Crypt::encrypt(session('id_user')), 'parameter' => 2]) }}"
+                    action="#"
                     method="POST">
                     @csrf
                     @method('PUT')
                     <div class="w-full flex justify-center"><button id="terima-order"
-                            {{ $data->status_pembayaran == 'Belum lunas' ? 'disabled' : '' }}
-                            class="p-3 w-1/2 rounded-full {{ $data->status_pembayaran == 'Belum lunas' ? 'opacity-45' : '' }} bg-[#F6D91F] border-black border-2 font-medium text-black">Terima
+                            class="p-3 w-1/2 rounded-full bg-[#F6D91F] border-black border-2 font-medium text-black">Terima
                             Pengembalian Client</button></div>
                 </form>
             </div>
-        @endif --}}
+        {{-- @endif --}}
     </div>
     <script>
         var jumlah_pembayaran = document.getElementById('jumlah_pembayaran');

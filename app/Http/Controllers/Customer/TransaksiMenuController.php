@@ -479,4 +479,10 @@ class TransaksiMenuController extends Controller
             'title' => 'Tambah Transaksi Offline'
         ]);
     }
+
+    public function selesaiOrder(){
+        return view('customers.transaksi-offline.selesai-transaksi')->with([
+            'title' => 'Order Selesai'
+        ]);
+    }
 }
