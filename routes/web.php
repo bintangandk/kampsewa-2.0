@@ -137,6 +137,7 @@ Route::delete('/customer/dashboard/keuangan/delete-pengeluaran/{id_pengeluaran}'
 // transaksi
 Route::get('customer/dashboard/transaksi/{id_user}', [TransaksiMenuController::class, 'index'])->name('menu-transaksi.index')->middleware('auth');
 Route::get('customer/dashboard/sewa-berlangsung/{id_user}', [TransaksiMenuController::class, 'sewaBerlangsung'])->name('menu-transaksi.sewa-berlangsung')->middleware('auth');
+Route::get('customer/dashboard/sewa-ditolak/{id_user}', [TransaksiMenuController::class, 'sewaditolak'])->name('menu-transaksi.sewa-ditolak')->middleware('auth');
 Route::get('customer/dashboard/denda-transaksi/{id_user}', [TransaksiMenuController::class, 'dendaTransaksi'])->name('menu-transaksi.denda-transaksi')->middleware('auth');
 Route::get('customer/dashboard/order-selesai/{id_user}', [TransaksiMenuController::class, 'orderSelesai'])->name('menu-transaksi.order-selesai')->middleware('auth');
 Route::get('customer/dashboard/transaksi/terima-order-masuk/{id_penyewaan}', [TransaksiMenuController::class, 'terimaOrderMasuk'])->name('menu-transaksi.terima-order-masuk')->middleware('auth');

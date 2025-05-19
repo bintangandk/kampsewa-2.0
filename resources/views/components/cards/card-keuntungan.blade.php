@@ -9,8 +9,7 @@
                 <p class="text-[#343B7C] text-[16px] font-medium">Keuntungan</p>
             </div>
             <p class="text-[32px] font-medium font-poppins">Rp. {{ $total_keuntungan_tahun_ini }}</p>
-            <p
-                class="text-[14px] mt-[10px] rounded-full w-fit p-[5px] text-center text-[#1ED0A6] bg-[#D6FFF3]">
+            <p class="text-[14px] mt-[10px] rounded-full w-fit p-[5px] text-center text-[#1ED0A6] bg-[#D6FFF3]">
                 {{ date('Y') }}</p>
         </div>
         <div class="items-center gap-[10px] w-full"><a href="{{ route('rekap-keuangan.index') }}"
@@ -21,7 +20,7 @@
     {{-- todo bagian chartjs --}}
     <div class="h-full flex justify-center items-center">
         <div class="_chart w-[100px] h-[100px] relative">
-            <canvas id="chart-keuntungan"></canvas>
+            {{-- <canvas id="chart-keuntungan"></canvas> --}}
         </div>
     </div>
 </div>

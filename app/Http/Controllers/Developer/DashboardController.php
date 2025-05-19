@@ -6,7 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Middleware\CheckUserLogin;
 use App\Models\Feedback;
 use App\Models\Pemasukan;
+use App\Models\PembayaranIklan;
+use App\Models\PembayaranPenyewaan;
 use App\Models\Pengeluaran;
+use App\Models\Penyewaan;
+use App\Models\Report;
 use App\Models\StatusNotifikasiUser;
 use App\Models\User;
 use Carbon\Carbon;
@@ -57,7 +61,7 @@ class DashboardController extends Controller
         $percentageChange = round($percentageChange, 2);
 
         // -- total feedback
-        $total_feedback = Feedback::count();
+        $total_report = Report::where('status', 'pending')->count();
 
         // -- total feedback perbandingan bulan lalu dan sekarang
         $totalFeedbackUsersPreviousMonth = Feedback::whereBetween('created_at', [$startOfPreviousMonth, $endOfPreviousMonth])->count();
@@ -127,6 +131,9 @@ class DashboardController extends Controller
         $pengeluaran_bulan_lalu = Pengeluaran::whereBetween('created_at', [$startOfPreviousMonth, $endOfPreviousMonth])->sum('nominal');
         $pengeluaran_bulan_lalu_ldr = number_format($pengeluaran_bulan_lalu, 0, ',', '.');
 
+
+        $penyewaan = Penyewaan::count();
+
         // -- perbandingan pengeluaran bulan lalu dan sekarang
         if ($pengeluaran_bulan_lalu == 0) {
             $percentagePengeluaranChange = $pengeluaran_bulan_ini > 0 ? 100 : 0;
@@ -136,11 +143,18 @@ class DashboardController extends Controller
         $percentagePengeluaranChange = round($percentagePengeluaranChange, 2);
 
         // -- menghitung total keseluruhan nominal pemasukan dan nominal pengeluaran tahun saat ini
-        $total_pemasukan_tahun_ini = Pemasukan::whereYear('created_at', date('Y'))->sum('nominal');
+        // $total_pemasukan_tahun_ini = Pemasukan::whereYear('created_at', date('Y'))->sum('nominal');
+        $penghasilan_tahun_ini_admin = PembayaranPenyewaan::whereYear('created_at', Carbon::now()->year)->sum('biaya_admin');
+        $penghasilan_tahun_ini_iklan = PembayaranIklan::whereYear('created_at', Carbon::now()->year)->where('status_bayar', 'aktif')->sum('total_bayar');
+        $total_pemasukan_tahun_ini = $penghasilan_tahun_ini_admin + $penghasilan_tahun_ini_iklan;
         $total_pengeluaran_tahun_ini = Pengeluaran::whereYear('created_at', date('Y'))->sum('nominal');
 
         // -- menghitung total keuntungan
         $total_keuntungan = $total_pemasukan_tahun_ini - $total_pengeluaran_tahun_ini;
+        if ($total_keuntungan <= 0) { // Jika total keuntungan <= 0
+            $total_keuntungan = 0; // Ambil nilai absolut
+            // ...
+        }
 
         // Format total keuntungan
         if ($total_keuntungan >= 1000000) { // Jika total keuntungan >= 1 juta
@@ -150,7 +164,7 @@ class DashboardController extends Controller
         }
 
         // Hitung total kerugian
-        $total_kerugian = abs($total_pengeluaran_tahun_ini - $total_pemasukan_tahun_ini);
+        $total_kerugian = $total_pengeluaran_tahun_ini - $total_pemasukan_tahun_ini;
 
         // Format total kerugian
         if ($total_kerugian >= 1000000) {
@@ -160,7 +174,12 @@ class DashboardController extends Controller
         } else {
             $formatted_kerugian = number_format($total_kerugian, 0);
         }
-
+        $total_pengeluaran_bulan_ini = Pengeluaran::whereHas('user', function ($query) {
+            $query->where('type', '1'); // Filter user type 1
+        })
+            ->whereYear('created_at', Carbon::now()->year) // Filter tahun ini
+            ->whereMonth('created_at', Carbon::now()->month) // Filter bulan ini
+            ->sum('nominal'); // Jumlahkan nominal
         /*
         |--------------------------------------------------------------------------
         |-- get customer baru bulan ini
@@ -185,9 +204,10 @@ class DashboardController extends Controller
             'user_baru_terdaftar' => $user_baru_terdaftar,
             'total_pengguna' => $total_pengguna,
             'percentageChange' => $percentageChange,
-            'total_feedback' => $total_feedback,
+            'total_report' => $total_report,
             'percentageFeedbackChange' => $percentageFeedbackChange,
             'total_mitra' => $total_mitra,
+            'penyewaan' => $penyewaan,
             'percentageMitraChange' => $percentageMitraChange,
             'pemasukan_bulan_ini' => $pemasukan_bulan_ini_ldr,
             'pemasukan_bulan_lalu' => $pemasukan_bulan_lalu_ldr,
@@ -198,7 +218,9 @@ class DashboardController extends Controller
             'total_keuntungan_tahun_ini' => $formatted_keuntungan,
             'total_kerugian_tahun_ini' => $formatted_kerugian,
             'customer_baru_bulan_ini' => $_get_customer_baru_bulan_ini,
+            'total_pengeluaran_bulan_ini' => $total_pengeluaran_bulan_ini,
             'customer_online' => $_get_customer_online
+
         ]);
     }
 
