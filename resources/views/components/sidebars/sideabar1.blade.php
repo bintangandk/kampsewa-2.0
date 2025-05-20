@@ -75,7 +75,7 @@
 
                             <span
                                 class="ml-2 text-sm tracking-wide truncate {{ request()->routeIs('report.*') ? 'text-white' : '' }}">
-                                Pending
+                                Report
                             </span>
                         </a>
                     </li>

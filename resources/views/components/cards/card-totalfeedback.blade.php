@@ -13,6 +13,6 @@
 
     </div>
     <button class="w-full p-[8px] rounded-[15px] gradient-1 mt-4 text-[14px] font-normal text-white">
-        <a href="{{ route('notification.index') }}">Detail</a>
+        <a href="{{ route('report.index') }}">Detail</a>
     </button>
 </div>
