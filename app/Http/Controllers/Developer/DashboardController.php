@@ -158,7 +158,7 @@ class DashboardController extends Controller
 
         // Format total keuntungan
         if ($total_keuntungan >= 1000000) { // Jika total keuntungan >= 1 juta
-            $formatted_keuntungan = number_format($total_keuntungan / 1000000, 0) . 'M';
+            $formatted_keuntungan = number_format($total_keuntungan);
         } else { // Jika total keuntungan < 1 juta
             $formatted_keuntungan = number_format($total_keuntungan, 0);
         }
@@ -168,9 +168,9 @@ class DashboardController extends Controller
 
         // Format total kerugian
         if ($total_kerugian >= 1000000) {
-            $formatted_kerugian = number_format($total_kerugian / 1000000, 0) . 'M';
+            $formatted_kerugian = number_format($total_kerugian);
         } else if ($total_kerugian >= 100000) {
-            $formatted_kerugian = number_format($total_kerugian / 100000, 0) . 'K';
+            $formatted_kerugian = number_format($total_kerugian);
         } else {
             $formatted_kerugian = number_format($total_kerugian, 0);
         }

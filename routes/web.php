@@ -75,7 +75,7 @@ Route::delete('developer/dashboard/iklan/delete-iklan-pending/{id_iklan}', [Ikla
 Route::get('developer/dashboard/penyewaan', [Penyewaan::class, 'index'])->name('penyewaan.index')->middleware('auth');
 Route::get('developer/dashboard/penghasilan', [PenghasilanController::class, 'index'])->name('penghasilan.index')->middleware('auth');
 
-Route::get('developer/dashboard/report/pending', [ReportController::class, 'index'])->name('report.index')->middleware('auth');
+Route::get('developer/dashboard/report/pending', [ReportController::class, 'index'])->name('p')->middleware('auth');
 Route::get('developer/dashboard/report/tolak', [ReportController::class, 'report_tolak'])->name('report.tolak')->middleware('auth');
 Route::get('developer/dashboard/report/terima', [ReportController::class, 'report_terima'])->name('report.terima')->middleware('auth');
 Route::post('developer/dashboard/report/update_report', [ReportController::class, 'verifikasi'])->name('verifikasi_report')->middleware('auth');

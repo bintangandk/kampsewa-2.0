@@ -86,7 +86,7 @@
                             <td class="px-4 py-2">{{ Carbon\Carbon::parse($item->tanggal_mulai)->format('d F Y') }}</td>
                             <td class="px-4 py-2">{{ Carbon\Carbon::parse($item->tanggal_selesai)->format('d F Y') }}</td>
                             <td class="px-4 py-2">
-                                <p class="py-1 px-2 rounded-md bg-green-500/20 text-green-900 text-center">
+                                <p class="py-1 px-2 rounded-md bg-red-500/20 text-white-900 text-center">
                                     {{ $item->status_penyewaan }}</p>
                             </td>
                             <td class="px-4 py-2">
