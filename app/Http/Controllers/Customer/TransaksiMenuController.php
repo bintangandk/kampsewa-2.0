@@ -475,12 +475,50 @@ class TransaksiMenuController extends Controller
 
     public function tambahTransaksi()
     {
-        return view('customers.transaksi-offline.tambah-transaksi')->with([
-            'title' => 'Tambah Transaksi Offline'
+        $produkList = Produk::all(); 
+        return view('customers.transaksi-offline.tambah-transaksi', compact('produkList'))->with([
+            'title' => 'Tambah Transaksi Offline',
         ]);
     }
 
-    public function selesaiOrder(){
+    function tambahTransaksiPost(Request $request)
+    {
+        DB::beginTransaction();
+
+        try {
+            // Simpan ke tabel penyewaan
+            $penyewaan = Penyewaan::create([
+                'id_user' => null,
+                'nama_penyewa' => $request['nama_penyewa'],
+                'alamat' => $request['alamat'],
+                'tanggal_mulai' => $request['tanggal_mulai'],
+                'tanggal_selesai' => $request['tanggal_selesai'],
+                'pesan' => null,
+                'status_penyewaan' => 'aktif',
+                'jenis_penyewaan' => 'offline',
+            ]);
+
+            // Simpan detail penyewaan (bisa banyak)
+            foreach ($request['detail'] as $item) {
+                DetailPenyewaan::create([
+                    'id_penyewaan' => $penyewaan->id,
+                    'id_produk' => $item['id_produk'],
+                    'ukuran' => $item['ukuran'],
+                    'qty' => $item['qty'],
+                    'subtotal' => $item['subtotal'],
+                ]);
+            }
+
+            DB::commit();
+            return response()->json(['message' => 'Transaksi berhasil ditambahkan'], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['message' => 'Gagal menambahkan transaksi', 'error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function selesaiOrder()
+    {
         return view('customers.transaksi-offline.selesai-transaksi')->with([
             'title' => 'Order Selesai'
         ]);
