@@ -148,4 +148,5 @@ Route::put('customer/dashboard/transaksi/confirm-order-masuk/{id_penyewaan}/{id_
 Route::get('customer/dashboard/order-offline', [TransaksiMenuController::class, 'orderOffline'])->name('transaksi-offline.order-offline')->middleware('auth');
 Route::get('customer/dashboard/detail-offline', [TransaksiMenuController::class, 'detailOffline'])->name('transaksi-offline.detail-transaksi')->middleware('auth');
 Route::get('customer/dashboard/transaksi-offline', [TransaksiMenuController::class, 'tambahTransaksi'])->name('transaksi-offline.tambah-transaksi')->middleware('auth');
+Route::post('customer/dashboard/transaksi/tambah', [TransaksiMenuController::class, 'tambahTransaksiPost'])->name('transaksi-offline.post')->middleware('auth');
 Route::get('customer/dashboard/order-selesai', [TransaksiMenuController::class, 'selesaiOrder'])->name('transaksi-offline.order-selesai')->middleware('auth');
