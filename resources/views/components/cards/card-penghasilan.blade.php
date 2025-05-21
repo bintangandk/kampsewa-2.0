@@ -2,10 +2,10 @@
 <div class="_card-income relative w-full gradient-1 overflow-hidden rounded-[20px]">
 
     {{-- todo image background --}}
-    <img class="object-cover shadow-box-shadow-11 w-full h-full" src="{{ asset('assets/accessories/gradient 3-04 1 1.png') }}"
-        alt="">
+    <img class="object-cover shadow-box-shadow-11 w-full h-full"
+        src="{{ asset('assets/accessories/gradient 3-04 1 1.png') }}" alt="">
 
-        {{-- todo content --}}
+    {{-- todo content --}}
     <div
         class="_wrapper-content-card h-full grid grid-cols-1 justify-between w-full top-0 left-0 p-[1rem] absolute z-10">
 
@@ -28,9 +28,11 @@
 
         {{-- todo bagian statistic --}}
         <div class="_static">
-            <p class="text-[12px] mb-[10px] text-white">Bulan {{ Carbon\Carbon::now()->subMonth()->format('F') }} <strong>Rp. {{ $pemasukan_bulan_lalu }}</strong></p>
+            <p class="text-[12px] mb-[10px] text-white">Bulan {{ Carbon\Carbon::now()->subMonth()->format('F') }}
+                <strong>Rp. {{ $pemasukan_bulan_lalu }}</strong></p>
             <div class="w-full h-[40px] bg-[#F2F5FD] rounded-[10px]">
-                <div class="w-[{{ $percentagePemasukanChange }}%] bg-corak flex justify-center items-center rounded-[10px] h-full">
+                <div
+                    class="w-[{{ $percentagePemasukanChange }}%] bg-corak flex justify-center items-center rounded-[10px] h-full">
                     <p class="text-white font-medium text-[16px]">{{ $percentagePemasukanChange }}%</p>
                 </div>
             </div>

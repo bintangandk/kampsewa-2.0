@@ -2,20 +2,31 @@
 @section('customer-content')
     <div class="--container sm:flex sm:flex-col sm:gap-8 w-full h-auto px-6 py-5 sm:px-8 sm:py-5">
         <div class="--title">
-            <h1 class="xl:text-[28px] font-black">Menu Order Offline/Di tempat</h1>
+            <h1 class="xl:text-[28px] font-black">Sewa Di tolak</h1>
         </div>
         <div class="--action flex xl:items-center w-full xl:justify-between">
             <ul class="--menu flex wrap gap-4 items-center">
-                <li><a class="{{ $title === 'Order Offline' ? 'border-b-2 border-b-[#FF3F42] text-[#FF3F42]' : '' }} hover:border-b-2 hover:border-b-[#FF3F42] hover:text-[#FF3F42] p-2 xl:text-[16px] font-medium text-[#D1CDD0]"
-                        href="{{ route('transaksi-offline.order-offline') }}">Sewa Berlangsung</a></li>
+                <li><a class="{{ $title === 'Order Masuk' ? 'border-b-2 border-b-[#FF3F42] text-[#FF3F42]' : '' }} hover:border-b-2 hover:border-b-[#FF3F42] hover:text-[#FF3F42] p-2 xl:text-[16px] font-medium text-[#D1CDD0]"
+                        href="{{ route('menu-transaksi.index', ['id_user' => Crypt::encrypt(session('id_user'))]) }}">Order
+                        Masuk</a></li>
+                <li><a class="{{ $title === 'Sewa Berlangsung' ? 'border-b-2 border-b-[#FF3F42] text-[#FF3F42]' : '' }} hover:border-b-2 hover:border-b-[#FF3F42] hover:text-[#FF3F42] p-2 xl:text-[16px] font-medium text-[#D1CDD0]"
+                        href="{{ route('menu-transaksi.sewa-berlangsung', ['id_user' => Crypt::encrypt(session('id_user'))]) }}">Sewa
+                        Berlangsung</a></li>
+                <li><a class="{{ $title === 'Sewa Ditolak' ? 'border-b-2 border-b-[#FF3F42] text-[#FF3F42]' : '' }} hover:border-b-2 hover:border-b-[#FF3F42] hover:text-[#FF3F42] p-2 xl:text-[16px] font-medium text-[#D1CDD0]"
+                        href="{{ route('menu-transaksi.sewa-ditolak', ['id_user' => Crypt::encrypt(session('id_user'))]) }}">Sewa
+                        Ditolak</a></li>
+
+
+                {{-- <li><a class="{{ $title === 'Denda' ? 'border-b-2 border-b-[#FF3F42] text-[#FF3F42]' : '' }} hover:border-b-2 hover:border-b-[#FF3F42] hover:text-[#FF3F42] p-2 xl:text-[16px] font-medium text-[#D1CDD0]"
+                        href="{{ route('menu-transaksi.denda-transaksi', ['id_user' => Crypt::encrypt(session('id_user'))]) }}">Denda</a></li> --}}
                 <li><a class="{{ $title === 'Selesai Order' ? 'border-b-2 border-b-[#FF3F42] text-[#FF3F42]' : '' }} hover:border-b-2 hover:border-b-[#FF3F42] hover:text-[#FF3F42] p-2 xl:text-[16px] font-medium text-[#D1CDD0]"
-                        href="{{ route('transaksi-offline.order-selesai', ['id_user' => Crypt::encrypt(session('id_user'))]) }}">Selesai</a>
+                        href="{{ route('menu-transaksi.order-selesai', ['id_user' => Crypt::encrypt(session('id_user'))]) }}">Selesai</a>
                 </li>
             </ul>
             <div class="--filter flex items-center gap-6">
                 <form method="GET">
                     <div class="--filter-search relative flex">
-                        <input type="search" value="" name="search"
+                        <input type="search" value="{{ $search }}" name="search"
                             class="shadow-box-shadow-11 rounded-lg bg-white appearance-none px-6 py-2"
                             placeholder="Cari nama...enter" aria-label="Search" id="exampleFormControlInput3"
                             aria-describedby="button-addon3" />
@@ -36,21 +47,23 @@
                 </form>
             </div>
         </div>
-        <div class="--button">
-            <a href="{{ route('transaksi-offline.tambah-transaksi') }}"
-                class="gradient-1 text-white px-4 py-2 rounded-lg"><i class="bi bi-plus-lg"></i> Tambah Transaksi</a>
+        <div class="--warnging-alert w-fit p-2 rounded-lg bg-orange-500/20 flex items-center gap-2">
+            <div class="--icon"><i class="text-orange-500 bi bi-exclamation-diamond-fill"></i></div>
+            <p class="text-[14px] font-medium text-orange-500">Tekan tombol terima saat pelanggan sudah sampai dilokasi atau
+                saat pengiriman barang, dengan ketentuan waktu dan tanggal penyewaan sudah masuk permintaan!</p>
         </div>
         <div class="--table bg-white w-full">
             <table class="w-full bg-white border-spacing-2">
                 <thead class="bg-white sticky top-0 z-20 shadow-box-shadow-11">
                     <tr class="text-left">
+                        <th class="px-4 py-2">Id Transaksi</th>
                         <th class="px-4 py-2">Client</th>
                         <th class="px-4 py-2">Tanggal Dimulai</th>
                         <th class="px-4 py-2">Tanggal Selesai</th>
                         <th class="px-4 py-2">Status</th>
                         <th class="px-4 py-2">Pembayaran</th>
                         <th class="px-4 py-2">Metode</th>
-                        <th class="px-4 py-2">Produk</th>
+                        {{-- <th class="px-4 py-2">Produk</th> --}}
                         <th class="px-4 py-2">Aksi</th>
                     </tr>
                 </thead>
@@ -58,44 +71,56 @@
                     <tr>
                         <td colspan="7" style="height: 15px;"></td>
                     </tr>
-                    <tr
-                        class="shadow-box-shadow-8 p-2 hover:scale-105 hover:z-10 text-xs transition transform duration-200 text-[14px] font-medium">
-                        <td class="px-4 py-2 flex items-center gap-2">
-                            <img class="w-[40px] h-[40px] rounded-[10px] object-cover"
-                                src="{{ asset('assets/image/developers/man.png') }}" alt="">
-                            <div>Junior</div>
-                        </td>
-                        <td class="px-4 py-2">14-04-2025</td>
-                        <td class="px-4 py-2">19-04-2025</td>
-                        <td class="px-4 py-2">
-                            <p class="py-1 px-2 rounded-md bg-amber-500/20 text-amber-900 text-center">
-                                Aktif
-                            </p>
-                        </td>
-                        <td class="px-4 py-2">
-                            <p class="py-1 px-2 rounded-md  bg-green-500/20 text-green-900 text-center">
-                                Lunas
-                            </p>
-                        </td>
-                        <td class="px-4 py-2">Transfer</td>
-                        <td class="px-4 py-2 flex items-center gap-2">
-                            <img class="w-[40px] h-[40px] rounded-[10px] object-cover"
-                                src="{{ asset('assets/image/customers/produk/') }}" alt="">
-                            <div class="max-w-[250px] line-clamp-1"></div>
-                        </td>
-                        <td class="px-4 py-2"><a href="{{ route('transaksi-offline.detail-transaksi') }}"
-                                class="py-1 px-2 rounded-md bg-blue-500/20 text-blue-900 text-center hover:text-blue-900">Detail</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="7" style="height: 15px;"></td>
-                    </tr>
+                    @foreach ($data as $item)
+                        <tr
+                            class="shadow-box-shadow-8 p-2 hover:scale-105 hover:z-10 text-xs transition transform duration-200 text-[14px] font-medium">
+                            <td class="px-4 py-2">
+                                <p class="py-1 px-2 rounded-md bg-blue-500/20 text-blue-900 text-center">
+                                    {{ $item->id }}</p>
+                            <td class="px-4 py-2 flex items-center gap-2">
+                                <img class="w-[40px] h-[40px] rounded-[10px] object-cover"
+                                    src="{{ $item->user->foto != null ? asset('assets/image/customers/profile/' . $item->user->foto) : asset('assets/image/developers/agung-kurniawan.jpg') }}"
+                                    alt="">
+                                <div>{{ $item->user->name }}</div>
+                            </td>
+                            <td class="px-4 py-2">{{ Carbon\Carbon::parse($item->tanggal_mulai)->format('d F Y') }}</td>
+                            <td class="px-4 py-2">{{ Carbon\Carbon::parse($item->tanggal_selesai)->format('d F Y') }}</td>
+                            <td class="px-4 py-2">
+                                <p class="py-1 px-2 rounded-md bg-red-500/20 text-white-900 text-center">
+                                    {{ $item->status_penyewaan }}</p>
+                            </td>
+                            <td class="px-4 py-2">
+                                @if ($item->pembayaran != null)
+                                    <p
+                                        class="py-1 px-2 rounded-md {{ $item->pembayaran->status_pembayaran == 'Belum lunas' ? 'bg-red-500/20 text-red-900' : '' }} bg-green-500/20 text-green-900 text-center">
+                                        {{ $item->pembayaran->status_pembayaran }}</p>
+                                @else
+                                    -
+                                @endif
+
+                            </td>
+                            <td class="px-4 py-2">{{ $item->metode }}</td>
+                            {{-- <td class="px-4 py-2 flex items-center gap-2">
+                                <img class="w-[40px] h-[40px] rounded-[10px] object-cover"
+                                    src="{{ asset('assets/image/customers/produk/' . $item->details_produk[0]->foto_depan) }}"
+                                    alt="">
+                                <div class="max-w-[250px] line-clamp-1">{{ $item->nama }}</div>
+                            </td> --}}
+                            <td class="px-4 py-2"><a
+                                    href="{{ route('menu-transaksi.terima-order-masuk', ['id_penyewaan' => Crypt::encrypt($item->id)]) }}"
+                                    class="py-1 px-2 rounded-md bg-orange-500/20 text-orange-900 text-center hover:text-blue-900">Detail</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="7" style="height: 15px;"></td>
+                        </tr>
+                    @endforeach
                 </tbody>
             </table>
         </div>
     </div>
 
-    {{-- <script>
+    <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Ambil nilai dari query string jika tersedia
             var filterTglAwal = "{{ request()->input('tanggal_awal') }}";
@@ -157,5 +182,5 @@
                 submitForm();
             });
         });
-    </script> --}}
+    </script>
 @endsection

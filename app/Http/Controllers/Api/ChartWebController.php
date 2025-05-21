@@ -15,14 +15,27 @@ class ChartWebController extends Controller
 {
     public function ApiTotalKeuntungan()
     {
-        $total_pemasukan_tahun_sekarang = Pemasukan::whereYear('created_at', date('Y'))->sum('nominal');
+        // $total_pemasukan_tahun_sekarang = Pemasukan::whereYear('created_at', date('Y'))->sum('nominal');
+        $penghasilan_tahun_ini_admin = PembayaranPenyewaan::whereYear('created_at', Carbon::now()->year)->sum('biaya_admin');
+        $penghasilan_tahun_ini_iklan = PembayaranIklan::whereYear('created_at', Carbon::now()->year)->where('status_bayar', 'aktif')->sum('total_bayar');
+        $total_pemasukan_tahun_sekarang = $penghasilan_tahun_ini_admin + $penghasilan_tahun_ini_iklan;
+
         $total_pengeluaran_tahun_sekarang = Pengeluaran::whereYear('created_at', date('Y'))->sum('nominal');
 
-        $total_pemasukan_tahun_lalu = Pemasukan::whereYear('created_at', date('Y') - 1)->sum('nominal');
+        // $total_pemasukan_tahun_lalu = Pemasukan::whereYear('created_at', date('Y') - 1)->sum('nominal');
+
+        $penghasilan_tahun_lalu_admin = PembayaranPenyewaan::whereYear('created_at', Carbon::now()->year - 1)->sum('biaya_admin');
+        $penghasilan_tahun_lalu_iklan = PembayaranIklan::whereYear('created_at', Carbon::now()->year - 1)->where('status_bayar', 'aktif')->sum('total_bayar');
+        $total_pemasukan_tahun_lalu = $penghasilan_tahun_lalu_admin + $penghasilan_tahun_lalu_iklan;
         $total_pengeluaran_tahun_lalu = Pengeluaran::whereYear('created_at', date('Y') - 1)->sum('nominal');
+
 
         // Menghitung total keuntungan tahun sekarang
         $total_keuntungan = abs($total_pemasukan_tahun_sekarang - $total_pengeluaran_tahun_sekarang);
+        if ($total_keuntungan <= 0) {
+            $total_keuntungan = 0;
+            # code...
+        }
         if ($total_keuntungan >= 1000000) {
             $formatted_keuntungan = number_format($total_keuntungan / 1000000, 0) . 'M';
         } else {
@@ -31,6 +44,12 @@ class ChartWebController extends Controller
 
         // Menghitung total keuntungan tahun lalu
         $total_keuntungan_lalu = abs($total_pemasukan_tahun_lalu - $total_pengeluaran_tahun_lalu);
+
+
+        if ($total_keuntungan_lalu <= 0) {
+            $total_keuntungan_lalu = 0;
+            # code...
+        }
         if ($total_keuntungan_lalu >= 1000000) {
             $formatted_keuntungan_lalu = number_format($total_keuntungan_lalu / 1000000, 0) . 'M';
         } else {

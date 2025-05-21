@@ -30,6 +30,8 @@ class ProductController extends Controller
                 DB::raw('AVG(rating_produk.rating) as rata_rating'),
                 DB::raw('MIN(detail_variant_produk.harga_sewa) as harga_sewa')
             )
+            ->where('produk.id_user', '!=', auth()->id())       // Produk bukan dari user yang login
+            ->where('users.sp', '<', 3)                         // User pemilik produk SP-nya < 3
             ->whereNotNull('rating_produk.rating')
             ->whereNotNull('detail_variant_produk.harga_sewa')
             ->groupBy('produk.id', 'produk.id_user', 'users.name', 'produk.nama', 'produk.foto_depan')

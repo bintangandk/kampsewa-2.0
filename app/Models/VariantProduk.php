@@ -15,4 +15,13 @@ class VariantProduk extends Model
         'id_produk',
         'warna',
     ];
+
+    public function produk()
+    {
+        return $this->belongsTo(Produk::class, 'id_produk');
+    }
+    public function detailVariant()
+    {
+        return $this->hasMany(DetailVariantProduk::class, 'id_variant_produk');
+    }
 }

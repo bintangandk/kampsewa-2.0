@@ -251,7 +251,7 @@
                                     <td class="px-6 py-4 flex gap-2 items-center">
                                         @if ($report->status == 'pending')
                                             <button onclick="openVerifikasiModal({{ $report }})"
-                                                class="bg-[#FBBF24] text-white py-2 px-4 rounded-full">
+                                                class="bg-[#FBBF24] text-black py-2 px-4 rounded-full">
                                                 Verifikasi
                                             </button>
                                         @endif

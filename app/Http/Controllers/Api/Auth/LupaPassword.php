@@ -12,7 +12,8 @@ use Symfony\Component\CssSelector\Node\FunctionNode;
 
 class LupaPassword extends Controller
 {
-    public function verifikasiPhone(Request $request) {
+    public function verifikasiPhone(Request $request)
+    {
         $validate = $request->validate([
             'nomor_telephone' => 'required|numeric|exists:users,nomor_telephone',
         ], [
@@ -21,8 +22,8 @@ class LupaPassword extends Controller
 
         try {
             $user = User::where('nomor_telephone', $validate['nomor_telephone'])
-                        ->where('type', 0)
-                        ->first();
+                ->where('type', 0)
+                ->first();
 
             if ($user) {
                 $OTP = rand(100000, 999999);
@@ -88,7 +89,8 @@ class LupaPassword extends Controller
 
     // fungsi verifikasi otp ini digunakan seteleh user melewati tahap
     // check pengiriman otp dengan menggunakan nomor telephone yang terdaftar
-    public Function verifikasiOTP($nomor_telephone, Request $request) {
+    public function verifikasiOTP($nomor_telephone, Request $request)
+    {
         // variable name yang harus sama dengan textfield
         // pada kode flutter yang digunakan untuk mencocokkan request
         $name_form = 'otp';
@@ -112,10 +114,10 @@ class LupaPassword extends Controller
 
         // melakukan pengecekan apakah $check_otp_user ada dan apakah kolom otp
         // sama dengan $validate[$name_form] yang di inputkan oleh user
-        if($check_otp_user && $check_otp_user->otp == $validate[$name_form]) {
+        if ($check_otp_user && $check_otp_user->otp == $validate[$name_form]) {
 
             // melakukan check apakah kode otp yang dimasukkan expired atau tidak
-            if(Carbon::now()->gt($check_otp_user->expired_at)) {
+            if (Carbon::now()->gt($check_otp_user->expired_at)) {
 
                 // jika check sesuai maka hapus seluruh data otp yang
                 // terkait dengan nomor_telephone user
@@ -144,7 +146,8 @@ class LupaPassword extends Controller
 
     // fungsi reset password ini digunakan seteleh user melewati tahap
     // pengecekan otp dan melewati tahap verifikasi otp
-    public function resetPassword($nomor_telephone, Request $request) {
+    public function resetPassword($nomor_telephone, Request $request)
+    {
         // variable name yang harus sama dengan textfield
         // pada kode flutter yang digunakan untuk mencocokkan request
         $name_form = ['password', 'confirm-password'];
@@ -169,7 +172,7 @@ class LupaPassword extends Controller
         $table_users = User::where('nomor_telephone', $nomor_telephone)->where('type', 0)->first();
 
         // check apakah confirmasi password sama dengan password
-        if($validate[$name_form[1]] !== $validate[$name_form[0]]) {
+        if ($validate[$name_form[1]] !== $validate[$name_form[0]]) {
             // kirimkan respon bahwa konfirmasi password tidak cocok
             return response()->json([
                 'status' => 'error',
@@ -178,7 +181,7 @@ class LupaPassword extends Controller
         }
 
         // check apakah data user ada
-        if($table_users) {
+        if ($table_users) {
             // data user ada maka update password dengan fungsi bycript / hash
             $table_users->update([
                 'password' => bcrypt($validate[$name_form[0]]),
@@ -199,7 +202,8 @@ class LupaPassword extends Controller
     }
 
     // fungsi untuk tombol kirim ulang kode otp
-    function kirimUlangOTP($nomor_telephone) {
+    function kirimUlangOTP($nomor_telephone)
+    {
         // Mengambil data user berdasarkan nomor_telephone
         $data_user = User::where('nomor_telephone', $nomor_telephone)->first();
 

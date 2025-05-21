@@ -21,6 +21,7 @@ class Produk extends Model
         'foto_belakang',
         'foto_kiri',
         'foto_kanan',
+
     ];
 
     public function ratings()
@@ -31,6 +32,10 @@ class Produk extends Model
     public function storeUser()
     {
         return $this->belongsTo(User::class, 'id_user');
+    }
+    public function variant()
+    {
+        return $this->hasMany(VariantProduk::class, 'id_produk');
     }
     public function detailPenyewaan()
     {

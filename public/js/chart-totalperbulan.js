@@ -1,110 +1,93 @@
-async function fetchMonthlyIncome() {
-    const url = "/api/chart/monthly-income";
+// Fetch API total keuntungan
+async function fetchApiTotalKeuntungan() {
+    const url = "/api/chart/monthly-income"; // URL telah diganti
     try {
-        const response = await fetch(url, {
-            method: "GET",
-            headers: {
-                Accept: "application/json",
-            },
-        });
-
-        if (!response.ok) {
-            throw new Error("Network response was not ok");
-        }
-
-        const result = await response.json();
-
-        if (result.success && result.data) {
-            return result.data;
-        }
-        throw new Error("Invalid data format");
+        const response = await fetch(url, { mode: "cors" }); // Use 'cors' mode
+        const data = await response.json();
+        return data;
     } catch (error) {
-        console.error("Error fetching monthly income:", error);
-        return {
-            labels: ["Feb", "Mar", "Apr", "Mei"],
-            values: [0, 0, 0, 0], // Fallback data
-        };
+        console.error("Error fetching data:", error);
+        return null; // Return null in case of error
     }
 }
 
-async function initializeChart() {
-    // Pastikan elemen canvas ada
-    const canvas = document.getElementById("penghasilan-perbulan");
-    if (!canvas) {
-        console.error("Canvas element not found!");
-        return;
-    }
+fetchApiTotalKeuntungan()
+    .then((data) => {
+        if (data) {
+            const getKeuntungan = data.total.total_keuntungan;
+            console.log(getKeuntungan);
 
-    // Hancurkan chart lama jika ada
-    if (canvas.chart) {
-        canvas.chart.destroy();
-    }
+            // Convert formatted string like "1,405M" to number 1405000000
+            const parseKeuntungan = (str) =>
+                parseFloat(str.replace(/,/g, "").replace("M", "")) * 1000000;
 
-    // Ambil data dari API
-    const { labels, values } = await fetchMonthlyIncome();
-    console.log("Data from API:", { labels, values });
+            const keuntunganTahunIni = parseKeuntungan(
+                getKeuntungan.keuntungan_tahun_saat_ini
+            );
+            const keuntunganTahunLalu = parseKeuntungan(
+                getKeuntungan.keuntungan_tahun_lalu
+            );
 
-    // Konfigurasi Chart
-    const config = {
-        type: "line",
-        data: {
-            labels: labels,
-            datasets: [
-                {
-                    label: "Penghasilan Perbulan",
-                    data: values,
-                    fill: true,
-                    borderWidth: 3,
-                    borderColor: "rgb(124,169,207)",
-                    tension: 0.4,
-                    backgroundColor: createGradientPenghasilanPerbulan(canvas),
-                },
-            ],
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: { display: false },
-                tooltip: {
-                    callbacks: {
-                        label: (ctx) => `Rp ${ctx.raw.toLocaleString("id-ID")}`,
+            const keuntungan = document.getElementById("chart-keuntungan");
+
+            const dataChartKeuntungan = {
+                labels: ["Tahun ini", "Tahun lalu"],
+                datasets: [
+                    {
+                        label: "Keuntungan",
+                        data: [keuntunganTahunIni, keuntunganTahunLalu],
+                        backgroundColor: ["rgb(54, 162, 235)", "#F2F5FD"],
+                        hoverOffset: 4,
+                        borderRadius: 10,
+                    },
+                ],
+            };
+
+            const configKeuntungan = {
+                type: "doughnut",
+                data: dataChartKeuntungan,
+                options: {
+                    plugins: {
+                        legend: {
+                            display: false,
+                        },
                     },
                 },
-            },
-            scales: {
-                x: {
-                    grid: { display: false },
-                    border: { display: false },
-                    ticks: { color: "white" },
-                },
-                y: {
-                    ticks: {
-                        callback: (val) =>
-                            val !== 0
-                                ? `Rp ${val.toLocaleString("id-ID")}`
-                                : undefined,
-                        display: false,
+            };
+
+            new Chart(keuntungan, configKeuntungan);
+        } else {
+            // Add manual data if fetch API fails
+            const keuntungan = document.getElementById("chart-keuntungan");
+
+            const dataChartKeuntungan = {
+                labels: ["Tahun ini", "Tahun lalu"],
+                datasets: [
+                    {
+                        label: "Keuntungan",
+                        data: [1500000000, 1000000000], // Manual data in the same unit (1.5M and 1M)
+                        backgroundColor: ["rgb(54, 162, 235)", "#F2F5FD"],
+                        hoverOffset: 4,
+                        borderRadius: 10,
                     },
-                    beginAtZero: true,
-                    grid: { display: false },
-                    border: { display: false },
+                ],
+            };
+
+            const configKeuntungan = {
+                type: "doughnut",
+                data: dataChartKeuntungan,
+                options: {
+                    plugins: {
+                        legend: {
+                            display: false,
+                        },
+                    },
                 },
-            },
-        },
-    };
+            };
 
-    // Buat chart baru
-    canvas.chart = new Chart(canvas, config);
-}
-
-// Fungsi gradient yang dimodifikasi
-function createGradientPenghasilanPerbulan(canvas) {
-    const ctx = canvas.getContext("2d");
-    const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-    gradient.addColorStop(0, "rgb(124,169,207)");
-    gradient.addColorStop(1, "rgba(8,14,46,1)");
-    return gradient;
-}
-
-// Inisialisasi chart saat halaman dimuat
-document.addEventListener("DOMContentLoaded", initializeChart);
+            new Chart(keuntungan, configKeuntungan);
+        }
+    })
+    .catch((error) => {
+        console.error("Error fetching data:", error);
+    });

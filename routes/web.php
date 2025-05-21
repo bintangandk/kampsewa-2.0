@@ -75,7 +75,7 @@ Route::delete('developer/dashboard/iklan/delete-iklan-pending/{id_iklan}', [Ikla
 Route::get('developer/dashboard/penyewaan', [Penyewaan::class, 'index'])->name('penyewaan.index')->middleware('auth');
 Route::get('developer/dashboard/penghasilan', [PenghasilanController::class, 'index'])->name('penghasilan.index')->middleware('auth');
 
-Route::get('developer/dashboard/report/pending', [ReportController::class, 'index'])->name('report.index')->middleware('auth');
+Route::get('developer/dashboard/report/pending', [ReportController::class, 'index'])->name('p')->middleware('auth');
 Route::get('developer/dashboard/report/tolak', [ReportController::class, 'report_tolak'])->name('report.tolak')->middleware('auth');
 Route::get('developer/dashboard/report/terima', [ReportController::class, 'report_terima'])->name('report.terima')->middleware('auth');
 Route::post('developer/dashboard/report/update_report', [ReportController::class, 'verifikasi'])->name('verifikasi_report')->middleware('auth');
@@ -137,6 +137,7 @@ Route::delete('/customer/dashboard/keuangan/delete-pengeluaran/{id_pengeluaran}'
 // transaksi
 Route::get('customer/dashboard/transaksi/{id_user}', [TransaksiMenuController::class, 'index'])->name('menu-transaksi.index')->middleware('auth');
 Route::get('customer/dashboard/sewa-berlangsung/{id_user}', [TransaksiMenuController::class, 'sewaBerlangsung'])->name('menu-transaksi.sewa-berlangsung')->middleware('auth');
+Route::get('customer/dashboard/sewa-ditolak/{id_user}', [TransaksiMenuController::class, 'sewaditolak'])->name('menu-transaksi.sewa-ditolak')->middleware('auth');
 Route::get('customer/dashboard/denda-transaksi/{id_user}', [TransaksiMenuController::class, 'dendaTransaksi'])->name('menu-transaksi.denda-transaksi')->middleware('auth');
 Route::get('customer/dashboard/order-selesai/{id_user}', [TransaksiMenuController::class, 'orderSelesai'])->name('menu-transaksi.order-selesai')->middleware('auth');
 Route::get('customer/dashboard/transaksi/terima-order-masuk/{id_penyewaan}', [TransaksiMenuController::class, 'terimaOrderMasuk'])->name('menu-transaksi.terima-order-masuk')->middleware('auth');
@@ -146,3 +147,6 @@ Route::put('customer/dashboard/transaksi/confirm-order-masuk/{id_penyewaan}/{id_
 //transaksi offline
 Route::get('customer/dashboard/order-offline', [TransaksiMenuController::class, 'orderOffline'])->name('transaksi-offline.order-offline')->middleware('auth');
 Route::get('customer/dashboard/detail-offline', [TransaksiMenuController::class, 'detailOffline'])->name('transaksi-offline.detail-transaksi')->middleware('auth');
+Route::get('customer/dashboard/transaksi-offline', [TransaksiMenuController::class, 'tambahTransaksi'])->name('transaksi-offline.tambah-transaksi')->middleware('auth');
+Route::post('customer/dashboard/transaksi/tambah', [TransaksiMenuController::class, 'tambahTransaksiPost'])->name('transaksi-offline.post')->middleware('auth');
+Route::get('customer/dashboard/order-selesai', [TransaksiMenuController::class, 'selesaiOrder'])->name('transaksi-offline.order-selesai')->middleware('auth');
