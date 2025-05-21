@@ -516,8 +516,54 @@ class TransaksiController extends Controller
         }
     }
 
-    public function rincianProduk(Request $request)
+    public function rincianRiwayat($id)
     {
+        // Ambil data penyewaan dengan relasi yang dibutuhkan
+        $penyewaan = Penyewaan::with([
+            'pembayaran',
+            'details.produk.storeUser.alamat' => function($query) {
+                $query->where('type', 1); // Hanya ambil alamat toko (type=1)
+            }
+        ])->findOrFail($id);
 
+        // Hitung durasi sewa
+        $durasi = \Carbon\Carbon::parse($penyewaan->tanggal_mulai)
+            ->diffInDays($penyewaan->tanggal_selesai);
+
+        // Format data produk
+        $produk = $penyewaan->details->map(function($item) {
+            return [
+                'nama_produk' => $item->produk->nama,
+                'warna' => $item->warna_produk,
+                'ukuran' => $item->ukuran,
+                'qty' => $item->qty,
+                'subtotal' => $item->subtotal
+            ];
+        });
+
+        // Format response
+        $response = [
+            'id_penyewaan' => $penyewaan->id,
+            'status_penyewaan' => $penyewaan->status_penyewaan,
+            'status_pembayaran' => $penyewaan->pembayaran->status_pembayaran,
+            'tanggal_mulai' => $penyewaan->tanggal_mulai,
+            'tanggal_selesai' => $penyewaan->tanggal_selesai,
+            'jenis_transaksi' => $penyewaan->pembayaran->jenis_transaksi,
+            'alamat_penjual' => [
+                'longitude' => $penyewaan->details->first()->produk->storeUser->alamat->first()->longitude ?? null,
+                'latitude' => $penyewaan->details->first()->produk->storeUser->alamat->first()->latitude ?? null
+            ],
+            'name_store' => $penyewaan->details->first()->produk->storeUser->name_store,
+            'produk' => $produk,
+            'durasi_sewa' => $durasi,
+            'total_bayar' => $penyewaan->pembayaran->total_pembayaran,
+            'metode_pembayaran' => $penyewaan->pembayaran->metode,
+            'tanggal_pemesanan' => $penyewaan->created_at
+        ];
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $response
+        ]);
     }
 }

@@ -34,7 +34,7 @@ class LupaPassword extends Controller
                 $resetPassword->expired_at = now()->addMinutes(1);
                 $resetPassword->save();
 
-                $token = 'RwxiLamgrVPaRCrfSE7k';
+                $token = 'kYjrG5tSaij9kXNG2dYf';
                 $telfon = $validate['nomor_telephone'];
                 $nama_user = $user->name;
 

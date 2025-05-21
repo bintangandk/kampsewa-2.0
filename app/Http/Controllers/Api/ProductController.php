@@ -16,7 +16,7 @@ class ProductController extends Controller
     // di halaman pertama dashboard mobile
     public function produkRatingTertinggiLimit6()
     {
-        // Ambil data produk dengan rata-rata rating
+        //Ambil data produk dengan rata-rata rating
         $produk = Produk::leftJoin('rating_produk', 'produk.id', '=', 'rating_produk.id_produk')
             ->leftJoin('users', 'users.id', '=', 'produk.id_user')
             ->leftJoin('variant_produk', 'produk.id', '=', 'variant_produk.id_produk')
@@ -49,6 +49,7 @@ class ProductController extends Controller
             'message' => 'success',
             'data_produk' => $produk
         ], 200);
+
     }
 
     // fungsi untuk menampilkan product berdasarkan
