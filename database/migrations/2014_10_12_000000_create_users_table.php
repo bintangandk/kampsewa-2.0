@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('foto')->nullable()->default('Belum Di isi');
             $table->string('status')->nullable();
             $table->string('background')->nullable()->default('Belum Di isi');
+            $table->integer('SP')->default(0);
             $table->string('jenis_kelamin')->nullable();
             $table->timestamp('time_login')->nullable();
             $table->timestamp('last_login')->nullable();

@@ -60,7 +60,7 @@ Route::get('developer/dashboard/notification', [NotificationController::class, '
 Route::get('developer/dashboard/kelola-pengguna', [KelolaPenggunaMenuController::class, 'index'])->name('kelola-pengguna.index')->middleware('auth');
 Route::get('developer/dashboard/kelola-pengguna/detail-pengguna/{fullname}', [DetailPenggunaController::class, 'index'])->name('detail-pengguna.index')->middleware('auth');
 Route::get('developer/dashboard/kelola-pengguna/detail-pengguna/{fullname}/produk-disewakan', [DetailPenggunaController::class, 'showProdukDisewakan'])->name('detail-pengguna.produk-disewakan')->middleware('auth');
-Route::get('developer/dashboard/kelola-pengguna/detail-pengguna/{fullname}/produk-disewakan/detail-produk/{namaproduk}', [DetailPenggunaController::class, 'showDetailProdukDisewakan'])->name('detail-pengguna.detail-produk-disewakan')->middleware('auth');
+Route::get('developer/dashboard/kelola-pengguna/detail-pengguna/{fullname}/produk-disewakan/detail-produk/{namaproduk}', [DetailPenggunaController::class, 'showDetaiwelProdukDisewakan'])->name('detail-pengguna.detail-produk-disewakan')->middleware('auth');
 Route::get('developer/dashboard/kelola-pengguna/detail-pengguna/{fullname}/detail-produk-sedang-disewa/{namaproduk}', [DetailPenggunaController::class, 'showDetailProdukSedangDisewa'])->name('detail-pengguna.detail-produk-sedang-disewa')->middleware('auth');
 Route::post('/delete-selected-products', [DetailPenggunaController::class, 'deleteSelectedProducts'])->name('delete_selected_products')->middleware('auth');
 Route::get('developer/dashboard/informasi-pengguna', [InformasiPenggunaController::class, 'index'])->name('informasi-pengguna.index')->middleware('auth');
@@ -75,7 +75,7 @@ Route::delete('developer/dashboard/iklan/delete-iklan-pending/{id_iklan}', [Ikla
 Route::get('developer/dashboard/penyewaan', [Penyewaan::class, 'index'])->name('penyewaan.index')->middleware('auth');
 Route::get('developer/dashboard/penghasilan', [PenghasilanController::class, 'index'])->name('penghasilan.index')->middleware('auth');
 
-Route::get('developer/dashboard/report/pending', [ReportController::class, 'index'])->name('p')->middleware('auth');
+Route::get('developer/dashboard/report/pending', [ReportController::class, 'index'])->name('report.index')->middleware('auth');
 Route::get('developer/dashboard/report/tolak', [ReportController::class, 'report_tolak'])->name('report.tolak')->middleware('auth');
 Route::get('developer/dashboard/report/terima', [ReportController::class, 'report_terima'])->name('report.terima')->middleware('auth');
 Route::post('developer/dashboard/report/update_report', [ReportController::class, 'verifikasi'])->name('verifikasi_report')->middleware('auth');
@@ -149,3 +149,4 @@ Route::get('customer/dashboard/order-offline', [TransaksiMenuController::class, 
 Route::get('customer/dashboard/detail-offline', [TransaksiMenuController::class, 'detailOffline'])->name('transaksi-offline.detail-transaksi')->middleware('auth');
 Route::get('customer/dashboard/transaksi-offline', [TransaksiMenuController::class, 'tambahTransaksi'])->name('transaksi-offline.tambah-transaksi')->middleware('auth');
 Route::get('customer/dashboard/order-selesai', [TransaksiMenuController::class, 'selesaiOrder'])->name('transaksi-offline.order-selesai')->middleware('auth');
+Route::get('/developer/dashboard/keuangan/export-pengeluaran', [PengeluaranController::class, 'exportPengeluaranDeveloperPdf'])->name('developer.export.pengeluaran');
