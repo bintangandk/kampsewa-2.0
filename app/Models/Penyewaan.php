@@ -11,6 +11,8 @@ class Penyewaan extends Model
     protected $table='penyewaan';
     protected $fillable=[
         'id_user',
+        'nama_penyewa',
+        'alamat',
         'tanggal_mulai',
         'tanggal_selesai',
         'pesan',

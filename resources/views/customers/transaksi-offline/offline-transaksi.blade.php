@@ -62,7 +62,7 @@
                         class="shadow-box-shadow-8 p-2 hover:scale-105 hover:z-10 text-xs transition transform duration-200 text-[14px] font-medium">
                         <td class="px-4 py-2 flex items-center gap-2">
                             <img class="w-[40px] h-[40px] rounded-[10px] object-cover"
-                                src="{{ asset('assets/image/developers/agung-kurniawan.jpg') }}" alt="">
+                                src="{{ asset('assets/image/developers/man.png') }}" alt="">
                             <div>Junior</div>
                         </td>
                         <td class="px-4 py-2">14-04-2025</td>

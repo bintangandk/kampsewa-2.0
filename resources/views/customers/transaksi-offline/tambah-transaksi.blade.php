@@ -8,135 +8,82 @@
             <p>Tambahkan transaksi penyewaan! anda bisa memasukkan data penyewa dan data barang dengan banyak ukuran dan
                 jenis, seperti warna,
                 kuantitas barang yang akan disewa.</p>
-            <form id="#" action="#" class="w-full flex flex-col gap-6 h-auto mt-4" method="POST"
-                enctype="multipart/form-data">
+            <form action="{{ route('transaksi-offline.post') }}" method="POST" enctype="multipart/form-data"
+                class="w-full flex flex-col gap-6 h-auto mt-4">
                 @csrf
-                <input type="hidden" name="id_user" value="#">
-                <div class="--input-table-produk grid gap-y-4">
+                <input type="hidden" name="id_user" value="{{ auth()->id() }}">
 
-                    <div class="grid grid-cols-2 gap-x-4 mobile-max:grid-cols-1">
-                        <div class="--input-nama-produk w-full">
-                            <p class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Nama Penyewa</p>
-                            <input
-                                class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                type="text" id="nama_penyewa" name="nama_penyewa" placeholder="Masukkan nama penyewa">
-                        </div>
-
-                        <div class="--input-no-telpon w-full">
-                            <p class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Nomer Telpon</p>
-                            <input
-                                class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                type="number" id="no_telpon" name="no_telpon" placeholder="Masukkan no telpon penyewa">
-                        </div>
+                {{-- Informasi Penyewa --}}
+                <div class="grid gap-y-4">
+                    <div>
+                        <label class="block text-sm font-bold mb-2">Nama Penyewa</label>
+                        <input type="text" name="nama_penyewa" required class="w-full bg-gray-200 p-3 rounded" />
                     </div>
-
-                    <div class="--input-alamat w-full">
-                        <p class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Alamat</p>
-                        <textarea
-                            class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                            id="alamat" name="alamat" rows="4" placeholder="Masukkan alamat penyewa"></textarea>
+                    <div>
+                        <label class="block text-sm font-bold mb-2">Alamat</label>
+                        <textarea name="alamat" rows="3" required class="w-full bg-gray-200 p-3 rounded"></textarea>
                     </div>
+                </div>
 
-                    {{-- <div class="--input-kategori relative w-full">
-                        <p class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Kategori Produk</p>
-                        <select name="kategori_produk"
-                            class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                            id="grid-state">
-                            <option value="Belum di isi">-- Pilih Kategori --</option>
-                            <option value="Tenda">Tenda</option>
-                            <option value="Pakaian">Pakaian</option>
-                            <option value="Tas">Tas</option>
-                            <option value="Sepatu">Sepatu</option>
-                            <option value="Perlengkapan">Perlengkapan</option>
+                {{-- Tanggal --}}
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-bold mb-2">Tanggal Mulai Sewa</label>
+                        <input type="date" name="tanggal_mulai" required class="w-full bg-gray-200 p-3 rounded" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold mb-2">Tanggal Selesai Sewa</label>
+                        <input type="date" name="tanggal_selesai" required class="w-full bg-gray-200 p-3 rounded" />
+                    </div>
+                </div>
+
+                {{-- Produk dan Variannya --}}
+                <div id="variantContainer">
+                    {{-- Variasi produk pertama --}}
+                    <div class="variant border p-4 rounded mb-4" data-index="0">
+                        <div class="flex justify-between items-center mb-2">
+                            <label class="block font-bold text-sm">Produk 1</label>
+                            <button type="button" onclick="removeProduct(this)" class="text-red-600 text-sm">Hapus
+                                Produk</button>
+                        </div>
+                        <select name="variants[0][produk]" required class="w-full bg-gray-200 p-3 mb-4 rounded">
+                            <option value="">-- Pilih Produk --</option>
+                            @foreach ($produkList as $produk)
+                                <option value="{{ $produk->id }}">{{ $produk->nama }}</option>
+                            @endforeach
                         </select>
-                        <div class="pointer-events-none absolute top-1/2 right-0 flex items-center px-2 text-gray-700">
-                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                            </svg>
+
+                        <div class="size-group space-y-3">
+                            {{-- Ukuran pertama --}}
+                            <div class="size-item grid md:grid-cols-5 gap-4 items-center">
+                                <input type="text" name="variants[0][sizes][0][ukuran]" placeholder="Ukuran" required
+                                    class="bg-gray-200 rounded px-4 py-3 w-full" />
+                                <input type="number" name="variants[0][sizes][0][qty]" placeholder="Jumlah" required
+                                    class="bg-gray-200 rounded px-4 py-3 w-full" />
+                                <input type="text" name="variants[0][sizes][0][warna]" placeholder="Warna" required
+                                    class="bg-gray-200 rounded px-4 py-3 w-full" />
+                                <input type="number" name="variants[0][sizes][0][subtotal]" placeholder="Subtotal (Rp)"
+                                    required class="bg-gray-200 rounded px-4 py-3 w-full" />
+                                <button type="button" onclick="removeSize(this)"
+                                    class="text-red-500 hover:text-red-700 text-sm">Hapus</button>
+                            </div>
                         </div>
-                        @error('kategori_produk')
-                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                        @enderror
-                    </div> --}}
 
-                </div>
-
-                <div class="grid grid-cols-2 gap-x-4 mobile-max:grid-cols-1">
-                    <div class="--input-tanggal-mulai w-full">
-                        <p class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Tanggal Mulai Sewa</p>
-                        <input
-                            class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                            type="date" id="tanggal_mulai" name="tanggal_mulai" required>
-                    </div>
-
-                    <div class="--input-tanggal-selesai w-full">
-                        <p class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Tanggal Selesai Sewa
-                        </p>
-                        <input
-                            class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                            type="date" id="tanggal_selesai" name="tanggal_selesai" required>
+                        <button type="button" onclick="addSize(this)"
+                            class="mt-3 bg-blue-600 text-white px-3 py-2 rounded text-sm">Tambah Ukuran</button>
                     </div>
                 </div>
 
-                <div class="--input-table-variant-detail-variant" id="variantContainer">
-                    <div class="variant">
-                        <div class="w-1/2 mobile-max:w-full">
-                            <p class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Nama Produk</p>
-                            <select id="produk0" name="variants[0][produk]" required
-                                class="tom-select block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
-                                <option value="">-- Pilih Produk --</option>
-                                <option value="Tenda Dome 2P">Tenda Dome 2P</option>
-                                <option value="Carrier 60L">Carrier 60L</option>
-                                <option value="Sleeping Bag">Sleeping Bag</option>
-                                <option value="Kompor Portable">Kompor Portable</option>
-                            </select>
-                        </div>
-                        <div class="size flex items-center gap-4 mt-2 mobile-max:flex-col">
-                            <div class="w-full">
-                                <p class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Ukuran</p>
-                                <input
-                                    class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                    type="text" id="ukuran" name="variants[0][sizes][0][ukuran]"
-                                    placeholder="contoh: 3x4/XXL" required>
-                            </div>
-                            <div class="w-full">
-                                <p class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Jumlah</p>
-                                <input
-                                    class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                    type="number" id="jumlah" name="variants[0][sizes][0][jumlah]"
-                                    placeholder="contoh: 20" required>
-                            </div>
-                            <div class="w-full">
-                                <p class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Warna
-                                </p>
-                                <input
-                                    class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                    type="text" id="warna" name="variants[0][sizes][0][warna"
-                                    placeholder="Contoh: Merah" required>
-                            </div>
-                            {{-- <div>
-                                <p class="opacity-0">button</p>
-                                <button type="button" class="py-3 px-4 rounded flex items-center justify-center h-full bg-red-100 text-red-500"
-                                    onclick="removeSize(this)"><i class="bi bi-trash3-fill"></i></button>
-                            </div> --}}
-                        </div>
-                        <div class="sizeContainer mt-2 mobile-max:w-full">
-                            <button type="button"
-                                class="mobile-max:w-full p-2 bg-blue-500 rounded mt-2 text-white font-medium text-[14px]"
-                                onclick="addSize(this.parentElement)">Tambah Detail Variant</button>
-                            {{-- <button type="button" class="p-2 bg-red-500 rounded mt-2 text-white font-medium text-[14px]" onclick="removeVariant(this)">Hapus Warna</button> --}}
-                        </div>
-                    </div>
-                </div>
-                <div class="w-full flex items-center gap-2">
-                    <button type="button"
-                        class="mobile-max:w-full p-2 bg-blue-500 rounded text-white font-medium text-[14px]"
-                        onclick="addProduct()">Tambah Produk</button>
-                    <button type="button"
-                        class="mobile-max:w-full p-2 bg-green-500 rounded text-white font-medium text-[14px]" id=""
-                        data-toggle="modal" data-target="#paymentModal">Lanjut Pembayaran</button>
+                {{-- Tombol Tambah Produk & Submit --}}
+                <div class="flex flex-col sm:flex-row gap-2">
+                    <button type="button" onclick="addProduct()"
+                        class="bg-indigo-600 text-white px-4 py-2 rounded text-sm">Tambah Produk</button>
+                    <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded text-sm">Lanjut
+                        Pembayaran</button>
                 </div>
             </form>
+
+
         </div>
 
         <!-- Modal -->
@@ -194,7 +141,7 @@
     </div>
 
 
-    <script>
+    {{-- <script>
         function addProduct() {
             const variantContainer = document.getElementById('variantContainer');
             const variantCount = document.querySelectorAll('.variant').length;
@@ -205,12 +152,18 @@
                 <select id="produk0" name="variants[0][produk]" required
                                 class="tom-select block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
                                 <option value="">-- Pilih Produk --</option>
-                                <option value="Tenda Dome 2P">Tenda Dome 2P</option>
-                                <option value="Carrier 60L">Carrier 60L</option>
-                                <option value="Sleeping Bag">Sleeping Bag</option>
-                                <option value="Kompor Portable">Kompor Portable</option>
+                                @foreach ($produkList as $produk)
+                                    <option value="{{ $produk->id }}">{{ $produk->nama }}</option>
+                                @endforeach
                             </select>
             </div>
+             <div class="w-full">
+                            <p class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Harga Sewa</p>
+                            <input
+                                class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                type="number" id="subtotal" name="variants[0][sizes][0][sub_total]"
+                                placeholder="contoh: 10000" required>
+                        </div>
             <div class="sizeContainer mt-2 mobile-max:w-full">
                 <button type="button" class="mobile-max:w-full p-2 bg-blue-500 rounded mt-2 text-white font-medium text-[14px]" onclick="addSize(this.parentElement)">Tambah Detail Variant</button>
                 <button type="button" class="mobile-max:w-full p-2 bg-red-500 rounded mt-2 text-white font-medium text-[14px]" onclick="removeVariant(this)">Hapus Produk</button>
@@ -260,7 +213,87 @@
             const size = button.parentElement.parentElement;
             size.remove();
         }
+    </script> --}}
+    <script>
+        let variantIndex = 1;
+
+        function addProduct() {
+            const container = document.getElementById('variantContainer');
+            const newVariant = document.createElement('div');
+            newVariant.classList.add('variant', 'border', 'p-4', 'rounded', 'mb-4');
+            newVariant.setAttribute('data-index', variantIndex);
+
+            newVariant.innerHTML = `
+            <div class="flex justify-between items-center mb-2">
+                <label class="block font-bold text-sm">Produk ${variantIndex + 1}</label>
+                <button type="button" onclick="removeProduct(this)" class="text-red-600 text-sm">Hapus Produk</button>
+            </div>
+            <select name="variants[${variantIndex}][produk]" required
+                class="w-full bg-gray-200 p-3 mb-4 rounded">
+                <option value="">-- Pilih Produk --</option>
+                @foreach ($produkList as $produk)
+                    <option value="{{ $produk->id }}">{{ $produk->nama }}</option>
+                @endforeach
+            </select>
+
+            <div class="size-group space-y-3">
+                <div class="size-item grid md:grid-cols-5 gap-4 items-center">
+                    <input type="text" name="variants[${variantIndex}][sizes][0][ukuran]" placeholder="Ukuran"
+                        required class="bg-gray-200 rounded px-4 py-3 w-full" />
+                    <input type="number" name="variants[${variantIndex}][sizes][0][qty]" placeholder="Jumlah"
+                        required class="bg-gray-200 rounded px-4 py-3 w-full" />
+                    <input type="text" name="variants[${variantIndex}][sizes][0][warna]" placeholder="Warna"
+                        required class="bg-gray-200 rounded px-4 py-3 w-full" />
+                    <input type="number" name="variants[${variantIndex}][sizes][0][subtotal]" placeholder="Subtotal (Rp)"
+                        required class="bg-gray-200 rounded px-4 py-3 w-full" />
+                    <button type="button" onclick="removeSize(this)"
+                        class="text-red-500 hover:text-red-700 text-sm">Hapus</button>
+                </div>
+            </div>
+
+            <button type="button" onclick="addSize(this)"
+                class="mt-3 bg-blue-600 text-white px-3 py-2 rounded text-sm">Tambah Ukuran</button>
+        `;
+
+            container.appendChild(newVariant);
+            variantIndex++;
+        }
+
+        function removeProduct(button) {
+            const variant = button.closest('.variant');
+            variant.remove();
+        }
+
+        function addSize(button) {
+            const variant = button.closest('.variant');
+            const variantIdx = variant.getAttribute('data-index');
+            const sizeGroup = variant.querySelector('.size-group');
+            const sizeCount = sizeGroup.querySelectorAll('.size-item').length;
+
+            const sizeHTML = `
+            <div class="size-item grid md:grid-cols-5 gap-4 items-center">
+                <input type="text" name="variants[${variantIdx}][sizes][${sizeCount}][ukuran]" placeholder="Ukuran"
+                    required class="bg-gray-200 rounded px-4 py-3 w-full" />
+                <input type="number" name="variants[${variantIdx}][sizes][${sizeCount}][qty]" placeholder="Jumlah"
+                    required class="bg-gray-200 rounded px-4 py-3 w-full" />
+                <input type="text" name="variants[${variantIdx}][sizes][${sizeCount}][warna]" placeholder="Warna"
+                    required class="bg-gray-200 rounded px-4 py-3 w-full" />
+                <input type="number" name="variants[${variantIdx}][sizes][${sizeCount}][subtotal]" placeholder="Subtotal (Rp)"
+                    required class="bg-gray-200 rounded px-4 py-3 w-full" />
+                <button type="button" onclick="removeSize(this)"
+                    class="text-red-500 hover:text-red-700 text-sm">Hapus</button>
+            </div>
+        `;
+
+            sizeGroup.insertAdjacentHTML('beforeend', sizeHTML);
+        }
+
+        function removeSize(button) {
+            const sizeItem = button.closest('.size-item');
+            sizeItem.remove();
+        }
     </script>
+
 
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
     <script>
