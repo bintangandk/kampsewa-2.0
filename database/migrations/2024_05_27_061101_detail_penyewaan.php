@@ -21,6 +21,9 @@ return new class extends Migration
             $table->foreign('id_produk')->references('id')->on('produk')->onDelete('cascade');
             $table->integer('qty');
             $table->integer('subtotal');
+            $table->integer('denda')->default(0);
+            $table->text('keterangan_denda')->nullable();
+
             $table->timestamps();
         });
     }

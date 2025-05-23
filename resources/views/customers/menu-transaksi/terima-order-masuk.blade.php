@@ -30,13 +30,13 @@
                     sesuai dengan list pesanan user, dan menekan tombol terima!</p>
             </div>
         @endif
-        @if ($data->status_penyewaan == 'Pending')
+        {{-- @if ($data->status_penyewaan == 'Pending')
             <div>
                 <button onclick="scrollToElement()"
                     class="hover:text-black p-2 rounded-full bg-[#F6D91F] border-black border-2 font-medium text-black">Terima
                     order disni!</button>
             </div>
-        @endif
+        @endif --}}
         <div class="--component-grid grid xl:grid-cols-2 gap-4">
             <div class="--component-1 flex flex-col gap-6">
                 <div class="--information-user-order">
@@ -162,6 +162,11 @@
                                         {{ number_format($data->jumlah_pembayaran, 0, ',', '.') }}</p>
                                 </div>
                                 <div class="--bukti-pembayaran p-2 rounded-lg  flex flex-col gap-2">
+                                    <p class="font-medium text-[14px]">Total Denda:</p>
+                                    <p class="font-black -mt-2 text-[20px]">Rp.
+                                        {{ number_format($data->total_denda, 0, ',', '.') ?? '0' }}</p>
+                                </div>
+                                <div class="--bukti-pembayaran p-2 rounded-lg  flex flex-col gap-2">
                                     <p class="font-medium text-[14px]">Biaya Admin:</p>
                                     <p class="font-black -mt-2 text-[20px]">Rp.
                                         {{ number_format($data->biaya_admin, 0, ',', '.') }}</p>
@@ -250,14 +255,15 @@
                                                                     {{-- @dump($detail->id_detail) --}}
                                                                     <input name="denda[{{ $detail->id_detail }}][denda]"
                                                                         class="denda-item w-full py-1 px-2 border rounded"
-                                                                        type="text" placeholder="Rp. 0" value=""
+                                                                        type="text" placeholder="Rp. 0"
+                                                                        value="{{ $detail->denda ?? '' }}"
                                                                         data-id-produk="{{ $id_produk }}"
                                                                         oninput="this.value = formatRupiah(this.value, 'Rp. '); updateTotalDendaPerProduk();">
 
                                                                 </td>
                                                                 <td class="py-2 px-4">
                                                                     <textarea name="keterangan[{{ $detail->id_detail }}]" class="w-full py-1 px-2 border rounded" rows="1"
-                                                                        placeholder="Keterangan"></textarea>
+                                                                        placeholder="Keterangan">{{ $detail->keterangan_denda ?? '' }}</textarea>
                                                                 </td>
                                                             @endif
                                                     </tr>
@@ -335,21 +341,26 @@
                                 type="text" placeholder="" value="{{ $data->kurang_pembayaran }}"
                                 name="kurang_pembayaran">
                         </div>
-                        <div class="--input-kurang-pembayaran">
-                            <label class="block text-gray-700 text-sm font-bold mb-2" for="">
-                                Total Denda
-                            </label>
-                            <input readonly id="total_denda"
-                                class="-mt-3 shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                type="text" placeholder="" name="total_denda">
-                        </div>
+                        @if ($data->status_penyewaan == 'Aktif')
+                            <div class="--input-kurang-pembayaran">
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="">
+                                    Total Denda
+                                </label>
+
+                                <input readonly id="total_denda"
+                                    class="-mt-3 shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    type="text" placeholder="" name="total_denda">
+                            </div>
+                        @endif
+
                         <div class="--input-total-pembayaran">
                             <label class="block text-gray-700 text-sm font-bold mb-2" for="">
                                 Total Pembayaran
                             </label>
                             <input readonly id="total_pembayaran"
                                 class="-mt-3 shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                type="text" name="total_pembayaran" placeholder="Total Pembayaran">
+                                type="text" name="total_pembayaran" placeholder="Total Pembayaran"
+                                value="{{ $data->kurang_pembayaran }}">
                         </div>
                         @if ($data->status_penyewaan == 'Pending')
                             <div class="--input-total-pembayaran">
@@ -640,7 +651,7 @@
 
 
 
-                const totalDenda = parseRupiah(document.getElementById('total_denda').value);
+                const totalDenda = parseRupiah(document.getElementById('total_denda')?.value || "0");
                 const harusDibayarAwal = parseRupiah(document.getElementById('harus_dibayar').value);
                 const KurangPembayaranawal = parseRupiah(document.getElementById('kurang_pembayaran').value);
                 const KurangPembayaranawall = parseRupiah(document.getElementById('kurang_pembayaran_hidden')
