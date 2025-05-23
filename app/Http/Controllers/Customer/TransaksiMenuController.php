@@ -109,7 +109,8 @@ class TransaksiMenuController extends Controller
                 'pembayaran_penyewaan.jumlah_pembayaran',
                 'pembayaran_penyewaan.total_pembayaran',
                 'pembayaran_penyewaan.status_pembayaran',
-                'pembayaran_penyewaan.biaya_admin'
+                'pembayaran_penyewaan.biaya_admin',
+                'pembayaran_penyewaan.kurang_pembayaran'
             )->where('penyewaan.id', $id_penyewaan_decrypt)->first();
 
         // Query untuk data dari tabel 'bank'
@@ -139,7 +140,10 @@ class TransaksiMenuController extends Controller
                 'detail_penyewaan.warna_produk',
                 'detail_penyewaan.ukuran',
                 'detail_penyewaan.qty',
-                'detail_penyewaan.subtotal'
+                'detail_penyewaan.subtotal',
+                'detail_penyewaan.denda',
+                'detail_penyewaan.keterangan_denda',
+                'detail_penyewaan.id as id_detail'
             )
             ->where('detail_penyewaan.id_penyewaan', $id_penyewaan_decrypt)
             ->get()
@@ -180,28 +184,79 @@ class TransaksiMenuController extends Controller
     {
         try {
             // Validasi input
-            $validatedData = request()->validate([
-                'jumlah_pembayaran' => 'required|integer',
-                'kembalian_pembayaran' => 'required|integer',
-                'kurang_pembayaran' => 'required|integer',
-                'total_pembayaran' => 'required|integer',
-                'jaminan_sewa' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
-            ]);
 
+            if (request()->hasFile('jaminan_sewa')) {
+                # code...
+                $validatedData = request()->validate([
+                    'jumlah_pembayaran' => 'required',
+                    'kembalian_pembayaran' => 'required',
+                    'kurang_pembayaran' => 'required',
+                    'total_pembayaran' => 'required',
+                    'jaminan_sewa' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
+                ]);
+            } else {
+                $validatedData = request()->validate([
+                    'jumlah_pembayaran' => 'required',
+                    'kembalian_pembayaran' => 'required',
+                    'kurang_pembayaran' => 'required',
+                    'total_pembayaran' => 'required',
+                ]);
+            }
+
+
+
+            $pembayaran_penyewaan = PembayaranPenyewaan::where('id_penyewaan', $id_penyewaan)->first();
+
+            if (request()->hasFile('jaminan_sewa')) {
+                $jaminanSewa = request()->file('jaminan_sewa');
+                $jaminanSewaName = time() . '_jaminan.' . $jaminanSewa->getClientOriginalExtension();
+                $jaminanSewa->move(public_path('assets/image/customers/jaminan/'), $jaminanSewaName);
+
+                // Tambahkan nama file ke array data yang akan diupdate
+                $validatedData['jaminan_sewa'] = $jaminanSewaName;
+                $pembayaran_penyewaan->jaminan_sewa = $jaminanSewaName;
+            }
             // Proses upload file jaminan
-            $jaminanSewa = request()->file('jaminan_sewa');
-            $jaminanSewaName = time() . '_jaminan.' . $jaminanSewa->getClientOriginalExtension();
-            $jaminanSewa->move(public_path('assets/image/customers/jaminan/'), $jaminanSewaName);
+            $total_pembayaran = 0;
+            if (request()->has('denda')) {
 
-            // Tambahkan nama file ke array data yang akan diupdate
-            $validatedData['jaminan_sewa'] = $jaminanSewaName;
+                foreach (request('denda') as $id_detail => $dendaData) {
+                    $dendaValue = (int) str_replace(['Rp.', ' ', '.'], '', $dendaData['denda']); // Bersihkan format Rupiah
+                    $keterangan = request('keterangan')[$id_detail] ?? null;
+                    // dump($id_detail);
+                    if ($dendaValue > 0) {
+                        DetailPenyewaan::where('id', $id_detail)->update([
+                            'denda' => $dendaValue,
+                            'keterangan_denda' => $keterangan,
+                        ]);
+                    }
+                }
+
+
+                $detail_ = DetailPenyewaan::where('id_penyewaan', $id_penyewaan)->get();
+                foreach ($detail_ as $item) {
+                    $total_pembayaran += $item->subtotal;
+                }
+                $total_denda = (int) str_replace(['Rp.', ' ', '.'], '', request('total_denda'));
+                $pembayaran_penyewaan->total_denda = $total_denda;
+                $pembayaran_penyewaan->total_pembayaran = $total_pembayaran  + $total_denda;
+            }
+
 
             // Tentukan status pembayaran
-            $validatedData['status_pembayaran'] = $validatedData['kurang_pembayaran'] > 0 ? 'Belum Lunas' : 'Lunas';
+            $pembayaran_penyewaan->status_pembayaran = $validatedData['kurang_pembayaran'] > 0 ? 'Belum Lunas' : 'Lunas';
 
             // Update langsung dengan query builder
-            PembayaranPenyewaan::where('id_penyewaan', $id_penyewaan)->update($validatedData);
+            // PembayaranPenyewaan::where('id_penyewaan', $id_penyewaan)->update($validatedData);
 
+            $pembayaran_penyewaan->jumlah_pembayaran = (int) str_replace(['Rp.', ' ', '.'], '', $validatedData['jumlah_pembayaran']);
+            $pembayaran_penyewaan->kembalian_pembayaran = (int) str_replace(['Rp.', ' ', '.'], '', $validatedData['kembalian_pembayaran']);
+            // $total_denda = (int) str_replace(['Rp.', ' ', '.'], '', $validatedData['total_denda']);
+
+            // $pembayaran_penyewaan->total_pembayaran = $pembayaran_penyewaan->total_pembayaran +
+            $pembayaran_penyewaan->kurang_pembayaran = (int) str_replace(['Rp.', ' ', '.'], '', $validatedData['kurang_pembayaran']);
+            $pembayaran_penyewaan->save();
+            // dd($pembayaran_penyewaan);
             Alert::toast('Berhasil menyimpan pembayaran!', 'success');
             return redirect()->back();
         } catch (\Exception $e) {

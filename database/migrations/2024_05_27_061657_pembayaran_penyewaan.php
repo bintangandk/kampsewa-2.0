@@ -21,6 +21,7 @@ return new class extends Migration
             $table->integer('kembalian_pembayaran')->default(0);
             $table->integer('biaya_admin')->nullable();
             $table->integer('kurang_pembayaran')->default(0);
+            $table->integer('total_denda')->nullable();
             $table->integer('total_pembayaran')->nullable();
             $table->string('metode')->default('transfer')->nullable();
             $table->string('jenis_transaksi')->default('ambil ditempat');

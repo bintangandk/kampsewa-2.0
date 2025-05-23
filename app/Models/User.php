@@ -31,6 +31,7 @@ class User extends Authenticatable
         'time_login',
         'last_login',
         'name_store',
+
     ];
 
     /**
