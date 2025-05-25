@@ -1,14 +1,14 @@
-# Stage 1: Build frontend assets
+# Stage 1: Build frontend assets (menggunakan Vite)
 FROM node:18 as build-frontend
 
 WORKDIR /app
 
-# Copy package.json dan file lock yang diperlukan
-COPY package.json webpack.mix.js tailwind.config.js /app/
-COPY resources/css /app/resources/css
+# Copy file yang diperlukan untuk frontend build
+COPY package.json package-lock.json tailwind.config.js vite.config.mjs postcss.config.js /app/
+COPY resources/ /app/resources/
 
 # Install dependencies dan build assets
-RUN npm install && npm run prod
+RUN npm install && npm run build
 
 # Stage 2: Build aplikasi Laravel
 FROM php:8.2-fpm
@@ -40,9 +40,7 @@ WORKDIR /var/www/html
 COPY . .
 
 # Copy hasil build frontend dari stage 1
-COPY --from=build-frontend /app/public/css /var/www/html/public/css
-COPY --from=build-frontend /app/public/js /var/www/html/public/js
-COPY --from=build-frontend /app/mix-manifest.json /var/www/html/mix-manifest.json
+COPY --from=build-frontend /app/public/build /var/www/html/public/build
 
 # Install dependencies PHP
 RUN composer install --no-dev --optimize-autoloader
