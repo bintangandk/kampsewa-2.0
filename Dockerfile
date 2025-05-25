@@ -30,6 +30,7 @@ FROM php:8.2-fpm
 # Install system dependencies dengan optimasi
 RUN apt-get update -o Acquire::Retries=3 && \
     apt-get install -y --no-install-recommends \
+    nginx \
     git \
     curl \
     libpng-dev \
@@ -58,29 +59,14 @@ COPY --from=build-frontend /app/public/build /var/www/html/public/build
 # Install PHP dependencies dengan cache optimasi
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-# Setup storage dengan permission yang benar
-RUN mkdir -p storage/framework/{cache,sessions,views} storage/logs && \
-    chown -R www-data:www-data storage bootstrap/cache && \
-    chmod -R 775 storage bootstrap/cache
+# Copy Nginx config & entrypoint
+RUN rm -rf /etc/nginx/sites-enabled/
+COPY nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY entrypoint.sh ./entrypoint.sh
+RUN chmod +x ./entrypoint.sh && chmod -R 777 storage bootstrap/cache
 
-# Generate key dengan fallback yang lebih baik
-RUN if [ ! -f .env ]; then \
-    if [ -f .env.example ]; then \
-        cp .env.example .env; \
-    else \
-        echo "Neither .env nor .env.example found!" && exit 1; \
-    fi; \
-    fi && \
-    php artisan key:generate
+# Expose web (nginx)
+EXPOSE 80
 
-# Optimasi Laravel
-RUN php artisan storage:link && \
-    php artisan optimize:clear && \
-    php artisan optimize
-
-# Health check
-HEALTHCHECK --interval=30s --timeout=3s \
-    CMD curl -f http://localhost:8080 || exit 1
-
-EXPOSE 9000
-CMD ["php-fpm"]
+# Start both nginx and php-fpm
+ENTRYPOINT ["/bin/sh", "./entrypoint.sh"]
