@@ -7,7 +7,7 @@ fi
 
 # Tunggu MySQL siap
 echo "Menunggu database MySQL..."
-while ! nc -z db 3306; do
+while ! nc -z database 3306; do
   sleep 1
   echo "Menunggu database MySQL..."
 done
@@ -19,8 +19,8 @@ php artisan migrate --force
 # php artisan db:seed --force
 
 # Permissions
-chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
-chmod -R 775 /var/www/storage /var/www/bootstrap/cache
+chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
 php artisan config:clear
 php artisan cache:clear
@@ -31,4 +31,4 @@ php artisan view:clear
 php-fpm -D
 
 # Start Nginx (foreground agar container tetap jalan)
-nginx -g "daemon off;"
+nginx -g 'daemon off;' "$@"
