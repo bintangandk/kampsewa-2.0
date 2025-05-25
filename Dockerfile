@@ -1,22 +1,35 @@
-# Stage 1: Build frontend assets
-FROM node:18 as build-frontend
+# Stage 1: Build frontend assets - Diperbaiki dengan penanganan error yang lebih baik
+FROM node:18 AS build-frontend
 
 WORKDIR /app
 
-# Copy package.json dan file lock yang diperlukan
-COPY package.json package-lock.json* /app/
-COPY tailwind.config.js /app/
-COPY vite.config.mjs /app/  # Menggunakan vite.config.mjs yang ada di proyek Anda
-COPY resources/ /app/resources/
+# Pertama copy package.json dan lock file saja untuk memanfaatkan cache Docker
+COPY package.json package-lock.json ./
 
-# Install dependencies dan build assets
-RUN npm install && npm run build  # Menggunakan npm run build untuk Vite
+# Verifikasi file konfigurasi sebelum copy
+RUN if [ ! -f package.json ]; then echo "Error: package.json not found" && exit 1; fi
 
-# Stage 2: Build aplikasi Laravel
+# Install dependencies terlebih dahulu untuk caching
+RUN npm install
+
+# Copy file konfigurasi dan source code
+COPY tailwind.config.js postcss.config.js vite.config.mjs ./
+COPY resources ./resources
+
+# Verifikasi file vite.config
+RUN if [ ! -f vite.config.mjs ]; then \
+    echo "Error: vite.config.mjs not found. Available files:" && ls -la && exit 1; \
+    fi
+
+# Build assets
+RUN npm run build
+
+# Stage 2: Build aplikasi Laravel - Diperbaiki dengan optimasi
 FROM php:8.2-fpm
 
-# Install dependencies sistem
-RUN apt-get update && apt-get install -y \
+# Install system dependencies dengan optimasi
+RUN apt-get update -o Acquire::Retries=3 && \
+    apt-get install -y --no-install-recommends \
     git \
     curl \
     libpng-dev \
@@ -24,42 +37,50 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     zip \
     unzip \
-    libzip-dev && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+    libzip-dev \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-# Install ekstensi PHP
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
+# Install PHP extensions dengan optimasi
+RUN docker-php-ext-install -j$(nproc) pdo_mysql mbstring exif pcntl bcmath gd zip
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Buat direktori aplikasi
 WORKDIR /var/www/html
 
-# Copy file aplikasi (termasuk .env jika ada)
+# Copy aplikasi dengan pengecualian
 COPY . .
 
-# Copy hasil build frontend dari stage 1
-COPY --from=build-frontend /app/public/build /var/www/html/public/build  # Path build Vite
+# Copy hasil build frontend
+COPY --from=build-frontend /app/public/build /var/www/html/public/build
 
-# Install dependencies PHP
-RUN composer install --no-dev --optimize-autoloader
+# Install PHP dependencies dengan cache optimasi
+RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-# Set permissions
-RUN mkdir -p /var/www/html/storage/framework/{cache,sessions,testing,views} && \
-    mkdir -p /var/www/html/storage/logs && \
-    chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache && \
-    chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+# Setup storage dengan permission yang benar
+RUN mkdir -p storage/framework/{cache,sessions,views} storage/logs && \
+    chown -R www-data:www-data storage bootstrap/cache && \
+    chmod -R 775 storage bootstrap/cache
 
-# Generate key aplikasi hanya jika .env ada
-RUN if [ -f .env ]; then \
-        php artisan key:generate; \
+# Generate key dengan fallback yang lebih baik
+RUN if [ ! -f .env ]; then \
+    if [ -f .env.example ]; then \
+        cp .env.example .env; \
     else \
-        cp .env.example .env && \
-        php artisan key:generate; \
-    fi
+        echo "Neither .env nor .env.example found!" && exit 1; \
+    fi; \
+    fi && \
+    php artisan key:generate
 
 # Optimasi Laravel
-RUN php artisan optimize:clear && \
+RUN php artisan storage:link && \
+    php artisan optimize:clear && \
     php artisan optimize
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s \
+    CMD curl -f http://localhost:8080 || exit 1
+
+EXPOSE 9000
+CMD ["php-fpm"]
