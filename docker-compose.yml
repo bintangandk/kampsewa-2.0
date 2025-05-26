@@ -37,7 +37,6 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=Kampsewa123!
       - MYSQL_DATABASE=marketplace_kampsewa
-      - MYSQL_USER=root
       - MYSQL_PASSWORD=Kampsewa123!
     volumes:
       - dbdata:/var/lib/mysql
