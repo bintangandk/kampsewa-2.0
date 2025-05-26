@@ -1,28 +1,9 @@
-# Stage 1: Build frontend assets - Diperbaiki dengan penanganan error yang lebih baik
-FROM node:18 AS build-frontend
+
+FROM node:22-bookworm-slim as node-builder
 
 WORKDIR /app
-
-# Pertama copy package.json dan lock file saja untuk memanfaatkan cache Docker
-COPY package.json package-lock.json ./
-
-# Verifikasi file konfigurasi sebelum copy
-RUN if [ ! -f package.json ]; then echo "Error: package.json not found" && exit 1; fi
-
-# Install dependencies terlebih dahulu untuk caching
-RUN npm install
-
-# Copy file konfigurasi dan source code
-COPY tailwind.config.js postcss.config.js vite.config.mjs ./
-COPY resources ./resources
-
-# Verifikasi file vite.config
-RUN if [ ! -f vite.config.mjs ]; then \
-    echo "Error: vite.config.mjs not found. Available files:" && ls -la && exit 1; \
-    fi
-
-# Build assets
-RUN npm run build
+COPY . .
+RUN npm ci && npm run build && cp public/build/.vite/manifest.json public/build
 
 # Stage 2: Build aplikasi Laravel - Diperbaiki dengan optimasi
 FROM php:8.2-fpm
@@ -32,6 +13,7 @@ RUN apt-get update -o Acquire::Retries=3 && \
     apt-get install -y --no-install-recommends \
     nginx \
     git \
+    netcat-openbsd \
     curl \
     libpng-dev \
     libonig-dev \
@@ -54,7 +36,8 @@ WORKDIR /var/www/html
 COPY . .
 
 # Copy hasil build frontend
-COPY --from=build-frontend /app/public/build /var/www/html/public/build
+COPY --from=node-builder /app/public/build /var/www/public/build
+COPY --from=node-builder /app/public/build/.vite/manifest.json /var/www/public/build/
 
 # Install PHP dependencies dengan cache optimasi
 RUN composer install --no-dev --optimize-autoloader --no-interaction
