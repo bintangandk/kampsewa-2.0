@@ -1,78 +1,47 @@
 version: "3.8"
 
 services:
-  # Service Aplikasi Laravel
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: laravel_app
-    restart: unless-stopped
-    working_dir: /var/www/html
-    volumes:
-      - .:/var/www/html
-      - /var/www/html/vendor
-      - /var/www/html/node_modules
-    ports:
-      - "8080:80"
-    environment:
-      - APP_ENV=local
-      - APP_DEBUG=true
-      - DB_HOST=database
-      - DB_PORT=3306
-      - DB_DATABASE=marketplace_kampsewa
-      - DB_USERNAME=root
-      - DB_PASSWORD=Kampsewa123!
-    depends_on:
-      database:
-        condition: service_healthy
-    networks:
-      - laravel_network
-
-  # Service Database MySQL
-  database:
-    image: mysql:8.0
-    container_name: laravel_db
-    restart: unless-stopped
-    environment:
-      - MYSQL_ROOT_PASSWORD=Kampsewa123!
-      - MYSQL_DATABASE=marketplace_kampsewa
-      - MYSQL_PASSWORD=Kampsewa123!
-    volumes:
-      - dbdata:/var/lib/mysql
-      - ./docker/mysql/conf.d:/etc/mysql/conf.d
-    ports:
-      - "3306:3306"
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p$$MYSQL_ROOT_PASSWORD"]
-      interval: 5s
-      timeout: 5s
-      retries: 10
-    networks:
-      - laravel_network
-
-  # Service phpMyAdmin
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin
-    container_name: laravel_pma
-    restart: always
-    depends_on:
-      - database
-    environment:
-      - PMA_HOST=database
-      - PMA_PORT=3306
-      - PMA_USER=root
-      - PMA_PASSWORD=Kampsewa123!
-      - UPLOAD_LIMIT=128M
-    ports:
-      - "8081:80"
-    networks:
-      - laravel_network
-
-volumes:
-  dbdata:
-    driver: local
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: laravel_app
+        restart: unless-stopped
+        working_dir: /var/www/html
+        volumes:
+            - .:/var/www/html
+            - /var/www/html/vendor
+            - /var/www/html/node_modules
+        ports:
+            - "8080:80"
+        environment:
+            - APP_URL=http://206.189.81.234:8080
+            - SESSION_SECURE_COOKIE=false
+            - APP_ENV=production
+            - APP_DEBUG=true
+            - DB_HOST=laravel_db
+            - SESSION_DRIVER=database
+            - DB_PORT=3306
+            - DB_DATABASE=marketplace_kampsewa
+            - DB_USERNAME=root
+            - DB_PASSWORD=Kampsewa123!
+            - MAIL_MAILER=smtp
+            - MAIL_HOST=smtp.googlemail.com
+            - MAIL_PORT=587
+            - MAIL_USERNAME=kampsewa@gmail.com
+            - MAIL_PASSWORD=sauzmdaqtsnonfqs
+            - MAIL_ENCRYPTION=tls
+            - MAIL_FROM_ADDRESS="kampsewa@gmail.com"
+            - MAIL_FROM_NAME="Kamp Sewa"
+            - MIDTRANS_MERCHANT_ID=G161382177
+            - MIDTRANS_CLIENT_KEY=SB-Mid-client-mg6Aw-GWdQnnwbPp
+            - MIDTRANS_SERVER_KEY=SB-Mid-server-ki-ZC4CoNQXAYzeI_GPMBXBO
+            - MIDTRANS_IS_PRODUCTION=false
+            - MIDTRANS_IS_3DS=true
+            - MIDTRANS_IS_SANITIZED=true
+        networks:
+            - laravel_network
 
 networks:
-  laravel_network:
-    driver: bridge
+    laravel_network:
+        external: true
