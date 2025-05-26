@@ -16,6 +16,7 @@ services:
             - APP_DEBUG=true
             - DB_HOST=database
             - DB_PORT=3306
+            - SESSION_DRIVER=database
             - DB_DATABASE=marketplace_kampsewa
             - DB_USERNAME=root
             - DB_PASSWORD=Kampsewa123!
