@@ -1,65 +1,55 @@
-# Stage 1: Build frontend assets
-FROM node:18 as build-frontend
+
+FROM node:22-bookworm-slim as node-builder
 
 WORKDIR /app
+COPY . .
+RUN npm ci && npm run build && cp public/build/.vite/manifest.json public/build
 
-# Copy package.json dan file lock yang diperlukan
-COPY package.json package-lock.json* /app/
-COPY tailwind.config.js /app/
-COPY vite.config.mjs /app/  # Menggunakan vite.config.mjs yang ada di proyek Anda
-COPY resources/ /app/resources/
-
-# Install dependencies dan build assets
-RUN npm install && npm run build  # Menggunakan npm run build untuk Vite
-
-# Stage 2: Build aplikasi Laravel
+# Stage 2: Build aplikasi Laravel - Diperbaiki dengan optimasi
 FROM php:8.2-fpm
 
-# Install dependencies sistem
-RUN apt-get update && apt-get install -y \
+# Install system dependencies dengan optimasi
+RUN apt-get update -o Acquire::Retries=3 && \
+    apt-get install -y --no-install-recommends \
+    nginx \
     git \
+    netcat-openbsd \
     curl \
     libpng-dev \
     libonig-dev \
     libxml2-dev \
     zip \
     unzip \
-    libzip-dev && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+    libzip-dev \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-# Install ekstensi PHP
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
+# Install PHP extensions dengan optimasi
+RUN docker-php-ext-install -j$(nproc) pdo_mysql mbstring exif pcntl bcmath gd zip
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Buat direktori aplikasi
 WORKDIR /var/www/html
 
-# Copy file aplikasi (termasuk .env jika ada)
+# Copy aplikasi dengan pengecualian
 COPY . .
 
-# Copy hasil build frontend dari stage 1
-COPY --from=build-frontend /app/public/build /var/www/html/public/build  # Path build Vite
+# Copy hasil build frontend
+COPY --from=node-builder /app/public/build /var/www/public/build
+COPY --from=node-builder /app/public/build/.vite/manifest.json /var/www/public/build/
 
-# Install dependencies PHP
-RUN composer install --no-dev --optimize-autoloader
+# Install PHP dependencies dengan cache optimasi
+RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-# Set permissions
-RUN mkdir -p /var/www/html/storage/framework/{cache,sessions,testing,views} && \
-    mkdir -p /var/www/html/storage/logs && \
-    chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache && \
-    chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+# Copy Nginx config & entrypoint
+RUN rm -rf /etc/nginx/sites-enabled/
+COPY nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY entrypoint.sh ./entrypoint.sh
+RUN chmod +x ./entrypoint.sh && chmod -R 777 storage bootstrap/cache
 
-# Generate key aplikasi hanya jika .env ada
-RUN if [ -f .env ]; then \
-        php artisan key:generate; \
-    else \
-        cp .env.example .env && \
-        php artisan key:generate; \
-    fi
+# Expose web (nginx)
+EXPOSE 80
 
-# Optimasi Laravel
-RUN php artisan optimize:clear && \
-    php artisan optimize
+# Start both nginx and php-fpm
+ENTRYPOINT ["/bin/sh", "./entrypoint.sh"]
