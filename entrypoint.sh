@@ -7,7 +7,7 @@ fi
 
 # Tunggu MySQL siap
 echo "Menunggu database MySQL..."
-while ! nc -z db 3306; do
+while ! nc -z database 3306; do
   sleep 1
   echo "Menunggu database MySQL..."
 done
