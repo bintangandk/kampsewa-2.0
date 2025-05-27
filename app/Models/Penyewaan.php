@@ -8,8 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Penyewaan extends Model
 {
     use HasFactory;
-    protected $table='penyewaan';
-    protected $fillable=[
+    protected $table = 'penyewaan';
+    protected $fillable = [
         'id_user',
         'nama_penyewa',
         'alamat',
@@ -23,7 +23,7 @@ class Penyewaan extends Model
     {
         return $this->hasMany(DetailPenyewaan::class, 'id_penyewaan');
     }
-
+    // sdsd
     public function pembayaran()
     {
         return $this->hasOne(PembayaranPenyewaan::class, 'id_penyewaan');
