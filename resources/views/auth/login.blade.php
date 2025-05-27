@@ -37,7 +37,8 @@
 
                 {{-- todo judul login dan deskripsi --}}
                 <h1 class="text-center text-[28px] uppercase font-black">Login</h1>
-                <p class="text-center text-[14px] font-normal">Login untuk memasuki dashboard sesuai dengan level anda.
+                <p class="text-center text-[14px] font-normal">Login untuk memasuki dashboard sesuai dengan level punya
+                    anda.
                 </p>
 
                 {{-- todo kolom field --}}
