@@ -5,51 +5,52 @@ on:
     branches: [main]
 
 jobs:
-  # test:
-  #   runs-on: ubuntu-latest
+  test:
+    runs-on: ubuntu-latest
 
-  #   steps:
-  #     - uses: actions/checkout@v3
+    steps:
+      - uses: actions/checkout@v3
 
-  #     - name: Setup PHP
-  #       uses: shivammathur/setup-php@v2
-  #       with:
-  #         php-version: "8.2"
-  #         extensions: mbstring, xml, ctype, iconv, intl, pdo_sqlite, dom, filter, gd, iconv, json, mbstring, pdo
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.2"
+          extensions: mbstring, xml, ctype, iconv, intl, pdo_sqlite, dom, filter, gd, iconv, json, mbstring, pdo
 
-  #     - name: Copy .env.testing
-  #       run: php -r "file_exists('.env.testing') || copy('.env.example', '.env.testing');"
+      - name: Copy .env.testing
+        run: php -r "file_exists('.env.testing') || copy('.env.example', '.env.testing');"
 
-  #     - name: Install Dependencies
-  #       run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+      - name: Install Dependencies
+        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
 
-  #     - name: Generate key
-  #       run: php artisan key:generate --env=testing
+      - name: Generate key
+        run: php artisan key:generate --env=testing
 
-  #     - name: Directory Permissions
-  #       run: chmod -R 777 storage bootstrap/cache
+      - name: Directory Permissions
+        run: chmod -R 777 storage bootstrap/cache
 
-  #     - name: Create Database
-  #       run: |
-  #         mkdir -p database
-  #         touch database/database.sqlite
+      - name: Create Database
+        run: |
+          mkdir -p database
+          touch database/database.sqlite
 
-  #     - name: Execute tests via PHPUnit
-  #       env:
-  #         DB_CONNECTION: sqlite
-  #         DB_DATABASE: database/database.sqlite
-  #       run: |
-  #         echo "🧪 Menjalankan Unit Tests..."
-  #         echo "----------------------------------------"
-  #         vendor/bin/phpunit --testsuite Unit
+      - name: Execute tests via PHPUnit
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: database/database.sqlite
+        run: |
+          echo "🧪 Menjalankan Unit Tests..."
+          echo "----------------------------------------"
+          vendor/bin/phpunit --testsuite Unit
 
-  #         echo "\n🧪 Menjalankan Feature Tests..."
-  #         echo "----------------------------------------"
-  #         vendor/bin/phpunit --testsuite Feature
+          echo "\n🧪 Menjalankan Feature Tests..."
+          echo "----------------------------------------"
+          vendor/bin/phpunit --testsuite Feature
 
-  #         echo "\n📊 Ringkasan Hasil Test:"
-  #         echo "----------------------------------------"
-  #         vendor/bin/phpunit --testdox
+          echo "\n📊 Ringkasan Hasil Test:"
+          echo "----------------------------------------"
+          vendor/bin/phpunit --testdox
+
   deploy:
     runs-on: ubuntu-latest
     steps:
