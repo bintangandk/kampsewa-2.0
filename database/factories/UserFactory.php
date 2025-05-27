@@ -45,8 +45,25 @@ class UserFactory extends Factory
      */
     public function unverified(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn(array $attributes) => [
             'email_verified_at' => null,
+        ]);
+    }
+
+    // Tambahkan method berikut:
+    public function customer()
+    {
+        return $this->state([
+            'type' => 0,
+            'status' => 'Online'
+        ]);
+    }
+
+    public function admin()
+    {
+        return $this->state([
+            'type' => 1,
+            'status' => 'Online'
         ]);
     }
 }
