@@ -20,13 +20,32 @@ class DashboardCustomerTest extends TestCase
     {
         parent::setUp();
 
-        // Buat customer dummy
+        // Buat customer dummy sesuai dengan UserFactory
         $this->customer = User::factory()->create([
             'name' => 'John Customer',
-            'role' => 0,
+            'type' => 0, // 0 untuk customer
             'foto' => 'profile/default.jpg',
-            'status' => 'Online',
+            'status' => 'Online'
         ]);
+    }
+
+    /** @test */
+    public function only_authenticated_customers_can_access_dashboard()
+    {
+        // Guest cannot access
+        $this->get('/dashboard')->assertRedirect('/login');
+
+        // Non-customer cannot access (type 1 untuk non-customer)
+        $admin = User::factory()->create(['type' => 1]);
+        $this->actingAs($admin)->get('/dashboard')->assertForbidden();
+
+        // Customer can access
+        $response = $this->actingAs($this->customer)
+                        ->get('/dashboard');
+        
+        $response->assertStatus(200)
+                ->assertViewIs('dashboard')
+                ->assertSeeText('Hi, Selamat Pagi John Customer');
     }
 
     /** @test */
@@ -52,9 +71,11 @@ class DashboardCustomerTest extends TestCase
                         ->count(3)
                         ->create(['status' => 'Tersedia']);
 
-        // Create some rental details for these products
-        $penyewaan = Penyewaan::factory()->create(['id_user' => $this->customer->id]);
+        // Create rental
+        $penyewaan = Penyewaan::factory()
+                        ->create(['id_user' => $this->customer->id]);
         
+        // Create rental details
         foreach ($products as $product) {
             DetailPenyewaan::factory()
                 ->create([
@@ -86,21 +107,27 @@ class DashboardCustomerTest extends TestCase
     /** @test */
     public function dashboard_displays_rental_status_sections()
     {
-        // Create rental data
+        // Create active rental
         $activeRental = Penyewaan::factory()
                         ->create([
                             'id_user' => $this->customer->id,
                             'status_penyewaan' => 'berlangsung'
                         ]);
         
+        // Create completed rental
         $completedRental = Penyewaan::factory()
                         ->create([
                             'id_user' => $this->customer->id,
                             'status_penyewaan' => 'selesai'
                         ]);
         
-        // Untuk penyewa telat, perlu disesuaikan dengan logika aplikasi
-        // Diasumsikan ada field hari_telat atau bisa dihitung dari tanggal
+        // Create late rental (asumsi ada field hari_telat)
+        $lateRental = Penyewaan::factory()
+                        ->create([
+                            'id_user' => $this->customer->id,
+                            'status_penyewaan' => 'berlangsung',
+                            'hari_telat' => 3 // Jika ada field ini
+                        ]);
 
         $response = $this->actingAs($this->customer)
                         ->get('/dashboard');
@@ -114,6 +141,11 @@ class DashboardCustomerTest extends TestCase
         $response->assertSeeText('Riwayat Penyewa')
                 ->assertSeeText($completedRental->user->name)
                 ->assertSeeText('Selesai');
+
+        // Test late rentals (jika ada di view)
+        $response->assertSeeText('Denda Penyewa')
+                ->assertSeeText($lateRental->user->name)
+                ->assertSeeText('3 Hari');
     }
 
     /** @test */
@@ -123,7 +155,7 @@ class DashboardCustomerTest extends TestCase
                         ->get('/dashboard');
 
         $response->assertSeeText('Tidak ada penyewa aktif')
-                ->assertSeeText('Belum ada penyewa');
-                // Penyesuaian untuk telat bisa ditambahkan
+                ->assertSeeText('Belum ada penyewa')
+                ->assertSeeText('Tidak ada penyewa yang telat saat ini');
     }
 }
