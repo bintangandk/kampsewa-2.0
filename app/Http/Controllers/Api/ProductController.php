@@ -16,7 +16,7 @@ class ProductController extends Controller
     // di halaman pertama dashboard mobile
     public function produkRatingTertinggiLimit6()
     {
-        // Ambil data produk dengan rata-rata rating
+        //Ambil data produk dengan rata-rata rating
         $produk = Produk::leftJoin('rating_produk', 'produk.id', '=', 'rating_produk.id_produk')
             ->leftJoin('users', 'users.id', '=', 'produk.id_user')
             ->leftJoin('variant_produk', 'produk.id', '=', 'variant_produk.id_produk')
@@ -31,7 +31,7 @@ class ProductController extends Controller
                 DB::raw('MIN(detail_variant_produk.harga_sewa) as harga_sewa')
             )
             ->where('produk.id_user', '!=', auth()->id())       // Produk bukan dari user yang login
-            ->where('users.sp', '<', 3)                         // User pemilik produk SP-nya < 3
+            ->where('users.SP', '<', 3)                         // User pemilik produk SP-nya < 3
             ->whereNotNull('rating_produk.rating')
             ->whereNotNull('detail_variant_produk.harga_sewa')
             ->groupBy('produk.id', 'produk.id_user', 'users.name', 'produk.nama', 'produk.foto_depan')
@@ -51,6 +51,7 @@ class ProductController extends Controller
             'message' => 'success',
             'data_produk' => $produk
         ], 200);
+
     }
 
     // fungsi untuk menampilkan product berdasarkan

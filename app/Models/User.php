@@ -63,4 +63,8 @@ class User extends Authenticatable
     {
         return $this->hasMany(Pengeluaran::class, 'id_user', 'id');
     }
+    public function alamat()
+    {
+        return $this->hasMany(Alamat::class, 'id_user');
+    }
 }

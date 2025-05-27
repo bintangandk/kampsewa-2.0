@@ -34,7 +34,6 @@
     Route::post('/lupa-password/verifikasi-otp/{nomor_telephone}', [LupaPassword::class, 'verifikasiOTP']);
     Route::post('/lupa-password/reset-password/{nomor_telephone}', [LupaPassword::class, 'resetPassword']);
     Route::post('/lupa-password/kirim-ulang-otp/{nomor_telephone}', [LupaPassword::class, 'kirimUlangOTP']);
-    Route::post('/report/{id_user}', [UserController::class, 'lapor']);
 
 
 
@@ -54,6 +53,7 @@
         Route::put('/user/update-password/{id_user}', [UserController::class, 'updatePasswordUser']);
         Route::post('/user/tambah-bank/', [UserController::class, 'tambahBank']);
         Route::post('/user/input-store/{id_user}', [UserController::class, 'tambahStore']);
+        Route::post('/user/lapor/{id_user}', [UserController::class, 'lapor']);
 
         // product
         Route::get('/produk/produk-rating-tertinggi-limit6', [ProductController::class, 'produkRatingTertinggiLimit6']);
@@ -77,6 +77,6 @@
         Route::get('/transaksi/bank-toko', [TransaksiController::class, 'bankToko']);
         Route::get('/riwayat', [TransaksiController::class, 'riwayat']);
 
-        Route::get('/riwayat/rincian-produk', [TransaksiController::class, 'rincianProduk']);
+        Route::get('/riwayat/rincian/{id}', [TransaksiController::class, 'rincianRiwayat']);
         Route::post('/riwayat/bayar-sekarang', [TransaksiController::class, 'bayarSekarang']);
     });
