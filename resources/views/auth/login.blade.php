@@ -38,10 +38,12 @@
                 {{-- todo judul login dan deskripsi --}}
                 <h1 class="text-center text-[28px] uppercase font-black">Login</h1>
                 <p class="text-center text-[14px] font-normal">Login untuk memasuki dashboard sesuai dengan level punya
-                    anda.
+                    anda.silahkan masuk
                 </p>
 
                 {{-- todo kolom field --}}
+
+                {{--  --}}
                 <div class="_input w-full flex flex-col gap-[10px] mt-[30px]">
                     <div
                         class="_input-username w-full focus-within:border-[#5038ED] focus-within:border-[2px] rounded-[10px] bg-[#F0EDFF] p-[10px] flex items-center gap-[10px]">
