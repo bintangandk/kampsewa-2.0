@@ -23,8 +23,9 @@ class DashboardCustomerTest extends TestCase
         // Buat customer dummy
         $this->customer = User::factory()->create([
             'name' => 'John Customer',
-            'role' => 'customer',
-            'foto' => 'profile/default.jpg'
+            'role' => 0,
+            'foto' => 'profile/default.jpg',
+            'status' => 'Online',
         ]);
     }
 
