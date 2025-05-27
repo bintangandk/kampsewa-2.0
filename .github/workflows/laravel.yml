@@ -50,7 +50,84 @@ jobs:
   #         echo "\n📊 Ringkasan Hasil Test:"
   #         echo "----------------------------------------"
   #         vendor/bin/phpunit --testdox
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.VPS_IP }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            echo "📁 Masuk ke direktori proyek..."
+            cd kampsewa-fix
 
+            echo "🔄 Mengkonfigurasi Git..."
+            git config --global --add safe.directory kampsewa-fix
+
+            echo "🔄 Menarik update dari branch main..."
+            git fetch origin
+            git reset --hard origin/main
+
+            echo "🧹 Menghentikan container lama..."
+            docker compose down
+
+            echo "⚙️ Membangun dan menjalankan ulang container..."
+            docker compose up -d --build
+
+            echo "⏳ Menunggu MySQL siap..."
+            docker exec laravel_app sh -c '
+              max_tries=30
+              counter=0
+              echo "Menunggu database siap..."
+              while [ $counter -lt $max_tries ]; do
+                if php -r "
+                  try {
+                    \$pdo = new PDO(
+                      \"mysql:host=database;port=3306;dbname=marketplace_kampsewa\",
+                      \"root\",
+                      \"Kampsewa123!\"
+                    );
+                    echo \"Database connection successful\n\";
+                    exit(0);
+                  } catch (PDOException \$e) {
+                    exit(1);
+                  }
+                "; then
+                  break
+                fi
+                echo "Mencoba koneksi ke database... ($counter/$max_tries)"
+                sleep 2
+                counter=$((counter+1))
+              done
+
+              if [ $counter -eq $max_tries ]; then
+                echo "❌ Timeout menunggu database setelah $((max_tries * 2)) detik"
+                exit 1
+              fi
+            '
+
+            echo "🔧 Mengatur permission file..."
+            docker exec laravel_app sh -c 'chown -R www-data:www-data /var/www/html && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache'
+
+            echo "🔧 Mengatur permission git..."
+            docker exec laravel_app git config --global --add safe.directory /var/www/html
+
+            echo "📦 Menjalankan composer install..."
+            docker exec -u www-data laravel_app composer install --no-interaction --prefer-dist --optimize-autoloader
+
+            echo "🔐 Generate APP key..."
+            docker exec -u www-data laravel_app php artisan key:generate --force
+
+            echo "🧹 Membersihkan cache..."
+            docker exec -u www-data laravel_app php artisan config:clear
+            docker exec -u www-data laravel_app php artisan cache:clear
+
+            echo "🗃️ Reset dan migrasi database..."
+            docker exec -u www-data laravel_app php artisan migrate:fresh --force --seed
+
+            echo "✅ Deploy selesai!"
   # deploy:
   #   runs-on: ubuntu-latest
   #   steps:
@@ -121,83 +198,3 @@ jobs:
   #           docker exec -u www-data laravel_app php artisan migrate:fresh --force --seed
 
   #           echo "✅ Deploy selesai!"
-
-
-  deploy:
-  runs-on: ubuntu-latest
-  steps:
-    - name: Deploy to VPS
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.VPS_IP }}
-        username: ${{ secrets.VPS_USER }}
-        key: ${{ secrets.VPS_SSH_KEY }}
-        script: |
-          echo "📁 Masuk ke direktori proyek..."
-          cd kampsewa-fix
-
-          echo "🔄 Mengkonfigurasi Git..."
-          git config --global --add safe.directory kampsewa-fix
-
-          echo "🔄 Menarik update dari branch main..."
-          git fetch origin
-          git reset --hard origin/main
-
-          echo "🧹 Menghentikan container lama..."
-          docker compose down
-
-          echo "⚙️ Membangun dan menjalankan ulang container..."
-          docker compose up -d --build
-
-          echo "⏳ Menunggu MySQL siap..."
-          docker exec laravel_app sh -c '
-            max_tries=30
-            counter=0
-            echo "Menunggu database siap..."
-            while [ $counter -lt $max_tries ]; do
-              if php -r "
-                try {
-                  \$pdo = new PDO(
-                    \"mysql:host=database;port=3306;dbname=marketplace_kampsewa\",
-                    \"root\",
-                    \"Kampsewa123!\"
-                  );
-                  echo \"Database connection successful\n\";
-                  exit(0);
-                } catch (PDOException \$e) {
-                  exit(1);
-                }
-              "; then
-                break
-              fi
-              echo "Mencoba koneksi ke database... ($counter/$max_tries)"
-              sleep 2
-              counter=$((counter+1))
-            done
-
-            if [ $counter -eq $max_tries ]; then
-              echo "❌ Timeout menunggu database setelah $((max_tries * 2)) detik"
-              exit 1
-            fi
-          '
-
-          echo "🔧 Mengatur permission file..."
-          docker exec laravel_app sh -c 'chown -R www-data:www-data /var/www/html && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache'
-
-          echo "🔧 Mengatur permission git..."
-          docker exec laravel_app git config --global --add safe.directory /var/www/html
-
-          echo "📦 Menjalankan composer install..."
-          docker exec -u www-data laravel_app composer install --no-interaction --prefer-dist --optimize-autoloader
-
-          echo "🔐 Generate APP key..."
-          docker exec -u www-data laravel_app php artisan key:generate --force
-
-          echo "🧹 Membersihkan cache..."
-          docker exec -u www-data laravel_app php artisan config:clear
-          docker exec -u www-data laravel_app php artisan cache:clear
-
-          echo "🗃️ Reset dan migrasi database..."
-          docker exec -u www-data laravel_app php artisan migrate:fresh --force --seed
-
-          echo "✅ Deploy selesai!"
