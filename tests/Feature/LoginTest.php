@@ -10,6 +10,24 @@ class LoginTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        
+        // Mock Vite
+        $this->mockVite();
+    }
+    
+    protected function mockVite()
+    {
+        // Mock the Vite facade
+        \Illuminate\Support\Facades\Vite::shouldReceive('__invoke')
+            ->andReturn('');
+            
+        \Illuminate\Support\Facades\Vite::shouldReceive('asset')
+            ->andReturn('');
+    }
+
     /** @test */
     public function login_page_can_be_rendered()
     {
