@@ -29,7 +29,7 @@ class LoginTest extends TestCase
     }
 
     /** @test */
-    public function login_page_can_be_rendered()
+    public function bisa_menampilkan_halaman_login()
     {
         $response = $this->get('/login');
 
@@ -40,7 +40,7 @@ class LoginTest extends TestCase
     }
 
     /** @test */
-    public function users_can_login_using_email()
+    public function users_bisa_login_dengan_email()
     {
         $user = User::factory()->create([
             'email' => 'test@example.com',
@@ -57,7 +57,7 @@ class LoginTest extends TestCase
     }
 
     /** @test */
-    public function users_can_login_using_phone_number()
+    public function users_bisa_login_dengan_nomor_handphone()
     {
         $user = User::factory()->create([
             'nomor_telephone' => '081234567890',
@@ -74,7 +74,7 @@ class LoginTest extends TestCase
     }
 
     /** @test */
-    public function user_is_redirected_to_developer_dashboard_if_type_is_1()
+    public function user_redirected_ke_developer_dashboard_jika_type_1()
     {
         $user = User::factory()->admin()->create([
             'email' => 'admin@example.com',
@@ -90,7 +90,7 @@ class LoginTest extends TestCase
     }
 
     /** @test */
-    public function user_is_redirected_to_customer_dashboard_if_type_is_0()
+    public function user_redirected_ke_customer_dashboard_jika_type_0()
     {
         $user = User::factory()->customer()->create([
             'email' => 'customer@example.com',
@@ -106,7 +106,7 @@ class LoginTest extends TestCase
     }
 
     /** @test */
-    public function user_cannot_login_with_invalid_credentials()
+    public function user_tidak_bisa_login_dengan_akun_yang_salah()
     {
         $user = User::factory()->create([
             'email' => 'test@example.com',
@@ -123,7 +123,7 @@ class LoginTest extends TestCase
     }
 
     /** @test */
-    public function blocked_user_cannot_login()
+    public function user_yang_diblokir_tidak_bisa_login()
     {
         $user = User::factory()->create([
             'email' => 'blocked@example.com',
@@ -142,7 +142,7 @@ class LoginTest extends TestCase
     }
 
     /** @test */
-    public function required_fields_are_validated()
+    public function validate_required_fields()
     {
         $response = $this->post('/login', [
             'nomor_telfon' => '',
@@ -153,7 +153,7 @@ class LoginTest extends TestCase
     }
 
     /** @test */
-    public function authenticated_user_can_logout()
+    public function authenticated_user_logout()
     {
         $user = User::factory()->create();
 
