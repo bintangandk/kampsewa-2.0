@@ -22,6 +22,7 @@ use Http\Adapter\Guzzle6\Client as GuzzleAdapter;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use RealRashid\SweetAlert\Facades\Alert;
+use Illuminate\Support\Facades\Auth;
 
 class TransaksiMenuController extends Controller
 {
@@ -108,7 +109,8 @@ class TransaksiMenuController extends Controller
                 'pembayaran_penyewaan.jumlah_pembayaran',
                 'pembayaran_penyewaan.total_pembayaran',
                 'pembayaran_penyewaan.status_pembayaran',
-                'pembayaran_penyewaan.biaya_admin'
+                'pembayaran_penyewaan.biaya_admin',
+                'pembayaran_penyewaan.kurang_pembayaran'
             )->where('penyewaan.id', $id_penyewaan_decrypt)->first();
 
         // Query untuk data dari tabel 'bank'
@@ -138,7 +140,10 @@ class TransaksiMenuController extends Controller
                 'detail_penyewaan.warna_produk',
                 'detail_penyewaan.ukuran',
                 'detail_penyewaan.qty',
-                'detail_penyewaan.subtotal'
+                'detail_penyewaan.subtotal',
+                'detail_penyewaan.denda',
+                'detail_penyewaan.keterangan_denda',
+                'detail_penyewaan.id as id_detail'
             )
             ->where('detail_penyewaan.id_penyewaan', $id_penyewaan_decrypt)
             ->get()
@@ -179,28 +184,79 @@ class TransaksiMenuController extends Controller
     {
         try {
             // Validasi input
-            $validatedData = request()->validate([
-                'jumlah_pembayaran' => 'required|integer',
-                'kembalian_pembayaran' => 'required|integer',
-                'kurang_pembayaran' => 'required|integer',
-                'total_pembayaran' => 'required|integer',
-                'jaminan_sewa' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
-            ]);
 
+            if (request()->hasFile('jaminan_sewa')) {
+                # code...
+                $validatedData = request()->validate([
+                    'jumlah_pembayaran' => 'required',
+                    'kembalian_pembayaran' => 'required',
+                    'kurang_pembayaran' => 'required',
+                    'total_pembayaran' => 'required',
+                    'jaminan_sewa' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
+                ]);
+            } else {
+                $validatedData = request()->validate([
+                    'jumlah_pembayaran' => 'required',
+                    'kembalian_pembayaran' => 'required',
+                    'kurang_pembayaran' => 'required',
+                    'total_pembayaran' => 'required',
+                ]);
+            }
+
+
+
+            $pembayaran_penyewaan = PembayaranPenyewaan::where('id_penyewaan', $id_penyewaan)->first();
+
+            if (request()->hasFile('jaminan_sewa')) {
+                $jaminanSewa = request()->file('jaminan_sewa');
+                $jaminanSewaName = time() . '_jaminan.' . $jaminanSewa->getClientOriginalExtension();
+                $jaminanSewa->move(public_path('assets/image/customers/jaminan/'), $jaminanSewaName);
+
+                // Tambahkan nama file ke array data yang akan diupdate
+                $validatedData['jaminan_sewa'] = $jaminanSewaName;
+                $pembayaran_penyewaan->jaminan_sewa = $jaminanSewaName;
+            }
             // Proses upload file jaminan
-            $jaminanSewa = request()->file('jaminan_sewa');
-            $jaminanSewaName = time() . '_jaminan.' . $jaminanSewa->getClientOriginalExtension();
-            $jaminanSewa->move(public_path('assets/image/customers/jaminan/'), $jaminanSewaName);
+            $total_pembayaran = 0;
+            if (request()->has('denda')) {
 
-            // Tambahkan nama file ke array data yang akan diupdate
-            $validatedData['jaminan_sewa'] = $jaminanSewaName;
+                foreach (request('denda') as $id_detail => $dendaData) {
+                    $dendaValue = (int) str_replace(['Rp.', ' ', '.'], '', $dendaData['denda']); // Bersihkan format Rupiah
+                    $keterangan = request('keterangan')[$id_detail] ?? null;
+                    // dump($id_detail);
+                    if ($dendaValue > 0) {
+                        DetailPenyewaan::where('id', $id_detail)->update([
+                            'denda' => $dendaValue,
+                            'keterangan_denda' => $keterangan,
+                        ]);
+                    }
+                }
+
+
+                $detail_ = DetailPenyewaan::where('id_penyewaan', $id_penyewaan)->get();
+                foreach ($detail_ as $item) {
+                    $total_pembayaran += $item->subtotal;
+                }
+                $total_denda = (int) str_replace(['Rp.', ' ', '.'], '', request('total_denda'));
+                $pembayaran_penyewaan->total_denda = $total_denda;
+                $pembayaran_penyewaan->total_pembayaran = $total_pembayaran  + $total_denda;
+            }
+
 
             // Tentukan status pembayaran
-            $validatedData['status_pembayaran'] = $validatedData['kurang_pembayaran'] > 0 ? 'Belum Lunas' : 'Lunas';
+            $pembayaran_penyewaan->status_pembayaran = $validatedData['kurang_pembayaran'] > 0 ? 'Belum Lunas' : 'Lunas';
 
             // Update langsung dengan query builder
-            PembayaranPenyewaan::where('id_penyewaan', $id_penyewaan)->update($validatedData);
+            // PembayaranPenyewaan::where('id_penyewaan', $id_penyewaan)->update($validatedData);
 
+            $pembayaran_penyewaan->jumlah_pembayaran = (int) str_replace(['Rp.', ' ', '.'], '', $validatedData['jumlah_pembayaran']);
+            $pembayaran_penyewaan->kembalian_pembayaran = (int) str_replace(['Rp.', ' ', '.'], '', $validatedData['kembalian_pembayaran']);
+            // $total_denda = (int) str_replace(['Rp.', ' ', '.'], '', $validatedData['total_denda']);
+
+            // $pembayaran_penyewaan->total_pembayaran = $pembayaran_penyewaan->total_pembayaran +
+            $pembayaran_penyewaan->kurang_pembayaran = (int) str_replace(['Rp.', ' ', '.'], '', $validatedData['kurang_pembayaran']);
+            $pembayaran_penyewaan->save();
+            // dd($pembayaran_penyewaan);
             Alert::toast('Berhasil menyimpan pembayaran!', 'success');
             return redirect()->back();
         } catch (\Exception $e) {
@@ -475,45 +531,67 @@ class TransaksiMenuController extends Controller
 
     public function tambahTransaksi()
     {
-        $produkList = Produk::all(); 
+        $produkList = Produk::all();
         return view('customers.transaksi-offline.tambah-transaksi', compact('produkList'))->with([
             'title' => 'Tambah Transaksi Offline',
         ]);
     }
 
-    function tambahTransaksiPost(Request $request)
+    public function tambahTransaksiPost(Request $request)
     {
         DB::beginTransaction();
 
         try {
+            // Validasi dasar (bisa kamu tambah kalau mau lebih lengkap)
+            $request->validate([
+                'nama_penyewa' => 'required|string|max:255',
+                'alamat' => 'required|string',
+                'tanggal_mulai' => 'required|date',
+                'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
+                'variants' => 'required|array|min:1',
+                'variants.*.produk' => 'required|integer|exists:produk,id',
+                'variants.*.sizes' => 'required|array|min:1',
+                'variants.*.sizes.*.ukuran' => 'required|string',
+                'variants.*.sizes.*.qty' => 'required|integer|min:1',
+                'variants.*.sizes.*.subtotal' => 'required|numeric|min:0',
+            ]);
+
             // Simpan ke tabel penyewaan
             $penyewaan = Penyewaan::create([
-                'id_user' => null,
+                'id_user' => Auth::id(),
                 'nama_penyewa' => $request['nama_penyewa'],
                 'alamat' => $request['alamat'],
                 'tanggal_mulai' => $request['tanggal_mulai'],
                 'tanggal_selesai' => $request['tanggal_selesai'],
-                'pesan' => null,
+                'pesan' => 'Transaksi Offline',
                 'status_penyewaan' => 'aktif',
                 'jenis_penyewaan' => 'offline',
             ]);
 
-            // Simpan detail penyewaan (bisa banyak)
-            foreach ($request['detail'] as $item) {
-                DetailPenyewaan::create([
-                    'id_penyewaan' => $penyewaan->id,
-                    'id_produk' => $item['id_produk'],
-                    'ukuran' => $item['ukuran'],
-                    'qty' => $item['qty'],
-                    'subtotal' => $item['subtotal'],
-                ]);
+            // Simpan detail penyewaan
+            foreach ($request['variants'] as $variant) {
+                $id_produk = $variant['produk'];
+
+                foreach ($variant['sizes'] as $size) {
+                    DetailPenyewaan::create([
+                        'id_penyewaan' => $penyewaan->id,
+                        'id_produk' => $id_produk,
+                        'ukuran' => $size['ukuran'],
+                        'warna_produk' => $size['warna'],
+                        'qty' => $size['qty'],
+                        'subtotal' => $size['subtotal'],
+                    ]);
+                }
             }
 
             DB::commit();
             return response()->json(['message' => 'Transaksi berhasil ditambahkan'], 200);
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json(['message' => 'Gagal menambahkan transaksi', 'error' => $e->getMessage()], 500);
+            return response()->json([
+                'message' => 'Gagal menambahkan transaksi',
+                'error' => $e->getMessage()
+            ], 500);
         }
     }
 

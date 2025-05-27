@@ -122,13 +122,13 @@
                     <div class="--nominal font-bold text-[20px] md:text-[20px] lg:text-[24px] xl:text-[28px]">Rp.
                         {{ number_format($total_perbulan, 0, ',', '.') }}
                     </div>
-                    @if ($persentase_perbulan > 0)
+                    {{-- @if ($persentase_perbulan > 0)
                         <div class="--persentase w-fit font-bold px-2 py-1 rounded-lg bg-[#ffd1d1] text-[#ff6d6d]">
                             {{ number_format(abs($persentase_perbulan), 0) }}% <i class="bi bi-arrow-down-right"></i></div>
                     @else
                         <div class="--persentase w-fit font-bold px-2 py-1 rounded-lg text-[#75D5CB] bg-[#E7F8F6]">
                             {{ number_format(abs($persentase_perbulan), 0) }}% <i class="bi bi-arrow-up-right"></i></div>
-                    @endif
+                    @endif --}}
                 </div>
             </div>
             <div class="--card-penghasilan-keuntungan shadow-box-shadow-11 p-4 rounded-lg">
@@ -144,7 +144,7 @@
                     <div class="--nominal font-bold text-[20px] md:text-[20px] lg:text-[24px] xl:text-[28px]">Rp.
                         {{ number_format($total_hari_ini, 0, ',', '.') }}
                     </div>
-                    @if ($persentase_perhari > 0)
+                    {{-- @if ($persentase_perhari > 0)
                         <div class="--persentase w-fit font-bold px-2 py-1 rounded-lg bg-[#ffd1d1] text-[#ff6d6d]">
                             {{ number_format(abs($persentase_perhari), 0) }}% <i class="bi bi-arrow-down-right"></i>
                         </div>
@@ -152,7 +152,7 @@
                         <div class="--persentase w-fit font-bold px-2 py-1 rounded-lg text-[#75D5CB] bg-[#E7F8F6]">
                             {{ number_format(abs($persentase_perhari), 0) }}% <i class="bi bi-arrow-up-right"></i>
                         </div>
-                    @endif
+                    @endif --}}
                 </div>
             </div>
         </div>

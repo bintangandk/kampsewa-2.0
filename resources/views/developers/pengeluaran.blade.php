@@ -256,31 +256,21 @@
                     {{-- todo search --}}
                     <div class="_search">
                         <div class="_search">
-                            <form class="form">
+                            <form class="form" method="GET" action="{{ route('pengeluaran.index') }}">
                                 <label for="search">
-                                    <input class="input" type="text" required="" placeholder="Cari kata"
-                                        id="search">
+                                    <input class="input" type="text" name="search" required placeholder="Cari kata"
+                                        id="search" value="{{ request('search') }}">
                                     <div class="fancy-bg"></div>
                                     <div class="search">
-                                        <svg viewBox="0 0 24 24" aria-hidden="true"
-                                            class="r-14j79pv r-4qtqp9 r-yyyyoo r-1xvli5t r-dnmrzs r-4wgw6l r-f727ji r-bnwqim r-1plcrui r-lrvibr">
-                                            <g>
-                                                <path
-                                                    d="M21.53 20.47l-3.66-3.66C19.195 15.24 20 13.214 20 11c0-4.97-4.03-9-9-9s-9 4.03-9 9 4.03 9 9 9c2.215 0 4.24-.804 5.808-2.13l3.66 3.66c.147.146.34.22.53.22s.385-.073.53-.22c.295-.293.295-.767.002-1.06zM3.5 11c0-4.135 3.365-7.5 7.5-7.5s7.5 3.365 7.5 7.5-3.365 7.5-7.5 7.5-7.5-3.365-7.5-7.5z">
-                                                </path>
-                                            </g>
-                                        </svg>
+                                        <!-- icon -->
                                     </div>
-                                    <button class="close-btn" type="reset">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
-                                            fill="currentColor">
-                                            <path fill-rule="evenodd"
-                                                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                                                clip-rule="evenodd"></path>
-                                        </svg>
-                                    </button>
+                                    <a href="{{ route('pengeluaran.index') }}" class="close-btn" title="Reset">
+                                        <!-- ganti icon-nya sesuai keinginan -->
+                                        ❌
+                                    </a>
                                 </label>
                             </form>
+
                         </div>
                     </div>
 
@@ -288,11 +278,7 @@
                     <div class="_filter">
                         <div class="flex items-center justify-center">
                             <div class="relative inline-block text-left">
-                                <button id="dropdown-button"
-                                    class="flex items-center gap-[5px] justify-center w-full px-4 py-2 font-medium text-gray-700 bg-white border border-gray-300 rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">
-                                    <i class="mt-[2px] text-[14px] fi fi-rr-settings-sliders"></i>
-                                    <p class="text-[14px]">Filter</p>
-                                </button>
+
                                 <div id="dropdown-menu"
                                     class="origin-top-right z-10 absolute hidden right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
                                     <div class="py-2 p-2" role="menu" aria-orientation="vertical"
@@ -341,11 +327,13 @@
             {{-- todo wrapper btn delete all, btn export data bentuk ke excel --}}
             <div class="flex items-center gap-4 w-full">
                 {{-- todo btn export --}}
-                <div><button
+                <div>
+                    <button onclick="exportData()"
                         class="cursor-pointer gap-2 flex items-center px-4 py-2 bg-gradient-to-r from-[#B381F4] to-[#5038ED] rounded-[5px]">
                         <p class="mt-1"><i class="text-white fi fi-rr-inbox-out"></i></p>
                         <p class="text-white text-[14px] font-medium">Export</p>
-                    </button></div>
+                    </button>
+                </div>
                 {{-- todo btn delete all --}}
                 <div>
 
@@ -468,7 +456,7 @@
                 <div class="_footer w-full p-2 flex gap-2">
                     <button id="ubah-pengeluaran" class="gradient-1 text-white text-[14px] py-2 px-4 rounded-full"
                         type="submit">Simpan</button>
-                    <button class="text-[14px] shadow-box-shadow-8 py-2 px-4 rounded-full"
+                    <button type="button" class="text-[14px] shadow-box-shadow-8 py-2 px-4 rounded-full"
                         id="cancel-ubah-pengeluaran-web-customer">Cancel</button>
                 </div>
                 </form>
@@ -650,5 +638,44 @@
         cancelButton.addEventListener('click', () => {
             modalHandlerPemasukanCustomer(false);
         });
+
+
+
+
+
+
+
+
+        function exportData() {
+            // Dapatkan parameter pencarian saat ini
+            const searchParams = new URLSearchParams(window.location.search);
+            const searchTerm = searchParams.get('search') || '';
+
+            // Tampilkan loading
+            Swal.fire({
+                title: 'Mempersiapkan data...',
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                onBeforeOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            // Buat URL untuk export dengan parameter yang sama
+            const exportUrl = `/developer/dashboard/keuangan/export-pengeluaran?search=${encodeURIComponent(searchTerm)}`;
+
+            // Buat elemen <a> sementara untuk memicu download
+            const link = document.createElement('a');
+            link.href = exportUrl;
+            link.target = '_blank';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            // Tutup loading setelah beberapa saat (jika download tidak otomatis menutupnya)
+            setTimeout(() => {
+                Swal.close();
+            }, 2000);
+        }
     </script>
 @endsection

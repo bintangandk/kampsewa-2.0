@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\Pemasukan;
 use App\Models\Pengeluaran;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -18,7 +20,7 @@ class PengeluaranController extends Controller
     {
         $this->middleware('dev');
     }
-    function index()
+    public function index()
     {
         // ambil user berdasarkan yang baru saja terdaftar
         $user_baru_terdaftar = User::select('users.*')
@@ -33,9 +35,19 @@ class PengeluaranController extends Controller
         // $id_user_decrypt = Crypt::decrypt($id_user);
 
         // mendefinisikan data pengeluaran berdasarkan type user = 1
+        $search = request()->query('search');
+
         $data_pengeluaran = Pengeluaran::whereHas('user', function ($query) {
             $query->where('type', '1');
         });
+
+        if (!empty($search)) {
+            $data_pengeluaran->where(function ($query) use ($search) {
+                $query->where('sumber', 'like', '%' . $search . '%')
+                    ->orWhere('deskripsi', 'like', '%' . $search . '%');
+            });
+        }
+
 
         // set variable untuk menampung request input
         $search = request()->query('search');
@@ -228,5 +240,48 @@ class PengeluaranController extends Controller
         } catch (\Exception $error) {
             Log::error($error->getMessage());
         }
+    }
+
+    public function exportPengeluaranDeveloperPdf(Request $request)
+    {
+        $search = $request->query('search', '');
+        $startDate = $request->query('start_date', Carbon::now()->startOfYear());
+        $endDate = $request->query('end_date', Carbon::now()->endOfYear());
+
+        $developer = Auth::user();
+
+        $query = Pengeluaran::query()
+            ->whereBetween('created_at', [$startDate, $endDate])->whereHas('user', function ($query) {
+                $query->where('type', '1');
+            })
+            ->orderBy('created_at', 'desc');
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('sumber', 'like', '%' . $search . '%')
+                    ->orWhere('deskripsi', 'like', '%' . $search . '%');
+            });
+        }
+
+        // Group by month-year
+        $pengeluaranGrouped = $query->get()
+            ->groupBy(function ($item) {
+                return Carbon::parse($item->created_at)->format('F Y');
+            });
+
+        $grandTotal = $query->sum('nominal');
+
+        $data = [
+            'developer' => $developer,
+            'pengeluaranGrouped' => $pengeluaranGrouped,
+            'grandTotal' => $grandTotal,
+            'startDate' => $startDate,
+            'endDate' => $endDate
+        ];
+
+        $pdf = Pdf::loadView('developers.export.pengeluaran-developer-pdf', $data)
+            ->setPaper('a4', 'portrait');
+
+        return $pdf->download('laporan-pengeluaran-developer-' . date('Y-m-d') . '.pdf');
     }
 }
