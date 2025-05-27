@@ -285,8 +285,9 @@ class IklanController extends Controller
 
         // Periksa ketersediaan tanggal dan limit
         list($tanggalMulai, $tanggalAkhir) = $this->cekKetersediaanTanggal($tanggalMulai, $tanggalAkhir, $iklanAktif, $durasi_dec);
-
+        // meampilkan iklan
         $iklan = Iklan::where('id_user', $id_user_decrypt)->latest()->first();
+
         $id_iklan = $iklan->id;
         $snap_token = $iklan->snap_token;
 
@@ -302,7 +303,7 @@ class IklanController extends Controller
         ]);
     }
 
-    public function simpanPembayaranIklan($id_user,Request $request)
+    public function simpanPembayaranIklan($id_user, Request $request)
     {
         $request->validate([
             'id_iklan' => 'required|string',
