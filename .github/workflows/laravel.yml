@@ -79,7 +79,7 @@ jobs:
             docker compose up -d --build
 
             echo "⏳ Menunggu MySQL siap..."
-            docker exec  kampsewa-fix-app sh -c '
+            docker exec  laravel_app sh -c '
               max_tries=30
               counter=0
               echo "Menunggu database siap..."
@@ -109,16 +109,16 @@ jobs:
             '
 
             echo "📦 Menjalankan composer install..."
-            docker exec -u www-data  kampsewa-fix-app composer install --no-interaction --prefer-dist --optimize-autoloader
+            docker exec -u www-data  laravel_app composer install --no-interaction --prefer-dist --optimize-autoloader
 
             echo "🔐 Generate APP key..."
-            docker exec -u www-data  kampsewa-fix-app php artisan key:generate --force
+            docker exec -u www-data  laravel_app php artisan key:generate --force
 
             echo "🧹 Membersihkan cache..."
-            docker exec -u www-data  kampsewa-fix-app php artisan config:clear
-            docker exec -u www-data  kampsewa-fix-app php artisan cache:clear
+            docker exec -u www-data  laravel_app php artisan config:clear
+            docker exec -u www-data  laravel_app php artisan cache:clear
 
             echo "🗃️ Reset dan migrasi database..."
-            docker exec -u www-data  kampsewa-fix-app php artisan migrate:fresh --force --seed
+            docker exec -u www-data  laravel_app php artisan migrate:fresh --force --seed
 
             echo "✅ Deploy selesai!"
