@@ -151,7 +151,7 @@
                             <div class="--icon w-[40px] h-[40px] bg-white rounded-full flex items-center justify-center"><i
                                     class="text-[20px] mt-1 fi fi-rr-folder-open"></i></div>
                             <div class="--title">
-                                <p class="text-[10px] font-medium">Bulan {{ date('F'), strtotime('-2 month') }} -
+                                <p class="text-[10px] font-medium">Bulan {{ date('F'). strtotime('-2 month') }} -
                                     {{ date('Y') }}</p>
                                 <p class="text-[12px] font-bold">Rp. {{ number_format($total_2bulan_lalu) }}</p>
                             </div>
