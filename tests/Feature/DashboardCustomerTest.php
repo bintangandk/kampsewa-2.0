@@ -10,7 +10,7 @@ use App\Models\DetailPenyewaan;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 
-class Dashboard_Cust extends TestCase
+class DashboardCustomerTest extends TestCase
 {
     use RefreshDatabase;
 
