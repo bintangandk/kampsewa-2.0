@@ -126,7 +126,7 @@ jobs:
             docker exec -u www-data laravel_app php artisan cache:clear
 
             echo "🗃️ Reset dan migrasi database..."
-            docker exec -u www-data laravel_app php artisan migrate:fresh --force --seed
+            docker exec -u www-data laravel_app php artisan migrate --force
 
             echo "✅ Deploy selesai!"
   # deploy:
