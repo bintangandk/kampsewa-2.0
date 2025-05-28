@@ -36,7 +36,7 @@
                         class="w-[100px] object-contain" src="{{ asset('images/logo-test.png') }}" alt=""></div>
 
                 {{-- todo judul login dan deskripsi --}}
-                <h1 class="text-center text-[28px] uppercase font-black">Login</h1>
+                <h1 class="text-center text-[28px] uppercase font-black">Loginnn</h1>
                 <p class="text-center text-[14px] font-normal">Login untuk memasuki dashboard sesuai
                     level anda.silahkan masuk
                 </p>
