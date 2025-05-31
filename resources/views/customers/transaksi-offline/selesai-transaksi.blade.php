@@ -65,98 +65,47 @@
                     <tr>
                         <td colspan="7" style="height: 15px;"></td>
                     </tr>
-                    {{-- @foreach ($data as $item) --}}
-                    <tr
-                        class="shadow-box-shadow-8 p-2 hover:scale-105 hover:z-10 text-xs transition transform duration-200 text-[14px] font-medium">
-                        <td class="px-4 py-2 flex items-center gap-2">
-                            <img class="w-[40px] h-[40px] rounded-[10px] object-cover"
-                                src="{{ asset('assets/image/developers/agung-kurniawan.jpg') }}" alt="">
-                            <div></div>
-                        </td>
-                        <td class="px-4 py-2">12-03-2025</td>
-                        <td class="px-4 py-2">13-04-2025</td>
-                        <td class="px-4 py-2">
-                            <p class="py-1 px-2 rounded-md bg-amber-500/20 text-amber-900 text-center">
-                                Selesai
-                            </p>
-                        </td>
-                        <td class="px-4 py-2">
-                            <p class="py-1 px-2 rounded-md  bg-green-500/20 text-green-900 text-center">
-                                Lunas
-                            </p>
-                        </td>
-                        <td class="px-4 py-2">COD</td>
-                        <td class="px-4 py-2 flex items-center gap-2">
-                            <img class="w-[40px] h-[40px] rounded-[10px] object-cover"
-                                src="{{ asset('assets/image/customers/produk/') }}" alt="">
-                            <div class="max-w-[250px] line-clamp-1"></div>
-                        </td>
-                        <td class="px-4 py-2"><a href="{{ route('transaksi-offline.detail-transaksi') }}"
-                                class="py-1 px-2 rounded-md bg-blue-500/20 text-blue-900 text-center hover:text-blue-900">
-                                Detail
-                            </a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="7" style="height: 15px;"></td>
-                    </tr>
-                    {{-- @endforeach --}}
+                    @forelse($penyewaanSelesai as $item)
+                        <tr
+                            class="shadow-box-shadow-8 p-2 hover:scale-105 hover:z-10 text-xs transition transform duration-200 text-[14px] font-medium">
+                            <td class="px-4 py-2 flex items-center gap-2">
+                                <img class="w-[40px] h-[40px] rounded-[10px] object-cover"
+                                    src="{{ asset('assets/image/customers/profile/man.png') }}" alt="">
+                                <div>{{ $item->nama_penyewa ?? 'User' }}</div>
+                            </td>
+                            <td class="px-4 py-2">{{ Carbon\Carbon::parse($item->tgl_mulai)->format('d F Y') }}</td>
+                            <td class="px-4 py-2">{{ Carbon\Carbon::parse($item->tgl_selesai)->format('d F Y') }}</td>
+                            <td class="px-4 py-2">
+                                <p class="py-1 px-2 rounded-md bg-amber-500/20 text-amber-900 text-center">
+                                    {{ ucfirst($item->status_penyewaan) }}
+                                </p>
+                            </td>
+                            <td class="px-4 py-2">
+                                <p class="py-1 px-2 rounded-md  bg-green-500/20 text-green-900 text-center">
+                                    {{ $item->pembayaran->metode ?? '-' }}
+                                </p>
+                            </td>
+                            <td class="px-4 py-2">{{ $item->pembayaran->metode ?? '-' }}</td>
+                            <td class="px-4 py-2 flex items-center gap-2">
+                                <img class="w-[40px] h-[40px] rounded-[10px] object-cover"
+                                    src="{{ asset('assets/image/customers/produk/') }}" alt="">
+                                <div class="max-w-[250px] line-clamp-1"></div>
+                            </td>
+                            <td class="px-4 py-2">
+                                <a href="{{ url('customer/dashboard/detail-offline/' . $item->id) }}"
+                                    class="py-1 px-2 rounded-md bg-blue-500/20 text-blue-900 text-center hover:text-blue-900">
+                                    Detail
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="7" style="height: 15px;"></td>
+                        </tr>
+                    @endforeach
                 </tbody>
             </table>
         </div>
     </div>
-    {{-- <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Ambil nilai dari query string jika tersedia
-            var filterOrderSelesai = "{{ request()->input('filter-order-selesai') }}";
-            var searchQuery = "{{ request()->input('search') }}";
-
-            // Set nilai input filter-order-selesai saat halaman dimuat
-            if (filterOrderSelesai) {
-                document.getElementById('filter-order-selesai').value = filterOrderSelesai;
-            }
-
-            // Set nilai input search saat halaman dimuat
-            if (searchQuery) {
-                document.querySelector('input[name="search"]').value = searchQuery;
-            }
-
-            // Event listener untuk filter-order-selesai
-            document.getElementById('filter-order-selesai').addEventListener('change', function() {
-                submitForm();
-            });
-
-            // Fungsi untuk men-submit form
-            function submitForm() {
-                // Ambil nilai dari input filter-order-selesai dan search
-                var filterOrderSelesai = document.getElementById('filter-order-selesai').value;
-                var search = document.querySelector('input[name="search"]').value;
-
-                // Bangun URL dengan parameter query yang sesuai
-                var url = window.location.pathname + '?'; // Ambil path URL saat ini
-                if (filterOrderSelesai) {
-                    url += 'filter-order-selesai=' + encodeURIComponent(filterOrderSelesai) + '&';
-                }
-                if (search) {
-                    url += 'search=' + encodeURIComponent(search);
-                }
-
-                // Redirect halaman dengan URL yang baru dibangun
-                window.location.href = url;
-            }
-
-            // Event listener untuk input search
-            document.querySelector('input[name="search"]').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    submitForm();
-                }
-            });
-
-            // Update the form action when the search button is clicked
-            document.getElementById('button-addon3').addEventListener('click', function() {
-                submitForm();
-            });
-        });
-    </script> --}}
 @endsection
+
+
