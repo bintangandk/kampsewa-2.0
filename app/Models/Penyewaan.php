@@ -17,6 +17,7 @@ class Penyewaan extends Model
         'tanggal_selesai',
         'pesan',
         'status_penyewaan',
+        'jenis_penyewaan'
     ];
 
     public function details()

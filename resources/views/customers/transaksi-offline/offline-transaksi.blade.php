@@ -55,107 +55,61 @@
                     </tr>
                 </thead>
                 <tbody class="bg-white">
-                    <tr>
-                        <td colspan="7" style="height: 15px;"></td>
-                    </tr>
-                    <tr
-                        class="shadow-box-shadow-8 p-2 hover:scale-105 hover:z-10 text-xs transition transform duration-200 text-[14px] font-medium">
-                        <td class="px-4 py-2 flex items-center gap-2">
-                            <img class="w-[40px] h-[40px] rounded-[10px] object-cover"
-                                src="{{ asset('assets/image/developers/man.png') }}" alt="">
-                            <div>Junior</div>
-                        </td>
-                        <td class="px-4 py-2">14-04-2025</td>
-                        <td class="px-4 py-2">19-04-2025</td>
-                        <td class="px-4 py-2">
-                            <p class="py-1 px-2 rounded-md bg-amber-500/20 text-amber-900 text-center">
-                                Aktif
-                            </p>
-                        </td>
-                        <td class="px-4 py-2">
-                            <p class="py-1 px-2 rounded-md  bg-green-500/20 text-green-900 text-center">
-                                Lunas
-                            </p>
-                        </td>
-                        <td class="px-4 py-2">Transfer</td>
-                        <td class="px-4 py-2 flex items-center gap-2">
-                            <img class="w-[40px] h-[40px] rounded-[10px] object-cover"
-                                src="{{ asset('assets/image/customers/produk/') }}" alt="">
-                            <div class="max-w-[250px] line-clamp-1"></div>
-                        </td>
-                        <td class="px-4 py-2"><a href="{{ route('transaksi-offline.detail-transaksi') }}"
-                                class="py-1 px-2 rounded-md bg-blue-500/20 text-blue-900 text-center hover:text-blue-900">Detail</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="7" style="height: 15px;"></td>
-                    </tr>
+                    @foreach ($dataPenyewaan as $penyewaan)
+                        <tr>
+                            <td colspan="7" style="height: 15px;"></td>
+                        </tr>
+                        <tr
+                            class="shadow-box-shadow-8 p-2 hover:scale-105 hover:z-10 text-xs transition transform duration-200 text-[14px] font-medium">
+                            <td class="px-4 py-2 flex items-center gap-2">
+                                <img class="w-[40px] h-[40px] rounded-[10px] object-cover"
+                                    src="{{ asset('assets/image/developers/man.png') }}" alt="">
+                                <div>{{ $penyewaan->nama_penyewa ?? 'User' }}</div>
+                            </td>
+                            <td class="px-4 py-2">{{ Carbon\Carbon::parse($penyewaan->tgl_mulai)->format('d F Y') }}</td>
+                            <td class="px-4 py-2">{{ Carbon\Carbon::parse($penyewaan->tgl_selesai)->format('d F Y') }}</td>
+                            <td class="px-4 py-2">
+                                <p class="py-1 px-2 rounded-md bg-amber-500/20 text-amber-900 text-center">
+                                    {{ ucfirst($penyewaan->status_penyewaan) }}
+                                </p>
+                            </td>
+                            <td class="px-4 py-2">
+                                <p class="py-1 px-2 rounded-md  bg-green-500/20 text-green-900 text-center">
+                                    {{ $penyewaan->pembayaran->status_pembayaran ?? 'Belum Bayar' }}
+                                </p>
+                            </td>
+                            <td class="px-4 py-2">{{ $penyewaan->pembayaran->metode ?? '-' }}</td>
+                            <td class="px-4 py-2 flex items-center gap-2">
+                                @php
+                                    $firstDetail = $penyewaan->details->first();
+                                @endphp
+                                @if ($firstDetail)
+                                    <img class="w-[40px] h-[40px] rounded-[10px] object-cover"
+                                        src="{{ asset('assets/image/customers/produk/' . ($firstDetail->produk->gambar ?? 'default.png')) }}"
+                                        alt="">
+                                    <div class="max-w-[250px] line-clamp-1">{{ $firstDetail->produk->nama_produk ?? '' }}
+                                    </div>
+                                @else
+                                    <img class="w-[40px] h-[40px] rounded-[10px] object-cover"
+                                        src="{{ asset('assets/image/customers/produk/default.png') }}" alt="">
+                                    <div class="max-w-[250px] line-clamp-1">-</div>
+                                @endif
+                            </td>
+                            <td class="px-4 py-2">
+                                <a href="{{ route('transaksi-offline.detail-transaksi', $penyewaan->id) }}"
+                                    class="py-1 px-2 rounded-md bg-blue-500/20 text-blue-900 text-center hover:text-blue-900">
+                                    Detail
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="7" style="height: 15px;"></td>
+                        </tr>
+                    @endforeach
                 </tbody>
+
             </table>
         </div>
     </div>
 
-    {{-- <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Ambil nilai dari query string jika tersedia
-            var filterTglAwal = "{{ request()->input('tanggal_awal') }}";
-            var filterTglAkhir = "{{ request()->input('tanggal_akhir') }}";
-            var searchQuery = "{{ request()->input('search') }}";
-
-            // Set nilai input tanggal saat halaman dimuat
-            document.getElementById('tanggal_awal').value = filterTglAwal || '';
-            document.getElementById('tanggal_akhir').value = filterTglAkhir || '';
-
-            // Set nilai input search saat halaman dimuat
-            if (searchQuery) {
-                document.querySelector('input[name="search"]').value = searchQuery;
-            }
-
-            // Event listener untuk input tanggal_awal
-            document.getElementById('tanggal_awal').addEventListener('change', function() {
-                submitForm();
-            });
-
-            // Event listener untuk input tanggal_akhir
-            document.getElementById('tanggal_akhir').addEventListener('change', function() {
-                submitForm();
-            });
-
-            // Fungsi untuk men-submit form
-            function submitForm() {
-                // Ambil nilai dari input tanggal_awal, tanggal_akhir dan search
-                var tanggalAwal = document.getElementById('tanggal_awal').value;
-                var tanggalAkhir = document.getElementById('tanggal_akhir').value;
-                var search = document.querySelector('input[name="search"]').value;
-
-                // Bangun URL dengan parameter query yang sesuai
-                var url = window.location.pathname + '?'; // Ambil path URL saat ini
-                if (tanggalAwal) {
-                    url += 'tanggal_awal=' + tanggalAwal + '&';
-                }
-                if (tanggalAkhir) {
-                    url += 'tanggal_akhir=' + tanggalAkhir + '&';
-                }
-                if (search) {
-                    url += 'search=' + encodeURIComponent(search);
-                }
-
-                // Redirect halaman dengan URL yang baru dibangun
-                window.location.href = url;
-            }
-
-            // Event listener untuk input search
-            document.querySelector('input[name="search"]').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault(); // Prevent form submission on Enter key press
-                    submitForm();
-                }
-            });
-
-            // Update the form action when the search button is clicked
-            document.getElementById('button-addon3').addEventListener('click', function() {
-                submitForm();
-            });
-        });
-    </script> --}}
 @endsection
