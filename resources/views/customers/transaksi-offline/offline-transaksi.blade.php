@@ -96,7 +96,7 @@
                                 @endif
                             </td>
                             <td class="px-4 py-2">
-                                <a href="{{ route('transaksi-offline.detail-transaksi', $penyewaan->id) }}"
+                                <a href="{{ url('customer/dashboard/detail-offline/' . $penyewaan->id) }}"
                                     class="py-1 px-2 rounded-md bg-blue-500/20 text-blue-900 text-center hover:text-blue-900">
                                     Detail
                                 </a>
@@ -111,5 +111,4 @@
             </table>
         </div>
     </div>
-
 @endsection

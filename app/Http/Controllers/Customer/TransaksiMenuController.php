@@ -522,6 +522,7 @@ class TransaksiMenuController extends Controller
             'details.produk'
         ])
             ->where('jenis_penyewaan', 'offline')
+            ->where('status_penyewaan', 'aktif') 
             ->latest()
             ->get();
 
@@ -532,12 +533,19 @@ class TransaksiMenuController extends Controller
     }
 
 
-    public function detailOffline()
+    public function detailOffline($id)
     {
+        $penyewaan = Penyewaan::with([
+            'details.produk',
+            'pembayaran',
+        ])->findOrFail($id);
+
         return view('customers.transaksi-offline.detail-transaksi')->with([
-            'title' => 'Detail Order Offline'
+            'title' => 'Detail Order Offline',
+            'penyewaan' => $penyewaan,
         ]);
     }
+
 
     public function tambahTransaksi()
     {
@@ -638,8 +646,28 @@ class TransaksiMenuController extends Controller
 
     public function selesaiOrder()
     {
+        $penyewaanSelesai = Penyewaan::with([
+            'pembayaran',
+            'details.produk'
+        ])
+            ->where('jenis_penyewaan', 'offline')
+            ->where('status_penyewaan', 'selesai') 
+            ->latest()
+            ->get();
+
         return view('customers.transaksi-offline.selesai-transaksi')->with([
-            'title' => 'Order Selesai'
+            'title' => 'Order Selesai',
+            'penyewaanSelesai' => $penyewaanSelesai
         ]);
+    }
+
+    public function selesaikanOffline($id)
+    {
+        $penyewaan = Penyewaan::findOrFail($id);
+        $penyewaan->status_penyewaan = 'selesai';
+        $penyewaan->save();
+
+        return redirect()->route('transaksi-offline.order-offline')
+            ->with('success', 'Terima Barang Berhasil.');
     }
 }
