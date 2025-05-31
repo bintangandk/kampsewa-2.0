@@ -8,8 +8,7 @@
             <p>Tambahkan transaksi penyewaan! anda bisa memasukkan data penyewa dan data barang dengan banyak ukuran dan
                 jenis, seperti warna,
                 kuantitas barang yang akan disewa.</p>
-            <form action="{{ route('transaksi-offline.post') }}" method="POST" enctype="multipart/form-data"
-                class="w-full flex flex-col gap-6 h-auto mt-4">
+            <form id="formPenyewaan" enctype="multipart/form-data" class="w-full flex flex-col gap-6 h-auto mt-4">
                 @csrf
                 <input type="hidden" name="id_user" value="{{ auth()->id() }}">
 
@@ -63,7 +62,7 @@
                                 <input type="text" name="variants[0][sizes][0][warna]" placeholder="Warna" required
                                     class="bg-gray-200 rounded px-4 py-3 w-full" />
                                 <input type="number" name="variants[0][sizes][0][subtotal]" placeholder="Subtotal (Rp)"
-                                    required class="bg-gray-200 rounded px-4 py-3 w-full" />
+                                    required class="bg-gray-200 rounded px-4 py-3 w-full subtotal" />
                                 <button type="button" onclick="removeSize(this)"
                                     class="text-red-500 hover:text-red-700 text-sm">Hapus</button>
                             </div>
@@ -78,142 +77,77 @@
                 <div class="flex flex-col sm:flex-row gap-2">
                     <button type="button" onclick="addProduct()"
                         class="bg-indigo-600 text-white px-4 py-2 rounded text-sm">Tambah Produk</button>
-                    <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded text-sm">Lanjut
-                        Pembayaran</button>
+                    <button type="button" onclick="lanjutPembayaran()"
+                        class="bg-green-600 text-white px-4 py-2 rounded text-sm">
+                        Lanjut Pembayaran
+                    </button>
                 </div>
             </form>
 
-
-        </div>
-
-        <!-- Modal -->
-        <div class="modal fade" id="paymentModal" tabindex="-1" role="dialog" aria-labelledby="paymentModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <form id="paymentForm" action="" method="POST">
-                    @csrf
+            <!-- Modal Pembayaran -->
+            <div class="modal fade" id="modalPembayaran" tabindex="-1" aria-labelledby="modalPembayaranLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
                     <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Pembayaran</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Tutup">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-
-                        <div class="modal-body">
-                            <!-- Total -->
-                            <div class="form-group">
-                                <label>Total yang harus dibayar</label>
-                                <input type="text" class="form-control" id="total" name="total" value="50000"
-                                    readonly>
+                        <form id="formPembayaran">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Pembayaran</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Tutup"></button>
                             </div>
+                            <div class="modal-body space-y-3">
+                                <div>
+                                    <label class="block text-sm font-bold">Metode Pembayaran</label>
+                                    <select name="metode" class="form-select w-full bg-gray-200 rounded p-2" required>
+                                        <option value="tunai">Tunai</option>
+                                        <option value="transfer">Transfer</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-bold">Jaminan Sewa</label>
+                                    <input type="text" name="jaminan_sewa" class="w-full bg-gray-200 p-2 rounded"
+                                        required />
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-bold">Total Pembayaran</label>
+                                    <input type="number" name="total_pembayaran" class="w-full bg-gray-200 p-2 rounded"
+                                        required />
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-bold">Jumlah Pembayaran</label>
+                                    <input type="number" name="jumlah_pembayaran" class="w-full bg-gray-200 p-2 rounded"
+                                        required />
+                                </div>
 
-                            <!-- Uang yang dibayarkan -->
-                            <div class="form-group">
-                                <label>Uang yang dibayarkan customer</label>
-                                <input type="number" class="form-control" id="uang_dibayar" name="uang_dibayar"
-                                    required>
+                                <div>
+                                    <label class="block text-sm font-bold">Kembalian</label>
+                                    <input type="number" name="kembalian_pembayaran"
+                                        class="w-full bg-gray-200 p-2 rounded" required />
+                                </div>
+
+                                <!-- Hidden values -->
+                                <input type="hidden" name="biaya_admin" value="0" />
+                                <input type="hidden" name="status_pembayaran" value="lunas" />
+                                <input type="hidden" name="kurang_pembayaran" value="0" />
+                                <input type="hidden" name="jenis_transaksi" value="offline" />
                             </div>
-
-                            <!-- Kembalian -->
-                            <div class="form-group">
-                                <label>Kembalian</label>
-                                <input type="text" class="form-control" id="kembalian" readonly>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                <button type="button" class="btn btn-primary" onclick="prosesPembayaran()">Proses
+                                    Pembayaran</button>
                             </div>
-
-                            <!-- Metode Pembayaran -->
-                            <div class="form-group">
-                                <label>Metode Pembayaran</label>
-                                <select class="form-control" name="metode_pembayaran" required>
-                                    <option value="Cash">Cash</option>
-                                    <option value="Transfer">Transfer</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-success">Proses Pembayaran</button>
-                        </div>
+                        </form>
                     </div>
-                </form>
+                </div>
             </div>
+
+
         </div>
+
+
     </div>
 
 
-    {{-- <script>
-        function addProduct() {
-            const variantContainer = document.getElementById('variantContainer');
-            const variantCount = document.querySelectorAll('.variant').length;
-            const newVariant = `
-        <div class="variant">
-            <div class="w-1/2 mt-4 mobile-max:w-full">
-                <p class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Nama Produk</p>
-                <select id="produk0" name="variants[0][produk]" required
-                                class="tom-select block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
-                                <option value="">-- Pilih Produk --</option>
-                                @foreach ($produkList as $produk)
-                                    <option value="{{ $produk->id }}">{{ $produk->nama }}</option>
-                                @endforeach
-                            </select>
-            </div>
-             <div class="w-full">
-                            <p class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Harga Sewa</p>
-                            <input
-                                class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                type="number" id="subtotal" name="variants[0][sizes][0][sub_total]"
-                                placeholder="contoh: 10000" required>
-                        </div>
-            <div class="sizeContainer mt-2 mobile-max:w-full">
-                <button type="button" class="mobile-max:w-full p-2 bg-blue-500 rounded mt-2 text-white font-medium text-[14px]" onclick="addSize(this.parentElement)">Tambah Detail Variant</button>
-                <button type="button" class="mobile-max:w-full p-2 bg-red-500 rounded mt-2 text-white font-medium text-[14px]" onclick="removeVariant(this)">Hapus Produk</button>
-            </div>
-        </div>
-    `;
-            variantContainer.insertAdjacentHTML('beforeend', newVariant);
-        }
-
-        function addSize(sizeContainer) {
-            const variantIndex = Array.from(document.querySelectorAll('.variant')).indexOf(sizeContainer.parentElement);
-            const sizeCount = sizeContainer.parentElement.querySelectorAll('.size').length + 1;
-            const newSize = `
-        <div class="size flex items-center gap-4 mt-2 mobile-max:flex-col">
-            <div class="w-full">
-                <p class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Ukuran</p>
-                <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                    type="text" name="variants[${variantIndex}][sizes][${sizeCount}][ukuran]" placeholder="contoh: 3x4/XXL" required>
-            </div>
-            <div class="w-full">
-                <p class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Jumlah</p>
-                <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                    type="number" name="variants[${variantIndex}][sizes][${sizeCount}][jumlah]" placeholder="contoh: 20" required>
-            </div>
-            <div class="w-full">
-                <p class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Warna</p>
-                <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                    type="text" name="variants[${variantIndex}][sizes][${sizeCount}][warna]" placeholder="contoh: Merah" required>
-            </div>
-            <div>
-                <p class="opacity-0">button</p>
-                <button type="button" class="py-3 px-4 rounded flex items-center justify-center h-full bg-red-100 text-red-500 mobile-max:w-fit"
-                    onclick="removeSize(this)"><i class="bi bi-trash3-fill"></i></button>
-            </div>
-        </div>
-    `;
-            sizeContainer.insertAdjacentHTML('beforebegin', newSize);
-            sizeContainer.querySelector('.size:last-child button').style.display = 'inline-block';
-        }
-
-        function removeVariant(button) {
-            const variant = button.parentElement.parentElement;
-            variant.remove();
-        }
-
-        function removeSize(button) {
-            const size = button.parentElement.parentElement;
-            size.remove();
-        }
-    </script> --}}
     <script>
         let variantIndex = 1;
 
@@ -245,7 +179,7 @@
                     <input type="text" name="variants[${variantIndex}][sizes][0][warna]" placeholder="Warna"
                         required class="bg-gray-200 rounded px-4 py-3 w-full" />
                     <input type="number" name="variants[${variantIndex}][sizes][0][subtotal]" placeholder="Subtotal (Rp)"
-                        required class="bg-gray-200 rounded px-4 py-3 w-full" />
+                        required class="bg-gray-200 rounded px-4 py-3 w-full subtotal" />
                     <button type="button" onclick="removeSize(this)"
                         class="text-red-500 hover:text-red-700 text-sm">Hapus</button>
                 </div>
@@ -279,7 +213,7 @@
                 <input type="text" name="variants[${variantIdx}][sizes][${sizeCount}][warna]" placeholder="Warna"
                     required class="bg-gray-200 rounded px-4 py-3 w-full" />
                 <input type="number" name="variants[${variantIdx}][sizes][${sizeCount}][subtotal]" placeholder="Subtotal (Rp)"
-                    required class="bg-gray-200 rounded px-4 py-3 w-full" />
+                    required class="bg-gray-200 rounded px-4 py-3 w-full subtotal" />
                 <button type="button" onclick="removeSize(this)"
                     class="text-red-500 hover:text-red-700 text-sm">Hapus</button>
             </div>
@@ -307,13 +241,144 @@
         });
     </script>
 
-    <script>
-        document.getElementById('uang_dibayar').addEventListener('input', function() {
-            const total = parseInt(document.getElementById('total').value);
-            const dibayar = parseInt(this.value);
-            const kembalian = dibayar - total;
+    {{-- <script>
+        function lanjutPembayaran() {
+            const modal = new bootstrap.Modal(document.getElementById('modalPembayaran'));
+            modal.show();
+        }
 
-            document.getElementById('kembalian').value = kembalian >= 0 ? kembalian : 0;
+        function prosesPembayaran() {
+            const formPenyewaan = document.getElementById('formPenyewaan');
+            const formPembayaran = document.getElementById('formPembayaran');
+
+            const formData = new FormData(formPenyewaan);
+
+            // Tambahkan data dari modal
+            const pembayaranData = new FormData(formPembayaran);
+            for (const [key, value] of pembayaranData.entries()) {
+                formData.append(key, value);
+            }
+
+            fetch("{{ route('transaksi-offline.post') }}", {
+                    method: "POST",
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.message === 'Transaksi berhasil ditambahkan') {
+                        alert("Transaksi berhasil!");
+                        location.reload(); // atau redirect sesuai kebutuhanmu
+                    } else {
+                        alert("Gagal menyimpan: " + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error(error);
+                    alert("Terjadi kesalahan.");
+                });
+        }
+    </script> --}}
+
+    <script>
+        function lanjutPembayaran() {
+            const modal = new bootstrap.Modal(document.getElementById('modalPembayaran'));
+            modal.show();
+        }
+
+        function prosesPembayaran() {
+            const formPenyewaan = document.getElementById('formPenyewaan');
+            const formPembayaran = document.getElementById('formPembayaran');
+
+            const formData = new FormData(formPenyewaan);
+
+            // Tambahkan data dari form modal
+            const pembayaranData = new FormData(formPembayaran);
+            for (const [key, value] of pembayaranData.entries()) {
+                formData.append(key, value);
+            }
+
+            fetch("{{ route('transaksi-offline.post') }}", {
+                    method: "POST",
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: formData
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(err => {
+                            throw err
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Transaksi Berhasil!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(() => {
+                        window.location.href = "{{ route('transaksi-offline.order-offline') }}";
+                    });
+                })
+                .catch(error => {
+                    console.error(error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Terjadi Kesalahan',
+                        text: error?.message || 'Gagal menyimpan transaksi.'
+                    });
+                });
+        }
+    </script>
+
+
+    <script>
+        // Fungsi menjumlahkan semua subtotal
+        function hitungTotalPembayaran() {
+            let total = 0;
+            document.querySelectorAll('input.subtotal').forEach(function(el) {
+                let val = parseInt(el.value) || 0;
+                total += val;
+            });
+
+            const inputTotal = document.querySelector('input[name="total_pembayaran"]');
+            if (inputTotal) {
+                inputTotal.value = total;
+            }
+
+            hitungKembalian(); // update kembalian jika total berubah
+        }
+
+        // Fungsi hitung kembalian otomatis
+        function hitungKembalian() {
+            const total = parseInt(document.querySelector('input[name="total_pembayaran"]').value) || 0;
+            const bayar = parseInt(document.querySelector('input[name="jumlah_pembayaran"]').value) || 0;
+            const kembali = bayar - total;
+
+            const inputKembali = document.querySelector('input[name="kembalian_pembayaran"]');
+            if (inputKembali) {
+                inputKembali.value = kembali >= 0 ? kembali : 0;
+            }
+        }
+
+        // Event saat modal dibuka: hitung total terbaru
+        document.getElementById('modalPembayaran').addEventListener('shown.bs.modal', function() {
+            hitungTotalPembayaran();
+        });
+
+        // Event jika input jumlah pembayaran berubah
+        document.querySelector('input[name="jumlah_pembayaran"]').addEventListener('input', hitungKembalian);
+
+        // Delegasi event secara dinamis untuk semua input subtotal, termasuk yang baru ditambahkan
+        document.addEventListener('input', function(e) {
+            if (e.target && e.target.classList.contains('subtotal')) {
+                hitungTotalPembayaran();
+            }
         });
     </script>
 @endsection

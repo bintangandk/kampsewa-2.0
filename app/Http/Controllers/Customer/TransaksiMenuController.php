@@ -517,10 +517,20 @@ class TransaksiMenuController extends Controller
 
     public function orderOffline()
     {
+        $dataPenyewaan = Penyewaan::with([
+            'pembayaran',
+            'details.produk'
+        ])
+            ->where('jenis_penyewaan', 'offline')
+            ->latest()
+            ->get();
+
         return view('customers.transaksi-offline.offline-transaksi')->with([
-            'title' => 'Order Offline'
+            'title' => 'Order Offline',
+            'dataPenyewaan' => $dataPenyewaan
         ]);
     }
+
 
     public function detailOffline()
     {
@@ -542,7 +552,7 @@ class TransaksiMenuController extends Controller
         DB::beginTransaction();
 
         try {
-            // Validasi dasar (bisa kamu tambah kalau mau lebih lengkap)
+            // Validasi dasar
             $request->validate([
                 'nama_penyewa' => 'required|string|max:255',
                 'alamat' => 'required|string',
@@ -554,9 +564,18 @@ class TransaksiMenuController extends Controller
                 'variants.*.sizes.*.ukuran' => 'required|string',
                 'variants.*.sizes.*.qty' => 'required|integer|min:1',
                 'variants.*.sizes.*.subtotal' => 'required|numeric|min:0',
+
+                // Validasi untuk pembayaran
+                'jumlah_pembayaran' => 'required|numeric|min:0',
+                'total_pembayaran' => 'required|numeric|min:0',
+                'biaya_admin' => 'nullable|numeric|min:0',
+                'jaminan_sewa' => 'nullable|string|max:255',
+                'metode' => 'required|string|max:255',
+                'jenis_transaksi' => 'required|string|max:255',
+                'bukti_pembayaran' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
             ]);
 
-            // Simpan ke tabel penyewaan
+            // 1. Simpan ke tabel penyewaan
             $penyewaan = Penyewaan::create([
                 'id_user' => Auth::id(),
                 'nama_penyewa' => $request['nama_penyewa'],
@@ -568,7 +587,7 @@ class TransaksiMenuController extends Controller
                 'jenis_penyewaan' => 'offline',
             ]);
 
-            // Simpan detail penyewaan
+            // 2. Simpan detail penyewaan
             foreach ($request['variants'] as $variant) {
                 $id_produk = $variant['produk'];
 
@@ -584,7 +603,29 @@ class TransaksiMenuController extends Controller
                 }
             }
 
+            // 3. Upload bukti pembayaran (jika ada)
+            $buktiPembayaran = null;
+            if ($request->hasFile('bukti_pembayaran')) {
+                $buktiPembayaran = $request->file('bukti_pembayaran')->store('bukti_pembayaran', 'public');
+            }
+
+            // 4. Simpan pembayaran
+            PembayaranPenyewaan::create([
+                'id_penyewaan' => $penyewaan->id,
+                'bukti_pembayaran' => $buktiPembayaran,
+                'jaminan_sewa' => $request->jaminan_sewa ?? '',
+                'jumlah_pembayaran' => $request->jumlah_pembayaran,
+                'kembalian_pembayaran' => $request->jumlah_pembayaran - $request->total_pembayaran,
+                'biaya_admin' => $request->biaya_admin ?? 0,
+                'kurang_pembayaran' => 0,
+                'total_pembayaran' => $request->total_pembayaran,
+                'metode' => $request->metode,
+                'jenis_transaksi' => $request->jenis_transaksi,
+                'status_pembayaran' => 'Lunas',
+            ]);
+
             DB::commit();
+
             return response()->json(['message' => 'Transaksi berhasil ditambahkan'], 200);
         } catch (\Exception $e) {
             DB::rollBack();
