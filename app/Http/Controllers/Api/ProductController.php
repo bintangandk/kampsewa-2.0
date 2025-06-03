@@ -8,6 +8,7 @@ use App\Models\Rekomendasi;
 use GuzzleHttp\Promise\Create;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
@@ -51,12 +52,52 @@ class ProductController extends Controller
             'message' => 'success',
             'data_produk' => $produk
         ], 200);
-
     }
+    public function showRecommendations($user_id)
+    {
+        $response = Http::get("http://206.189.81.234:8000/recommend?user_id={$user_id}");
+        $product_ids = collect($response->json()['recommendations'])->pluck('product_id');
+        if ($product_ids->isEmpty()) {
 
+
+            # code...
+        }
+
+        $produk = Produk::leftJoin('rating_produk', 'produk.id', '=', 'rating_produk.id_produk')
+            ->leftJoin('users', 'users.id', '=', 'produk.id_user')
+            ->leftJoin('variant_produk', 'produk.id', '=', 'variant_produk.id_produk')
+            ->leftJoin('detail_variant_produk', 'variant_produk.id', '=', 'detail_variant_produk.id_variant_produk')
+            ->select(
+                'produk.id as id_produk',
+                'produk.id_user as id_user',
+                'users.name as nama_user',
+                'produk.nama as nama_produk',
+                'produk.foto_depan',
+                DB::raw('AVG(rating_produk.rating) as rata_rating'),
+                DB::raw('MIN(detail_variant_produk.harga_sewa) as harga_sewa')
+            )
+            // ->where('produk.id_user', '!=', auth()->id())
+            // Produk bukan dari user yang login
+            ->whereIn('produk.id', $product_ids)              // Filter produk berdasarkan ID yang direkomendasikan
+            ->where('users.SP', '<', 3)                         // User pemilik produk SP-nya < 3
+            ->whereNotNull('rating_produk.rating')
+            ->whereNotNull('detail_variant_produk.harga_sewa')
+            ->groupBy('produk.id', 'produk.id_user', 'users.name', 'produk.nama', 'produk.foto_depan')
+            ->orderByDesc(DB::raw('AVG(rating_produk.rating)'))
+            ->orderBy(DB::raw('MIN(detail_variant_produk.harga_sewa)'))
+            // ->limit(6)
+            ->get();
+        // $products = Product::whereIn('id', $product_ids)->get();
+
+        // return view('recommendations', ['products' => $product_ids]);
+        return response()->json([
+            'message' => 'success',
+            'data' => $product_ids,
+        ], 200);
+    }
     // fungsi untuk menampilkan product berdasarkan
     // kategori: tenda, pakaian, tas & sepatu, perlengkapan, semua
-    // berdasarkan: rating, termurah, termahal, terdekat
+    // berdasarkan: rating, termurah,  termahal, terdekat
     public function getProdukByFilter($kategori = 'semua')
     {
         $filter = request()->query('filter', 'semua');
