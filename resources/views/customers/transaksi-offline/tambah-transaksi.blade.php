@@ -74,7 +74,7 @@
 
                                     <!-- Subtotal -->
                                     <input type="number" name="variants[0][sizes][0][subtotal]"
-                                        class="subtotal bg-gray-200 rounded px-4 py-3 w-full" readonly />
+                                        class="subtotal bg-gray-200 rounded px-4 py-3 w-full" placeholder="Harga Sewa" readonly />
 
                                     <!-- Tombol Hapus -->
                                     <button type="button" onclick="removeSize(this)"

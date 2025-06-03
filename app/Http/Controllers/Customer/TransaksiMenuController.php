@@ -549,7 +549,18 @@ class TransaksiMenuController extends Controller
 
     public function tambahTransaksi()
     {
-        $produkList = Produk::all();
+    
+        $produkSedangDisewa = Penyewaan::whereIn('status_penyewaan', ['Aktif', 'Pending'])
+            ->with('details') 
+            ->get()
+            ->flatMap(function ($penyewaan) {
+                return $penyewaan->details->pluck('id_produk'); 
+            })
+            ->unique()
+            ->toArray();
+
+        $produkList = Produk::whereNotIn('id', $produkSedangDisewa)->get();
+
         return view('customers.transaksi-offline.tambah-transaksi', compact('produkList'))->with([
             'title' => 'Tambah Transaksi Offline',
         ]);
@@ -559,7 +570,7 @@ class TransaksiMenuController extends Controller
     public function getVarian($id)
     {
         $varian = VariantProduk::where('id_produk', $id)
-            ->with('detailVariant') // gunakan nama relasi yang benar
+            ->with('detailVariant') 
             ->get()
             ->flatMap(function ($variant) {
                 return $variant->detailVariant->map(function ($detail) use ($variant) {
