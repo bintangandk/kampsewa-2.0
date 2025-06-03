@@ -19,4 +19,10 @@ class Iklan extends Model
         'deskripsi',
         'snap_token',
     ];
+
+
+    public function detail_iklan()
+    {
+        return $this->hasMany(DetailIklan::class, 'id_iklan', 'id');
+    }
 }

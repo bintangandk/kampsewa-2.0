@@ -18,4 +18,9 @@ class DetailIklan extends Model
         'harga_iklan',
         'status_iklan'
     ];
+
+    public function iklan()
+    {
+        return $this->belongsTo(Iklan::class, 'id_iklan', 'id');
+    }
 }
