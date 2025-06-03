@@ -52,21 +52,37 @@
                             @endforeach
                         </select>
 
-                        <div class="size-group space-y-3">
-                            {{-- Ukuran pertama --}}
-                            <div class="size-item grid md:grid-cols-5 gap-4 items-center">
-                                <input type="text" name="variants[0][sizes][0][ukuran]" placeholder="Ukuran" required
-                                    class="bg-gray-200 rounded px-4 py-3 w-full" />
-                                <input type="number" name="variants[0][sizes][0][qty]" placeholder="Jumlah" required
-                                    class="bg-gray-200 rounded px-4 py-3 w-full" />
-                                <input type="text" name="variants[0][sizes][0][warna]" placeholder="Warna" required
-                                    class="bg-gray-200 rounded px-4 py-3 w-full" />
-                                <input type="number" name="variants[0][sizes][0][subtotal]" placeholder="Subtotal (Rp)"
-                                    required class="bg-gray-200 rounded px-4 py-3 w-full subtotal" />
-                                <button type="button" onclick="removeSize(this)"
-                                    class="text-red-500 hover:text-red-700 text-sm">Hapus</button>
+                        <div class="variant">
+                            <div class="size-group space-y-3">
+                                <!-- Ukuran pertama -->
+                                <div class="size-item grid md:grid-cols-5 gap-4 items-center">
+                                    <!-- Ukuran -->
+                                    <select name="variants[0][sizes][0][ukuran]"
+                                        class="ukuran-select bg-gray-200 rounded px-4 py-3 w-full" required>
+                                        <option value="">-- Pilih Ukuran --</option>
+                                    </select>
+
+                                    <!-- Jumlah -->
+                                    <input type="number" name="variants[0][sizes][0][qty]" placeholder="Jumlah" required
+                                        class="qty-input bg-gray-200 rounded px-4 py-3 w-full" />
+
+                                    <!-- Warna -->
+                                    <select name="variants[0][sizes][0][warna]"
+                                        class="warna-select bg-gray-200 rounded px-4 py-3 w-full" required>
+                                        <option value="">-- Pilih Warna --</option>
+                                    </select>
+
+                                    <!-- Subtotal -->
+                                    <input type="number" name="variants[0][sizes][0][subtotal]"
+                                        class="subtotal bg-gray-200 rounded px-4 py-3 w-full" readonly />
+
+                                    <!-- Tombol Hapus -->
+                                    <button type="button" onclick="removeSize(this)"
+                                        class="text-red-500 hover:text-red-700 text-sm">Hapus</button>
+                                </div>
                             </div>
                         </div>
+
 
                         <button type="button" onclick="addSize(this)"
                             class="mt-3 bg-blue-600 text-white px-3 py-2 rounded text-sm">Tambah Ukuran</button>
@@ -146,6 +162,77 @@
 
 
     </div>
+
+    <script>
+        async function fetchVarianData(produkId) {
+            const res = await fetch(`/transaksi/produk/${produkId}/varian`);
+            return await res.json();
+        }
+
+        function updateSubtotal(data, warnaSelect, ukuranSelect, qtyInput, subtotalInput) {
+            const warna = warnaSelect.value;
+            const ukuran = ukuranSelect.value;
+            const qty = parseInt(qtyInput.value) || 0;
+
+            const match = data.find(item => item.warna === warna && item.ukuran === ukuran);
+            subtotalInput.value = match ? match.harga_sewa * qty : '';
+        }
+
+        function onProdukChange(selectElement) {
+            const variantDiv = selectElement.closest('.variant');
+            const warnaSelects = variantDiv.querySelectorAll('.warna-select');
+            const ukuranSelects = variantDiv.querySelectorAll('.ukuran-select');
+            const qtyInputs = variantDiv.querySelectorAll('input[name^="variants"][name$="[qty]"]');
+            const subtotalInputs = variantDiv.querySelectorAll('.subtotal');
+
+            const produkId = selectElement.value;
+            if (!produkId) return;
+
+            fetchVarianData(produkId).then(data => {
+                // Isi ulang dropdown warna dan ukuran
+                warnaSelects.forEach(select => {
+                    select.innerHTML = '<option value="">-- Pilih Warna --</option>';
+                    const warnaList = [...new Set(data.map(item => item.warna))];
+                    warnaList.forEach(warna => {
+                        select.innerHTML += `<option value="${warna}">${warna}</option>`;
+                    });
+                });
+
+                ukuranSelects.forEach(select => {
+                    select.innerHTML = '<option value="">-- Pilih Ukuran --</option>';
+                    const ukuranList = [...new Set(data.map(item => item.ukuran))];
+                    ukuranList.forEach(ukuran => {
+                        select.innerHTML += `<option value="${ukuran}">${ukuran}</option>`;
+                    });
+                });
+
+                // Event listener untuk perubahan warna, ukuran, dan qty
+                warnaSelects.forEach((warnaSelect, index) => {
+                    const ukuranSelect = ukuranSelects[index];
+                    const qtyInput = qtyInputs[index];
+                    const subtotalInput = subtotalInputs[index];
+
+                    [warnaSelect, ukuranSelect].forEach(select => {
+                        select.addEventListener('change', () => {
+                            updateSubtotal(data, warnaSelect, ukuranSelect, qtyInput,
+                                subtotalInput);
+                        });
+                    });
+
+                    qtyInput.addEventListener('input', () => {
+                        updateSubtotal(data, warnaSelect, ukuranSelect, qtyInput, subtotalInput);
+                    });
+                });
+            });
+        }
+
+        // Jalankan saat halaman dimuat untuk semua produk yang sudah ada
+        document.querySelectorAll('select[name^="variants"][name$="[produk]"]').forEach(select => {
+            select.addEventListener('change', function() {
+                onProdukChange(this);
+            });
+        });
+    </script>
 
 
     <script>
