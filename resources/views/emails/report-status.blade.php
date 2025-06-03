@@ -38,6 +38,8 @@
     @else
         @if ($receiverRole == 'pelapor')
             <p>Halo, laporan yang Anda buat telah <strong>DITOLAK</strong>.</p>
+
+            <p>Silakan periksa kembali laporan Anda.</p>
         @endif
     @endif
 
