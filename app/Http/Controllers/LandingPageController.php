@@ -12,14 +12,14 @@ class LandingPageController extends Controller
 
 
         $iklan = Iklan::with(['detail_iklan' => function ($query) {
-            $query->where('status_iklan', 'Aktif')
+            $query->where('status_iklan', 'aktif')
                 ->where('tanggal_mulai', '<=', now())
                 ->where('tanggal_akhir', '>=', now());
         }])
             ->orderBy('created_at', 'desc')
 
             ->get();
-        return view('landing-page.index');
+        return view('landing-page.index', compact('iklan'));
     }
 
     public function halaman_destinasi()

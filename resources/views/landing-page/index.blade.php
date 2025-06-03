@@ -155,7 +155,7 @@
                     </div>
 
                 </div>
-                <a class="btn btn-primary rounded-pill py-3 px-5 mt-2" href="">Lihat Selengkapnya</a>
+                {{-- <a class="btn btn-primary rounded-pill py-3 px-5 mt-2" href="">Lihat Selengkapnya</a> --}}
             </div>
         </div>
     </div>
@@ -616,33 +616,36 @@
                             <h1 class="mb-0">Rekomendasi Toko</h1>
                         </div>
                         <div class="row g-4">
-                            <div class="col-md-6 col-lg-3">
-                                <div class="guide-item">
-                                    <div class="guide-img">
-                                        <div class="guide-img-efects">
-                                            <img src="{{ asset('template/envato/img/toko-rei.jpg') }}"
-                                                class="img-fluid w-100 rounded-top" alt="Image">
+                            @foreach ($iklan as $item)
+                                <div class="col-md-6 col-lg-3">
+                                    <div class="guide-item">
+                                        <div class="guide-img">
+                                            <div class="guide-img-efects">
+                                                <img src="{{ asset('assets/image/customers/advert/' . $item->poster) }}"
+                                                    class="img-fluid w-100 rounded-top" alt="Image"
+                                                    style="height: 300px;">
+                                            </div>
+                                            {{-- <div class="guide-icon rounded-pill p-2">
+                                                <a class="btn btn-square btn-primary rounded-circle mx-1"
+                                                    href=""><i class="fab fa-facebook-f"></i></a>
+                                                <a class="btn btn-square btn-primary rounded-circle mx-1"
+                                                    href=""><i class="fab fa-twitter"></i></a>
+                                                <a class="btn btn-square btn-primary rounded-circle mx-1"
+                                                    href=""><i class="fab fa-instagram"></i></a>
+                                                <a class="btn btn-square btn-primary rounded-circle mx-1"
+                                                    href=""><i class="fab fa-linkedin-in"></i></a>
+                                            </div> --}}
                                         </div>
-                                        <div class="guide-icon rounded-pill p-2">
-                                            <a class="btn btn-square btn-primary rounded-circle mx-1"
-                                                href=""><i class="fab fa-facebook-f"></i></a>
-                                            <a class="btn btn-square btn-primary rounded-circle mx-1"
-                                                href=""><i class="fab fa-twitter"></i></a>
-                                            <a class="btn btn-square btn-primary rounded-circle mx-1"
-                                                href=""><i class="fab fa-instagram"></i></a>
-                                            <a class="btn btn-square btn-primary rounded-circle mx-1"
-                                                href=""><i class="fab fa-linkedin-in"></i></a>
-                                        </div>
-                                    </div>
-                                    <div class="guide-title text-center rounded-bottom p-4">
-                                        <div class="guide-title-inner">
-                                            <h4 class="mt-3">Rei Outdoor Gear</h4>
-                                            <p class="mb-0">Terlaris Minggu ini</p>
+                                        <div class="guide-title text-center rounded-bottom p-4">
+                                            <div class="guide-title-inner">
+                                                <h4 class="mt-3">{{ $item->judul }}</h4>
+                                                <h5 class="mt-3">{{ $item->sub_judul }}</h4>
+                                                    <p class="mb-0">{{ $item->deskripsi }}</p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-
+                            @endforeach
                             {{-- <div class="col-md-6 col-lg-3">
                                 <div class="guide-item">
                                     <div class="guide-img">
