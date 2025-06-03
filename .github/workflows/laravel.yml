@@ -121,9 +121,19 @@ jobs:
             echo "🔐 Generate APP key..."
             docker exec -u www-data laravel_app php artisan key:generate --force
 
-            echo "🧹 Membersihkan cache..."
+            echo "🧹 Membersihkan cache dan optimize..."
+            docker exec -u www-data laravel_app php artisan optimize:clear
             docker exec -u www-data laravel_app php artisan config:clear
             docker exec -u www-data laravel_app php artisan cache:clear
+            docker exec -u www-data laravel_app php artisan view:clear
+            docker exec -u www-data laravel_app php artisan route:clear
+
+            echo "⚡ Mengoptimalkan aplikasi..."
+            docker exec -u www-data laravel_app php artisan config:cache
+            docker exec -u www-data laravel_app php artisan route:cache
+            docker exec -u www-data laravel_app php artisan view:cache
+            docker exec -u www-data laravel_app php artisan optimize
+            docker exec -u www-data laravel_app php artisan optimize:clear
 
             echo "🗃️ Reset dan migrasi database..."
             docker exec -u www-data laravel_app php artisan migrate --force
