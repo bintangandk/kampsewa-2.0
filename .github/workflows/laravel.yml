@@ -118,8 +118,8 @@ jobs:
             echo "📦 Menjalankan composer install..."
             docker exec -u www-data laravel_app composer install --no-interaction --prefer-dist --optimize-autoloader
 
-            echo "🔐 Generate APP key..."
-            docker exec -u www-data laravel_app php artisan key:generate --force
+            # echo "🔐 Generate APP key..."
+            # docker exec -u www-data laravel_app php artisan key:generate --force
 
             echo "🧹 Membersihkan cache dan optimize..."
             docker exec -u www-data laravel_app php artisan optimize:clear
