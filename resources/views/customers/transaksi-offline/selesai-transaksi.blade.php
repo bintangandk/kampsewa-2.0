@@ -82,7 +82,7 @@
                             </td>
                             <td class="px-4 py-2">
                                 <p class="py-1 px-2 rounded-md  bg-green-500/20 text-green-900 text-center">
-                                    {{ $item->pembayaran->metode ?? '-' }}
+                                    {{ $item->pembayaran->status_pembayaran ?? '-' }}
                                 </p>
                             </td>
                             <td class="px-4 py-2">{{ $item->pembayaran->metode ?? '-' }}</td>
