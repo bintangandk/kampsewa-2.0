@@ -50,7 +50,6 @@
                         <th class="px-4 py-2">Status</th>
                         <th class="px-4 py-2">Pembayaran</th>
                         <th class="px-4 py-2">Metode</th>
-                        <th class="px-4 py-2">Produk</th>
                         <th class="px-4 py-2">Aksi</th>
                     </tr>
                 </thead>
@@ -79,22 +78,6 @@
                                 </p>
                             </td>
                             <td class="px-4 py-2">{{ $penyewaan->pembayaran->metode ?? '-' }}</td>
-                            <td class="px-4 py-2 flex items-center gap-2">
-                                @php
-                                    $firstDetail = $penyewaan->details->first();
-                                @endphp
-                                @if ($firstDetail)
-                                    <img class="w-[40px] h-[40px] rounded-[10px] object-cover"
-                                        src="{{ asset('assets/image/customers/produk/' . ($firstDetail->produk->gambar ?? 'default.png')) }}"
-                                        alt="">
-                                    <div class="max-w-[250px] line-clamp-1">{{ $firstDetail->produk->nama_produk ?? '' }}
-                                    </div>
-                                @else
-                                    <img class="w-[40px] h-[40px] rounded-[10px] object-cover"
-                                        src="{{ asset('assets/image/customers/produk/default.png') }}" alt="">
-                                    <div class="max-w-[250px] line-clamp-1">-</div>
-                                @endif
-                            </td>
                             <td class="px-4 py-2">
                                 <a href="{{ url('customer/dashboard/detail-offline/' . $penyewaan->id) }}"
                                     class="py-1 px-2 rounded-md bg-blue-500/20 text-blue-900 text-center hover:text-blue-900">
