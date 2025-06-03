@@ -18,28 +18,59 @@ class ProductController extends Controller
     public function produkRatingTertinggiLimit6()
     {
         //Ambil data produk dengan rata-rata rating
-        $produk = Produk::leftJoin('rating_produk', 'produk.id', '=', 'rating_produk.id_produk')
-            ->leftJoin('users', 'users.id', '=', 'produk.id_user')
-            ->leftJoin('variant_produk', 'produk.id', '=', 'variant_produk.id_produk')
-            ->leftJoin('detail_variant_produk', 'variant_produk.id', '=', 'detail_variant_produk.id_variant_produk')
-            ->select(
-                'produk.id as id_produk',
-                'produk.id_user as id_user',
-                'users.name as nama_user',
-                'produk.nama as nama_produk',
-                'produk.foto_depan',
-                DB::raw('AVG(rating_produk.rating) as rata_rating'),
-                DB::raw('MIN(detail_variant_produk.harga_sewa) as harga_sewa')
-            )
-            ->where('produk.id_user', '!=', auth()->id())       // Produk bukan dari user yang login
-            ->where('users.SP', '<', 3)                         // User pemilik produk SP-nya < 3
-            ->whereNotNull('rating_produk.rating')
-            ->whereNotNull('detail_variant_produk.harga_sewa')
-            ->groupBy('produk.id', 'produk.id_user', 'users.name', 'produk.nama', 'produk.foto_depan')
-            ->orderByDesc(DB::raw('AVG(rating_produk.rating)'))
-            ->orderBy(DB::raw('MIN(detail_variant_produk.harga_sewa)'))
-            ->limit(6)
-            ->get();
+        $response = Http::get("http://206.189.81.234:8000/recommend?user_id=" . auth()->id());
+        if ($response->failed()) {
+            $produk = Produk::leftJoin('rating_produk', 'produk.id', '=', 'rating_produk.id_produk')
+                ->leftJoin('users', 'users.id', '=', 'produk.id_user')
+                ->leftJoin('variant_produk', 'produk.id', '=', 'variant_produk.id_produk')
+                ->leftJoin('detail_variant_produk', 'variant_produk.id', '=', 'detail_variant_produk.id_variant_produk')
+                ->select(
+                    'produk.id as id_produk',
+                    'produk.id_user as id_user',
+                    'users.name as nama_user',
+                    'produk.nama as nama_produk',
+                    'produk.foto_depan',
+                    DB::raw('AVG(rating_produk.rating) as rata_rating'),
+                    DB::raw('MIN(detail_variant_produk.harga_sewa) as harga_sewa')
+                )
+                ->where('produk.id_user', '!=', auth()->id())       // Produk bukan dari user yang login
+                ->where('users.SP', '<', 3)                         // User pemilik produk SP-nya < 3
+                ->whereNotNull('rating_produk.rating')
+                ->whereNotNull('detail_variant_produk.harga_sewa')
+                ->groupBy('produk.id', 'produk.id_user', 'users.name', 'produk.nama', 'produk.foto_depan')
+                ->orderByDesc(DB::raw('AVG(rating_produk.rating)'))
+                ->orderBy(DB::raw('MIN(detail_variant_produk.harga_sewa)'))
+                ->limit(6)
+                ->get();
+        } else {
+            // Log::info($response->json());
+            $product_ids = collect($response->json()['recommendations'])->pluck('product_id');
+            $produk = Produk::leftJoin('rating_produk', 'produk.id', '=', 'rating_produk.id_produk')
+                ->leftJoin('users', 'users.id', '=', 'produk.id_user')
+                ->leftJoin('variant_produk', 'produk.id', '=', 'variant_produk.id_produk')
+                ->leftJoin('detail_variant_produk', 'variant_produk.id', '=', 'detail_variant_produk.id_variant_produk')
+                ->select(
+                    'produk.id as id_produk',
+                    'produk.id_user as id_user',
+                    'users.name as nama_user',
+                    'produk.nama as nama_produk',
+                    'produk.foto_depan',
+                    DB::raw('AVG(rating_produk.rating) as rata_rating'),
+                    DB::raw('MIN(detail_variant_produk.harga_sewa) as harga_sewa')
+                )
+                // ->where('produk.id_user', '!=', auth()->id())
+                // Produk bukan dari user yang login
+                ->whereIn('produk.id', $product_ids)              // Filter produk berdasarkan ID yang direkomendasikan
+                ->where('users.SP', '<', 3)                         // User pemilik produk SP-nya < 3
+                ->whereNotNull('rating_produk.rating')
+                ->whereNotNull('detail_variant_produk.harga_sewa')
+                ->groupBy('produk.id', 'produk.id_user', 'users.name', 'produk.nama', 'produk.foto_depan')
+                ->orderByDesc(DB::raw('AVG(rating_produk.rating)'))
+                ->orderBy(DB::raw('MIN(detail_variant_produk.harga_sewa)'))
+                // ->limit(6)
+                ->get();
+        }
+
 
         // Check apakah data ada
         if ($produk->isEmpty()) {
