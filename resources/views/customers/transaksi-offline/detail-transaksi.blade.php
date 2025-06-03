@@ -97,16 +97,30 @@
                     <div class="--header xl:text-[20px] font-bold ">Informasi Barang</div>
                     <div class="--body flex flex-col gap-4">
                         <div class="--wrapper-card flex flex-col gap-2 p-2 rounded-lg shadow-box-shadow-4">
-                            <div class="--image flex items-center gap-2">
-                                <img class="w-[80px] h-[80px] object-cover rounded-lg"
-                                    src="{{ asset('assets/image/customers/produk/') }}" alt="#">
-                                <img class="w-[80px] h-[80px] object-cover rounded-lg"
-                                    src="{{ asset('assets/image/customers/produk/') }}" alt="#">
-                                <img class="w-[80px] h-[80px] object-cover rounded-lg"
-                                    src="{{ asset('assets/image/customers/produk/') }}" alt="#">
-                                <img class="w-[80px] h-[80px] object-cover rounded-lg"
-                                    src="{{ asset('assets/image/customers/produk/') }}" alt="#">
-                            </div>
+                            @foreach ($penyewaan->details as $detail)
+                                @php
+                                    $produk = $detail->produk;
+                                @endphp
+                                <div class="--image flex items-center gap-2 mb-4">
+                                    <img class="w-[80px] h-[80px] object-cover rounded-lg"
+                                        src="{{ asset('assets/image/customers/produk/' . $produk->foto_depan) }}"
+                                        alt="Depan">
+                                    <img class="w-[80px] h-[80px] object-cover rounded-lg"
+                                        src="{{ asset('assets/image/customers/produk/' . $produk->foto_kanan) }}"
+                                        alt="Kanan">
+                                    <img class="w-[80px] h-[80px] object-cover rounded-lg"
+                                        src="{{ asset('assets/image/customers/produk/' . $produk->foto_kiri) }}"
+                                        alt="Kiri">
+                                    <img class="w-[80px] h-[80px] object-cover rounded-lg"
+                                        src="{{ asset('assets/image/customers/produk/' . $produk->foto_belakang) }}"
+                                        alt="Belakang">
+                                </div>
+                                <div class="--name-kategori flex items-center gap-1">
+                                    <p class="text-[20px] font-medium">{{ $produk->nama }}</p>
+                                    <p class="p-1 rounded-lg bg-green-500/20 text-[10px] font-bold text-green-500">
+                                        {{ $produk->kategori }}</p>
+                                </div>
+                            @endforeach
                             <div class="--name-kategori flex items-center gap-1">
                                 <p class="text-[20px] font-medium"></p>
                                 <p class="p-1 rounded-lg bg-green-500/20 text-[10px] font-bold text-green-500">
@@ -122,6 +136,10 @@
                                                 <th>Ukuran</th>
                                                 <th>Jumlah Dipesan</th>
                                                 <th>Subtotal</th>
+                                                @if ($penyewaan->status_penyewaan === 'aktif')
+                                                    <th class="text-left py-2 px-4">Denda</th>
+                                                    <th class="text-left py-2 px-4">Keterangan</th>
+                                                @endif
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -156,8 +174,7 @@
                     Jika dirasa sudah memenuhi anda maka tekan tombol terima
                     dibawah ini, dan client anda akan memiliki status selesai.
                 </p>
-                <form id="form-confirm-order" action="{{ route('penyewaan.terima', $penyewaan->id) }}"
-                    method="POST">
+                <form id="form-confirm-order" action="{{ route('penyewaan.terima', $penyewaan->id) }}" method="POST">
                     @csrf
                     @method('PUT')
                     <div class="w-full flex justify-center">
@@ -171,4 +188,3 @@
         @endif
     </div>
 @endsection
-

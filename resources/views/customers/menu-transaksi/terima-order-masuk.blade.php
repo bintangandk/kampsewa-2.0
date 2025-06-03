@@ -242,7 +242,7 @@
                                                             method="POST" enctype="multipart/form-data">
                                                             @csrf
                                                             @method('PUT')
-                                                            @if ($data->status_penyewaan == 'Aktif')
+                                                            @if ($data->status_penyewaan === 'Aktif')
                                                                 {{-- <td class="py-2 px-4">
                                                                 <input name="denda[{{ $detail->id_detail }}][denda]"
                                                                     class="denda-item w-full py-1 px-2 border rounded"
@@ -272,7 +272,7 @@
                                                     <td colspan="3" class="text-right py-2 px-4">Total</td>
                                                     <td class="py-2 px-4">Rp.
                                                         {{ number_format($totalSubtotal, 0, ',', '.') }}</td>
-                                                    @if ($data->status_penyewaan == 'Aktif')
+                                                    @if ($data->status_penyewaan === 'Aktif')
                                                         {{-- <td class="py-2 px-4">
                                                             <div class="total-denda-produk text-sm text-red-600 font-semibold"
                                                                 data-id="{{ $id_produk }}">
