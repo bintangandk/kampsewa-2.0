@@ -48,13 +48,21 @@ class PenghasilanController extends Controller
         }
 
         // get total penghasilan bulan lalu dan sekarang
-        $monthPreviousTotal_admin = PembayaranPenyewaan::whereMonth('created_at', Carbon::now()->subMonth()->month)->sum('biaya_admin');
-        $monthPreviousTotal_iklan = PembayaranIklan::whereMonth('created_at', Carbon::now()->subMonth()->month)->where('status_bayar', 'aktif')->sum('total_bayar');
+        $monthPreviousTotal_admin = PembayaranPenyewaan::whereMonth('created_at', Carbon::now()->subMonth()->month)->whereYear('created_at', Carbon::now()->year)
+            // ->sum('biaya_admin');
+            ->sum('biaya_admin');
+        $monthPreviousTotal_iklan = PembayaranIklan::whereMonth('created_at', Carbon::now()->subMonth()->month)->whereYear('created_at', Carbon::now()->year)
+            // ->sum('total_bayar');
+
+            ->where('status_bayar', 'aktif')->sum('total_bayar');
         $monthPreviousTotal = $monthPreviousTotal_admin + $monthPreviousTotal_iklan;
         // $monthCurrentTotal = Pemasukan::whereMonth('created_at', Carbon::now()->month)->sum('nominal');
 
-        $monthCurrentTotal_admin = PembayaranPenyewaan::whereMonth('created_at', Carbon::now()->month)->sum('biaya_admin');
-        $monthCurrentTotal_iklan = PembayaranIklan::whereMonth('created_at', Carbon::now()->month)->where('status_bayar', 'aktif')->sum('total_bayar');
+        $monthCurrentTotal_admin = PembayaranPenyewaan::whereMonth('created_at', Carbon::now()->month)->whereYear('created_at', Carbon::now()->year)
+            ->sum('biaya_admin');
+        // dump(Carbon::now()->month);
+        $monthCurrentTotal_iklan = PembayaranIklan::whereMonth('created_at', Carbon::now()->month)->whereYear('created_at', Carbon::now()->year)
+            ->where('status_bayar', 'aktif')->sum('total_bayar');
         $monthCurrentTotal = $monthCurrentTotal_admin + $monthCurrentTotal_iklan;
 
 

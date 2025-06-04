@@ -58,7 +58,7 @@
                                 <i class="fi fi-rr-user-gear"></i>
                             </span>
                             <span
-                                class="ml-2 text-sm tracking-wide {{ $title == 'Detail Produk Sedang Disewa' ? 'text-white' : '' }} {{ $title == 'Detail Produk Disewakan' ? 'text-white' : '' }} {{ $title == 'Produk Disewakan' ? 'text-white' : '' }} truncate {{ $title == 'Kelola Pengguna | Developer Kamp Sewa' ? 'text-white' : '' }} {{ $title == 'Detail Pengguna' ? 'text-white' : '' }}">Kelola</span>
+                                class="ml-2 text-sm tracking-wide {{ $title == 'Detail Produk Sedang Disewa' ? 'text-white' : '' }} {{ $title == 'Detail Produk Disewakan' ? 'text-white' : '' }} {{ $title == 'Produk Disewakan' ? 'text-white' : '' }} truncate {{ $title == 'Kelola Pengguna | Developer Kamp Sewa' ? 'text-white' : '' }} {{ $title == 'Detail Pengguna' ? 'text-white' : '' }}">Customer</span>
                         </a>
                     </li>
 

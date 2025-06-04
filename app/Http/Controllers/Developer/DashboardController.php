@@ -36,10 +36,10 @@ class DashboardController extends Controller
 
         // -- ambil user berdasarkan yang baru saja terdaftar
         $user_baru_terdaftar = User::select('users.*')
-            ->join('status_notifikasi_user', 'users.id', '=', 'status_notifikasi_user.id_user')
+            // ->join('status_notifikasi_user', 'users.id', '=', 'status_notifikasi_user.id_user')
             ->where('users.type', 0)
             ->whereDate('users.created_at', Carbon::today())
-            ->where('status_notifikasi_user.status', 'unread')
+            // ->where('status_notifikasi_user.status', 'unread')
             ->orderByDesc('users.created_at')->limit(10)
             ->get();
 
