@@ -18,6 +18,7 @@ class PembayaranPenyewaan extends Model
         'biaya_admin',
         'kurang_pembayaran',
         'total_pembayaran',
+        'total_denda',
         'metode',
         'jenis_transaksi',
         'status_pembayaran'

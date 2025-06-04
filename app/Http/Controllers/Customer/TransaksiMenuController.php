@@ -549,12 +549,12 @@ class TransaksiMenuController extends Controller
 
     public function tambahTransaksi()
     {
-    
+
         $produkSedangDisewa = Penyewaan::whereIn('status_penyewaan', ['Aktif', 'Pending'])
-            ->with('details') 
+            ->with('details')
             ->get()
             ->flatMap(function ($penyewaan) {
-                return $penyewaan->details->pluck('id_produk'); 
+                return $penyewaan->details->pluck('id_produk');
             })
             ->unique()
             ->toArray();
@@ -570,7 +570,7 @@ class TransaksiMenuController extends Controller
     public function getVarian($id)
     {
         $varian = VariantProduk::where('id_produk', $id)
-            ->with('detailVariant') 
+            ->with('detailVariant')
             ->get()
             ->flatMap(function ($variant) {
                 return $variant->detailVariant->map(function ($detail) use ($variant) {
@@ -621,7 +621,7 @@ class TransaksiMenuController extends Controller
                 'tanggal_mulai' => $request['tanggal_mulai'],
                 'tanggal_selesai' => $request['tanggal_selesai'],
                 'pesan' => 'Transaksi Offline',
-                'status_penyewaan' => 'aktif',
+                'status_penyewaan' => 'Aktif',
                 'jenis_penyewaan' => 'offline',
             ]);
 
@@ -699,5 +699,43 @@ class TransaksiMenuController extends Controller
 
         return redirect()->route('transaksi-offline.order-offline')
             ->with('success', 'Terima Barang Berhasil.');
+    }
+
+    public function simpanDendaDanBayar(Request $request, $penyewaanId)
+    {
+        $request->validate([
+            'denda' => 'array',
+            'keterangan_denda' => 'array',
+        ]);
+
+        DB::transaction(function () use ($request, $penyewaanId) {
+            $dendaInput = $request->input('denda', []);
+            $keteranganDenda = $request->input('keterangan_denda', []);
+            $totalDenda = 0;
+
+            // 1. Update denda per detail
+            foreach ($dendaInput as $detailId => $nilai) {
+                $nilaiInt = (int) $nilai;
+
+                DetailPenyewaan::where('id', $detailId)->update([
+                    'denda' => $nilaiInt,
+                    'keterangan_denda' => $keteranganDenda[$detailId] ?? null,
+                ]);
+
+                $totalDenda += $nilaiInt;
+            }
+
+            // 2. Ambil 1 baris pembayaran berdasarkan ID penyewaan (tanpa filter jenis_transaksi)
+            $pembayaran = PembayaranPenyewaan::where('id_penyewaan', $penyewaanId)->first();
+
+            // 3. Update total_denda jika ada datanya
+            if ($pembayaran) {
+                $pembayaran->update([
+                    'total_denda' => $totalDenda,
+                ]);
+            }
+        });
+
+        return redirect()->back()->with('success', 'Denda berhasil diperbarui.');
     }
 }
