@@ -25,7 +25,7 @@
 
                 {{-- todo icon notification --}}
                 <div class="relative ml-3 flex items-center gap-[50px] small-desktop:gap-4">
-                    <div id="form-notification-as-read">
+                    {{-- <div id="form-notification-as-read">
                         <div class="_icon" id="iconButton">
                             <div
                                 class="_notification relative w-[45px] h-[45px] gradient-1 cursor-pointer rounded-full flex items-center justify-center">
@@ -36,7 +36,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
 
                     {{-- todo profile --}}
                     <div class="_profile">
