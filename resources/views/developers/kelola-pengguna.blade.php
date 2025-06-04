@@ -81,9 +81,9 @@
                         </div>
                         <div class="_name-address">
                             <div class="_name font-bold text-[#19191b] line-clamp-1">{{ $item->name }}</div>
-                            <div class="_address text-gray-400 font-normal text-[12px] line-clamp-1">
+                            {{-- <div class="_address text-gray-400 font-normal text-[12px] line-clamp-1">
                                 Belum di isi.
-                            </div>
+                            </div> --}}
                             <div class="_level w-fit mt-2">
                                 <p class="bg-[#FDEAEE] text-[10px] font-bold rounded-full text-[#F5325C] text-center p-1">
                                     Customer</p>
@@ -105,16 +105,16 @@
                         <p class="w-[80%] font-medium"><i class="mt-1 fi fi-rr-box-open"></i>
                             {{ $item->total_product ? $item->total_product . ' ' . 'Total produk disewakan' : 'Belum ada produk.' }}
                         </p>
-                        <p class="text-[12px] text-gray-400 font-medium mt-1"><a
-                                href=""><u>{{ $item->total_product ? 'Lihat semua produk' : '' }}</u></a></p>
+                        {{-- <p class="text-[12px] text-gray-400 font-medium mt-1"><a
+                                href=""><u>{{ $item->total_product ? 'Lihat semua produk' : '' }}</u></a></p> --}}
                     </div>
                     <div class="_gender-iconmore flex justify-end w-full items-center gap-8">
-                        <div
+                        {{-- <div
                             class="_gender flex p-3 rounded-r-full rounded-bl-full border-solid border-[2px] items-center gap-2">
                             <div class="_circle w-[12px] h-[12px] rounded-full bg-[#12A4ED]"></div>
                             <p class="text-[14px] font-medium text-[#19191b]">
                                 {{ $item->jenis_kelamin ? $item->jenis_kelamin : 'Belum di isi.' }}</p>
-                        </div>
+                        </div> --}}
                         {{-- <div class="_moreicon btn-more relative cursor-pointer">
                             <div class="relative"><i class="text-[20px] text-gray-400 fi fi-rr-rectangle-list"></i>
                             </div>

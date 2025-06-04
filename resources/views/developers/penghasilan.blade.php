@@ -89,7 +89,7 @@
                             </div>
                         </div>
                         <div class="--body mb-4">
-                            <canvas id="penghasilan-perbulan"></canvas>
+                            <canvas id="chart-keuntungan-perbulan"></canvas>
                         </div>
                         <div class="--footer">
                             <p class="text-white text-[14px] font-semibold">Total Bulan lalu</p>
