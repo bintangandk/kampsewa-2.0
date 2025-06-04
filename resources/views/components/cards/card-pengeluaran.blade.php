@@ -24,12 +24,12 @@
             <p class="text-[12px] mb-[10px] text-[#343B7C]">Bulan {{ Carbon\Carbon::now()->subMonth()->format('F') }}
                 <strong>Rp. {{ $pengeluaran_bulan_lalu }}</strong>
             </p>
-            <div class="w-full h-[40px] bg-[#F2F5FD] rounded-[10px]">
+            {{-- <div class="w-full h-[40px] bg-[#F2F5FD] rounded-[10px]">
                 <div
                     class="w-[{{ $percentagePengeluaranChange }}%] bg-corak-2 flex justify-center items-center rounded-[10px] h-full">
                     <p class="text-white font-medium text-[16px]">{{ $percentagePengeluaranChange }}%</p>
                 </div>
-            </div>
+            </div> --}}
         </div>
     </div>
 </div>
