@@ -16,6 +16,8 @@ class DetailPenyewaan extends Model
         'ukuran',
         'qty',
         'subtotal',
+        'denda',
+        'keterangan_denda'
     ];
 
     public function produk()

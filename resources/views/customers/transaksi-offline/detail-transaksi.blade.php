@@ -72,11 +72,6 @@
                         <div class="--header xl:text-[20px] font-bold ">Informasi Pembayaran</div>
                         <div class="--body">
                             <div class="--wrapper-list-data grid grid-cols-3">
-                                {{-- <div class="--bukti-pembayaran p-2 rounded-lg flex flex-col gap-2">
-                                    <p class="font-medium text-[14px]">Bukti Pembyaran:</p>
-                                    <img class="w-full object-cover rounded-lg"
-                                        src="{{ asset('assets/image/customers/pembayaran/') }}" alt="Bukti Jaminan">
-                                </div> --}}
                                 <div class="--bukti-jaminan p-2 rounded-lg flex flex-col gap-2">
                                     <p class="font-medium text-[14px]">Jaminan</p>
                                     <p class="font-black -mt-2 text-[20px]">
@@ -86,6 +81,11 @@
                                     <p class="font-medium text-[14px]">Total Pembayaran:</p>
                                     <p class="font-black -mt-2 text-[20px]">Rp.
                                         {{ number_format($penyewaan->pembayaran->total_pembayaran, 0, ',', '.') }}</p>
+                                </div>
+                                <div class="--pembayaran-denda p-2 rounded-lg  flex flex-col gap-2">
+                                    <p class="font-medium text-[14px]">Total Denda:</p>
+                                    <p class="font-black -mt-2 text-[20px]">Rp.
+                                        {{ number_format($penyewaan->pembayaran->total_denda, 0, ',', '.') }}</p>
                                 </div>
                             </div>
                         </div>
@@ -129,38 +129,70 @@
                             <div class="--variant-barang-dipesan flex flex-col gap-4">
                                 <p class="text-[12px] font-medium">Informasi variant barang dipesan.</p>
                                 <div class="--variant-barang">
-                                    <table class="table">
-                                        <thead>
-                                            <tr>
-                                                <th>Warna</th>
-                                                <th>Ukuran</th>
-                                                <th>Jumlah Dipesan</th>
-                                                <th>Subtotal</th>
-                                                @if ($penyewaan->status_penyewaan === 'aktif')
-                                                    <th class="text-left py-2 px-4">Denda</th>
-                                                    <th class="text-left py-2 px-4">Keterangan</th>
-                                                @endif
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($penyewaan->details as $detail)
-                                                <tr>
-                                                    <td class="text-[14px] font-medium">{{ $detail->warna_produk }}</td>
-                                                    <td class="text-[14px] font-medium">{{ $detail->ukuran }}</td>
-                                                    <td class="text-[14px] font-medium">{{ $detail->qty }}</td>
-                                                    <td class="text-[14px] font-medium">
-                                                        Rp.{{ number_format($detail->subtotal, 0, ',', '.') }}</td>
+                                    <form action="{{ route('denda.post', $penyewaan->id) }}" method="POST"
+                                        class="space-y-4">
+                                        @csrf
+                                        <table class="table w-full table-bordered">
+                                            <thead>
+                                                <tr class="bg-gray-100 text-sm text-left">
+                                                    <th class="py-2 px-4">Warna</th>
+                                                    <th class="py-2 px-4">Ukuran</th>
+                                                    <th class="py-2 px-4">Jumlah</th>
+                                                    <th class="py-2 px-4">Subtotal</th>
+                                                    @if ($penyewaan->status_penyewaan === 'Aktif')
+                                                        <th class="py-2 px-4">Denda (Rp)</th>
+                                                        <th class="py-2 px-4">Keterangan</th>
+                                                    @endif
                                                 </tr>
-                                            @endforeach
-                                            <tr>
-                                                <td colspan="3" class="text-left text-[16px] font-medium">Total
-                                                </td>
-                                                <td colspan="" class="text-[16px] text-left font-medium">Rp.
-                                                    {{ number_format($penyewaan->pembayaran->total_pembayaran, 0, ',', '.') }}
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($penyewaan->details as $detail)
+                                                    <tr class="text-sm">
+                                                        <td class="py-2 px-4">{{ $detail->warna_produk }}</td>
+                                                        <td class="py-2 px-4">{{ $detail->ukuran }}</td>
+                                                        <td class="py-2 px-4">{{ $detail->qty }}</td>
+                                                        <td class="py-2 px-4">
+                                                            Rp.{{ number_format($detail->subtotal, 0, ',', '.') }}</td>
+                                                        @if ($penyewaan->status_penyewaan === 'Aktif')
+                                                            <td class="py-2 px-4">
+                                                                <input type="number" name="denda[{{ $detail->id }}]"
+                                                                    class="form-input w-full border rounded px-2 py-1 denda-input"
+                                                                    placeholder="Rp"
+                                                                    value="{{ old('denda.' . $detail->id) }}">
+                                                            </td>
+                                                            <td class="py-2 px-4">
+                                                                <input type="text"
+                                                                    name="keterangan_denda[{{ $detail->id }}]"
+                                                                    class="form-input w-full border rounded px-2 py-1"
+                                                                    placeholder="Masukkan keterangan"
+                                                                    value="{{ old('keterangan_denda.' . $detail->id) }}">
+                                                            </td>
+                                                        @endif
+                                                    </tr>
+                                                @endforeach
+
+                                                <tr class="font-semibold">
+                                                    <td colspan="4" class="py-2 px-4 text-right">Total Denda</td>
+                                                    <td colspan="2" class="py-2 px-4 text-left"
+                                                        id="total-denda-display">Rp.0</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+
+                                        <div class="flex flex-col gap-1">
+                                            <label for="bayar_denda" class="text-sm font-medium">Bayar Denda (Rp)</label>
+                                            <input type="number" name="bayar_denda" id="bayar_denda"
+                                                class="form-input border rounded px-3 py-2 w-full"
+                                                placeholder="Masukkan nominal bayar">
+                                        </div>
+
+                                        <input type="hidden" name="total_denda" id="total_denda_input" value="0">
+
+                                        <button type="submit"
+                                            class="mt-4 bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition">
+                                            Simpan Denda & Bayar
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -168,7 +200,7 @@
                 </div>
             </div>
         </div>
-        @if ($penyewaan->status_penyewaan === 'aktif')
+        @if ($penyewaan->status_penyewaan === 'Aktif')
             <div class="--component-terima shadow-box-shadow-8 p-4 rounded-lg">
                 <p class="font-medium text-[14px] mb-2 text-center">
                     Jika dirasa sudah memenuhi anda maka tekan tombol terima
@@ -187,4 +219,30 @@
             </div>
         @endif
     </div>
+
+    <script>
+        function formatRupiah(angka) {
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0
+            }).format(angka);
+        }
+
+        function updateTotalDenda() {
+            let total = 0;
+            document.querySelectorAll('.denda-input').forEach(input => {
+                const value = parseInt(input.value);
+                if (!isNaN(value)) {
+                    total += value;
+                }
+            });
+            document.getElementById('total-denda-display').innerText = formatRupiah(total);
+        }
+
+        document.addEventListener('DOMContentLoaded', updateTotalDenda);
+        document.querySelectorAll('.denda-input').forEach(input => {
+            input.addEventListener('input', updateTotalDenda);
+        });
+    </script>
 @endsection
