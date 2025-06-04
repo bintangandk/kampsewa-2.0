@@ -60,7 +60,7 @@
                     </div>
 
                     {{-- todo untuk dropdown notification --}}
-                    <div id="dropdown-notification"
+                    {{-- <div id="dropdown-notification"
                         class="_wrapper-notification hidden z-10 absolute top-full w-[400px] h-[300px] overflow-y-auto bg-white shadow-box-shadow-12 rounded-[10px] right-0 overflow-hidden">
                         @if ($user_baru_terdaftar->count() == 0)
                             <div class="w-full h-full flex justify-center items-center">Tidak ada notifikasi</div>
@@ -87,7 +87,7 @@
                             <a href="{{ route('notification.index') }}"
                                 class="text-blue-700">{{ $user_baru_terdaftar->count() > 0 ? 'Lihat semua notifikasi' : '' }}</a>
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </div>

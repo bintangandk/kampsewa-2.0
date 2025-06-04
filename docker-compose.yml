@@ -15,6 +15,7 @@ services:
             - APP_ENV=local
             - APP_DEBUG=true
             - DB_HOST=database
+            - APP_KEY=base64:3Jur4YOq6Mvl20oJd4smk3VNhK/UNDyUmXFCUJMand8=
             - DB_PORT=3306
             - SESSION_DOMAIN=
             - APP_URL=http://206.189.81.234:8080

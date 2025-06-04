@@ -147,7 +147,12 @@ class DashboardController extends Controller
         $penghasilan_tahun_ini_admin = PembayaranPenyewaan::whereYear('created_at', Carbon::now()->year)->sum('biaya_admin');
         $penghasilan_tahun_ini_iklan = PembayaranIklan::whereYear('created_at', Carbon::now()->year)->where('status_bayar', 'aktif')->sum('total_bayar');
         $total_pemasukan_tahun_ini = $penghasilan_tahun_ini_admin + $penghasilan_tahun_ini_iklan;
-        $total_pengeluaran_tahun_ini = Pengeluaran::whereYear('created_at', date('Y'))->sum('nominal');
+        $total_pengeluaran_tahun_ini = Pengeluaran::whereYear('created_at', date('Y'))
+            ->whereHas('user', function ($query) {
+                $query->where('type', '1');
+            })
+            ->sum('nominal');
+
 
         // -- menghitung total keuntungan
         $total_keuntungan = $total_pemasukan_tahun_ini - $total_pengeluaran_tahun_ini;
@@ -165,7 +170,7 @@ class DashboardController extends Controller
 
         // Hitung total kerugian
         $total_kerugian = $total_pengeluaran_tahun_ini - $total_pemasukan_tahun_ini;
-
+        $total_kerugian = $total_kerugian < 0 ? 0 : $total_kerugian; // Ambil nilai absolut jika negatif
         // Format total kerugian
         if ($total_kerugian >= 1000000) {
             $formatted_kerugian = number_format($total_kerugian);

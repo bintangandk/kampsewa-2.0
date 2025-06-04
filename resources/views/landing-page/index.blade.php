@@ -613,7 +613,7 @@
                     <div class="container py-5">
                         <div class="mx-auto text-center mb-5" style="max-width: 900px;">
                             <h5 class="section-title px-3">Terpopuler Minggu Ini</h5>
-                            <h1 class="mb-0">Rekomendasi Toko</h1>
+                            <h1 class="mb-0">Iklan Toko</h1>
                         </div>
                         <div class="row g-4">
                             @foreach ($iklan as $item)
