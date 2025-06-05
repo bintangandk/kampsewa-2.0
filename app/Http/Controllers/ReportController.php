@@ -92,11 +92,11 @@ class ReportController extends Controller
             $terlapor->save();
 
             // Kirim email ke pelapor dan terlapor
-            Mail::to($pelapor->email)->send(new ReportStatusMail($report, 'terima', 'pelapor'));
-            Mail::to($terlapor->email)->send(new ReportStatusMail($report, 'terima', 'terlapor'));
+            // Mail::to($pelapor->email)->send(new ReportStatusMail($report, 'terima', 'pelapor'));
+            // Mail::to($terlapor->email)->send(new ReportStatusMail($report, 'terima', 'terlapor'));
         } elseif ($request->status == 'tolak') {
             // Kirim email hanya ke pelapor
-            Mail::to($pelapor->email)->send(new ReportStatusMail($report, 'tolak', 'pelapor'));
+            // Mail::to($pelapor->email)->send(new ReportStatusMail($report, 'tolak', 'pelapor'));
         }
 
         Alert::success('Berhasil', 'Laporan berhasil diverifikasi');
